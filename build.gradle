@@ -1,0 +1,58 @@
+apply plugin: "eclipse"   // Run 'gradle eclipse' to rebuild .classpath for other systems
+apply plugin: "java"
+
+
+sourceCompatibility = 1.10
+targetCompatibility = 1.10
+
+repositories {
+	mavenCentral()
+}
+
+sourceSets.main.java.srcDirs "src/main/java"
+
+configurations {
+    jaxb
+}
+
+dependencies {
+   compile (
+      "javax.xml.bind:jaxb-api:2.3.0"
+      //"com.sun.xml.bind:jaxb-core:2.3.0",
+      //"com.sun.xml.bind:jaxb-impl:2.3.0"
+   )
+
+   jaxb (
+      "com.sun.xml.bind:jaxb-xjc:2.2.7",
+      "com.sun.xml.bind:jaxb-impl:2.2.7",
+      "javax.activation:activation:1.1"
+   )
+}
+
+task init {
+   delete "src/main/java/org/loverde/geographiccoordinate/ws/model/generated"
+}
+
+task jaxb {
+   System.setProperty( "javax.xml.accessExternalSchema", "all" )
+
+   def jaxbSourceDir = "schema/xsd"
+   def jaxbTargetDir = file( "src/main/java" )
+   def jaxbTargetPkg = "org.loverde.geographiccoordinate.ws.model.generated"
+
+   doLast {
+      jaxbTargetDir.mkdirs()
+
+      ant.taskdef(
+         name: "xjc",
+         classname: "com.sun.tools.xjc.XJCTask",
+         classpath: configurations.jaxb.asPath
+      )
+
+      ant.xjc( destdir: "${jaxbTargetDir}", package: "${jaxbTargetPkg}" ) {
+         schema( dir: "${jaxbSourceDir}", includes: "Point.xsd" )
+      }
+   }
+}
+
+compileJava.dependsOn jaxb
