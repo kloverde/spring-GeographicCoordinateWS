@@ -39,14 +39,20 @@
    targetNamespace="https://www.github.com/kloverde/spring-GeographicCoordinateWS"
    xmlns:kl="https://www.github.com/kloverde/spring-GeographicCoordinateWS">
 
-   <xs:include schemaLocation="Latitude.xsd"/>
-   <xs:include schemaLocation="Longitude.xsd"/>
+   <xs:include schemaLocation="DistanceUnit.xsd"/>
+   <xs:include schemaLocation="Point.xsd"></xs:include>
 
-   <xs:element name="point">
+   <xs:element name="DistanceRequest">
       <xs:complexType>
          <xs:sequence>
-            <xs:element ref="kl:latitude" minOccurs="1" maxOccurs="1"/>      
-            <xs:element ref="kl:longitude" minOccurs="1" maxOccurs="1"/>      
+            <xs:element ref="kl:unit" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="points" minOccurs="1" maxOccurs="1">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element ref="kl:point" minOccurs="2" maxOccurs="unbounded"/>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
          </xs:sequence>
       </xs:complexType>
    </xs:element>

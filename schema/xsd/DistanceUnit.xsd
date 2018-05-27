@@ -39,16 +39,24 @@
    targetNamespace="https://www.github.com/kloverde/spring-GeographicCoordinateWS"
    xmlns:kl="https://www.github.com/kloverde/spring-GeographicCoordinateWS">
 
-   <xs:include schemaLocation="Latitude.xsd"/>
-   <xs:include schemaLocation="Longitude.xsd"/>
+   <xs:element name="unit">
+      <xs:annotation>
+         <xs:documentation>These values correspond to GeographicCoordinate's DistanceCalculator.Unit enumeration.</xs:documentation>
+      </xs:annotation>
 
-   <xs:element name="point">
-      <xs:complexType>
-         <xs:sequence>
-            <xs:element ref="kl:latitude" minOccurs="1" maxOccurs="1"/>      
-            <xs:element ref="kl:longitude" minOccurs="1" maxOccurs="1"/>      
-         </xs:sequence>
-      </xs:complexType>
+      <xs:simpleType>
+         <xs:restriction base="xs:string">
+            <xs:enumeration value="CENTIMETERS"/>
+            <xs:enumeration value="INCHES"/>
+            <xs:enumeration value="FEET"/>
+            <xs:enumeration value="KILOMETERS"/>
+            <xs:enumeration value="METERS"/>
+            <xs:enumeration value="MILES"/>
+            <xs:enumeration value="NAUTICAL_MILES"/>
+            <xs:enumeration value="US_SURVEY_FEET"/>
+            <xs:enumeration value="YARDS"/>
+         </xs:restriction>
+      </xs:simpleType>
    </xs:element>
 
 </xs:schema>
