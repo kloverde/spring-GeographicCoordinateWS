@@ -45,7 +45,7 @@
    <xs:element name="DistanceResponse">
       <xs:complexType>
          <xs:sequence>
-            <xs:element ref="kl:unit" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="unit" type="kl:distanceUnit" minOccurs="1" maxOccurs="1"/>
             <xs:element type="xs:double" name="distance" minOccurs="1" maxOccurs="1"/>            
          </xs:sequence>
       </xs:complexType>

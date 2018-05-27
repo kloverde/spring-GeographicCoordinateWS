@@ -43,6 +43,7 @@ import org.loverde.geographiccoordinate.calculator.DistanceCalculator;
 import org.loverde.geographiccoordinate.ws.model.convert.TypeConverter;
 import org.loverde.geographiccoordinate.ws.model.generated.DistanceRequest;
 import org.loverde.geographiccoordinate.ws.model.generated.DistanceResponse;
+import org.loverde.geographiccoordinate.ws.model.generated.DistanceUnit;
 import org.loverde.geographiccoordinate.ws.model.generated.ObjectFactory;
 
 
@@ -57,8 +58,8 @@ public class DistanceRequestServiceImpl implements DistanceRequestService {
          throw new IllegalArgumentException( "Received a null JAXB DistanceRequest" );
       }
 
-      final String jaxbUnit = request.getUnit();
-      final DistanceCalculator.Unit unit = DistanceCalculator.Unit.valueOf( jaxbUnit );
+      final DistanceUnit jaxbUnit = request.getUnit();
+      final DistanceCalculator.Unit unit = DistanceCalculator.Unit.valueOf( jaxbUnit.name() );
 
       if( unit == null ) {
          throw new IllegalArgumentException( String.format("Unsupported JAXB DistanceRequest unit: %s", jaxbUnit) );

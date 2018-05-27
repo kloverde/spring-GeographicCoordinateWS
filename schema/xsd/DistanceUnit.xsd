@@ -39,24 +39,22 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
    targetNamespace="https://www.github.com/kloverde/spring-GeographicCoordinateWS">
 
-   <xs:element name="unit">
+   <xs:simpleType name="distanceUnit">
       <xs:annotation>
          <xs:documentation>These values correspond to GeographicCoordinate's DistanceCalculator.Unit enumeration.</xs:documentation>
       </xs:annotation>
 
-      <xs:simpleType>
-         <xs:restriction base="xs:string">
-            <xs:enumeration value="CENTIMETERS"/>
-            <xs:enumeration value="INCHES"/>
-            <xs:enumeration value="FEET"/>
-            <xs:enumeration value="KILOMETERS"/>
-            <xs:enumeration value="METERS"/>
-            <xs:enumeration value="MILES"/>
-            <xs:enumeration value="NAUTICAL_MILES"/>
-            <xs:enumeration value="US_SURVEY_FEET"/>
-            <xs:enumeration value="YARDS"/>
-         </xs:restriction>
-      </xs:simpleType>
-   </xs:element>
+      <xs:restriction base="xs:string">
+         <xs:enumeration value="CENTIMETERS"/>
+         <xs:enumeration value="INCHES"/>
+         <xs:enumeration value="FEET"/>
+         <xs:enumeration value="KILOMETERS"/>
+         <xs:enumeration value="METERS"/>
+         <xs:enumeration value="MILES"/>
+         <xs:enumeration value="NAUTICAL_MILES"/>
+         <xs:enumeration value="US_SURVEY_FEET"/>
+         <xs:enumeration value="YARDS"/>
+      </xs:restriction>
+   </xs:simpleType>
 
 </xs:schema>
