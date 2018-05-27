@@ -1,6 +1,6 @@
 /*
  * GeographicCoordinate
- * https://github.com/kloverde/springws-GeographicCoordinate
+ * https://github.com/kloverde/spring-GeographicCoordinateWS
  *
  * Copyright (c) 2013 Kurtis LoVerde
  * All rights reserved

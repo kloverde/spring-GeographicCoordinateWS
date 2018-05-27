@@ -2,7 +2,7 @@
 
 <!--
    GeographicCoordinateWS
-   https://www.github.com/kloverde/springws-GeographicCoordinate
+   https://www.github.com/kloverde/spring-GeographicCoordinateWS
 
    Copyright (c) 2018, Kurtis LoVerde
    All rights reserved.
@@ -36,8 +36,8 @@
 -->
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-   targetNamespace="https://www.github.com/kloverde/springws-GeographicCoordinate"
-   xmlns:kl="https://www.github.com/kloverde/springws-GeographicCoordinate">
+   targetNamespace="https://www.github.com/kloverde/spring-GeographicCoordinateWS"
+   xmlns:kl="https://www.github.com/kloverde/spring-GeographicCoordinateWS">
 
    <xs:include schemaLocation="Latitude.xsd"/>
    <xs:include schemaLocation="Longitude.xsd"/>

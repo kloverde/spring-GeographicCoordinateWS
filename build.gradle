@@ -34,6 +34,9 @@ dependencies {
 
 task init {
    delete "src/main/java/org/loverde/geographiccoordinate/ws/model/generated"
+   delete "bin"
+   delete "build"
+   delete "gradle"
 }
 
 task jaxb {
@@ -58,4 +61,4 @@ task jaxb {
    }
 }
 
-compileJava.dependsOn jaxb
+compileJava.dependsOn init, jaxb
