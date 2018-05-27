@@ -12,12 +12,14 @@
          Redistribution and use in source and binary forms, with or without
          modification, are permitted provided that the following conditions are met:
 
-             1. Redistributions of source code must retain the above copyright
+             1. This software may not be used by any for-profit entity, whether a
+                business, person, or other, or for any for-profit purpose.
+             2. Redistributions of source code must retain the above copyright
                 notice, this list of conditions and the following disclaimer.
-             2. Redistributions in binary form must reproduce the above copyright
+             3. Redistributions in binary form must reproduce the above copyright
                 notice, this list of conditions and the following disclaimer in the
                 documentation and/or other materials provided with the distribution.
-             3. Neither the name of the copyright holder nor the names of its
+             4. Neither the name of the copyright holder nor the names of its
                 contributors may be used to endorse or promote products derived from
                 this software without specific prior written permission.
 
@@ -33,13 +35,22 @@
          OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="https://www.github.com/kloverde/springws-GeographicCoordinate">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+   targetNamespace="https://www.github.com/kloverde/springws-GeographicCoordinate"
+   xmlns:kl="https://www.github.com/kloverde/springws-GeographicCoordinate">
+
+   <xs:simpleType name="longitudeType" xmlns="kl">
+      <xs:restriction base="xs:double">
+         <xs:minInclusive value="-180"/>
+         <xs:maxInclusive value="180"/>
+      </xs:restriction>
+   </xs:simpleType>
+
    <xs:element name="longitude">
-      <xs:simpleType>
-         <xs:restriction base="xs:double">
-            <xs:minInclusive value="-180"/>
-            <xs:maxInclusive value="180"/>
-         </xs:restriction>
-      </xs:simpleType>
+      <xs:complexType>
+         <xs:simpleContent>
+            <xs:extension base="kl:longitudeType"></xs:extension>
+         </xs:simpleContent>
+      </xs:complexType>
    </xs:element>
 </xs:schema>
