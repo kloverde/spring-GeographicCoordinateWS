@@ -37,18 +37,18 @@
 -->
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-   targetNamespace="https://www.github.com/kloverde/spring-GeographicCoordinateWS"
-   xmlns:kl="https://www.github.com/kloverde/spring-GeographicCoordinateWS">
+   targetNamespace="https://www.github.com/kloverde/spring-GeographicCoordinateWS">
 
-   <xs:include schemaLocation="DistanceUnit.xsd"/>
+   <xs:simpleType name="compassTypeEnum">
+      <xs:annotation>
+         <xs:documentation>This enumeration indicates an 8, 16 or 32-point compass.  GeographicCoordinate has separate enumerations for each.</xs:documentation>
+      </xs:annotation>
 
-   <xs:element name="distanceResponse">
-      <xs:complexType>
-         <xs:sequence>
-            <xs:element name="unit" type="kl:distanceUnit" minOccurs="1" maxOccurs="1"/>
-            <xs:element type="xs:double" name="distance" minOccurs="1" maxOccurs="1"/>            
-         </xs:sequence>
-      </xs:complexType>
-   </xs:element>
+      <xs:restriction base="xs:string">
+         <xs:enumeration value="COMPASS_8_POINT"/>
+         <xs:enumeration value="COMPASS_16_POINT"/>
+         <xs:enumeration value="COMPASS_32_POINT"/>
+      </xs:restriction>
+   </xs:simpleType>
 
 </xs:schema>

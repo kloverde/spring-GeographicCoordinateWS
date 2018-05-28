@@ -41,9 +41,9 @@
    xmlns:kl="https://www.github.com/kloverde/spring-GeographicCoordinateWS">
 
    <xs:include schemaLocation="DistanceUnit.xsd"/>
-   <xs:include schemaLocation="Point.xsd"/>
+   <xs:include schemaLocation="../coordinates/Point.xsd"/>
 
-   <xs:element name="DistanceRequest">
+   <xs:element name="distanceRequest">
       <xs:complexType>
          <xs:sequence>
             <xs:element name="unit" type="kl:distanceUnit" minOccurs="1" maxOccurs="1"/>

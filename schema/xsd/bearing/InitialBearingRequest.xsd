@@ -40,13 +40,34 @@
    targetNamespace="https://www.github.com/kloverde/spring-GeographicCoordinateWS"
    xmlns:kl="https://www.github.com/kloverde/spring-GeographicCoordinateWS">
 
-   <xs:include schemaLocation="DistanceUnit.xsd"/>
+   <xs:include schemaLocation="CompassType.xsd"/>
+   <xs:include schemaLocation="../coordinates/Point.xsd"/>
 
-   <xs:element name="distanceResponse">
+   <xs:element name="initialBearingRequest">
       <xs:complexType>
          <xs:sequence>
-            <xs:element name="unit" type="kl:distanceUnit" minOccurs="1" maxOccurs="1"/>
-            <xs:element type="xs:double" name="distance" minOccurs="1" maxOccurs="1"/>            
+            <xs:element name="compassType" type="kl:compassTypeEnum" minOccurs="1" maxOccurs="1"/>
+
+            <xs:sequence minOccurs="1" maxOccurs="1">
+               <xs:element name="fromPoint" minOccurs="1" maxOccurs="1">
+                  <xs:complexType>
+                     <xs:sequence>
+                        <xs:element ref="kl:point" minOccurs="1" maxOccurs="1"/>
+                     </xs:sequence>
+                  </xs:complexType>
+               </xs:element>
+            </xs:sequence>
+
+            <xs:sequence minOccurs="1" maxOccurs="1">
+               <xs:element name="toPoint" minOccurs="1" maxOccurs="1">
+                  <xs:complexType>
+                     <xs:sequence>
+                        <xs:element ref="kl:point" minOccurs="1" maxOccurs="1"/>
+                     </xs:sequence>
+                  </xs:complexType>
+               </xs:element>
+            </xs:sequence>
+
          </xs:sequence>
       </xs:complexType>
    </xs:element>
