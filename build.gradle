@@ -61,7 +61,7 @@ task jaxb {
       )
 
       ant.xjc( destdir: "${jaxbTargetDir}", package: "${jaxbTargetPkg}" ) {
-         schema( dir: "${jaxbSourceDir}", includes: "DistanceRe*.xsd" )
+         schema( dir: "${jaxbSourceDir}", includes: "Distance_Request_Response.xsd" )
       }
    }
 }
