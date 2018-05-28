@@ -34,44 +34,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.model.convert;
+package org.loverde.geographiccoordinate.ws.service;
 
-import org.loverde.geographiccoordinate.Latitude;
-import org.loverde.geographiccoordinate.Longitude;
-import org.loverde.geographiccoordinate.Point;
+import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingRequest;
 
 
-public class TypeConverter {
+public interface BearingService {
 
-   public static Latitude convertLatitude( final org.loverde.geographiccoordinate.ws.model.generated.Latitude jaxbLatitude ) {
-      if( jaxbLatitude == null ) {
-         throw new IllegalArgumentException( "Attempted to convert a null JAXB Latitude" );
-      }
-
-      final Latitude latitude = new Latitude( jaxbLatitude.getValue() );
-
-      return latitude;
-   }
-
-   public static Longitude convertLongitude( final org.loverde.geographiccoordinate.ws.model.generated.Longitude jaxbLongitude ) {
-      if( jaxbLongitude == null ) {
-         throw new IllegalArgumentException( "Attempted to convert a null JAXB Longitude" );
-      }
-
-      final Longitude longitude = new Longitude( jaxbLongitude.getValue() );
-
-      return longitude;
-   }
-
-   public static Point convertPoint( final org.loverde.geographiccoordinate.ws.model.generated.Point jaxbPoint ) {
-      if( jaxbPoint == null ) {
-         throw new IllegalArgumentException( "Attempted to convert a null JAXB Point" );
-      }
-
-      final Latitude latitude = convertLatitude( jaxbPoint.getLatitude() );
-      final Longitude longitude = convertLongitude( jaxbPoint.getLongitude() );
-      final Point point = new Point( latitude, longitude );
-
-      return point;
-   }
+   public void processInitialBearingRequest( InitialBearingRequest request );
 }
