@@ -40,7 +40,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.loverde.geographiccoordinate.calculator.DistanceCalculator;
 import org.loverde.geographiccoordinate.ws.model.convert.TypeConverter;
 import org.loverde.geographiccoordinate.ws.model.generated.DistanceRequest;
@@ -55,6 +57,9 @@ public class DistanceRequestServiceTest {
 
    private ObjectFactory factory;
    private DistanceRequest request;
+
+   @Rule
+   public ExpectedException thrown = ExpectedException.none();
 
 
    @Before
@@ -82,6 +87,35 @@ public class DistanceRequestServiceTest {
 
       assertEquals( gcDistance, response.getDistance(), 0 );
       assertSame( request.getUnit(), response.getUnit() );
+   }
+
+   @Test
+   public void processDistanceRequest_nullRequest() {
+      thrown.expect( IllegalArgumentException.class );
+      thrown.expectMessage( "Received a null JAXB DistanceRequest" );
+
+      service.processDistanceRequest( null );
+   }
+
+   @Test
+   public void processDistanceRequest_nullPoints() {
+      request.getPoints().getPoint().clear();
+
+      thrown.expect( IllegalArgumentException.class );
+      thrown.expectMessage( "There are no JAXB DistanceRequest points" );
+
+      service.processDistanceRequest( request );
+   }
+
+   @Test
+   public void processDistanceRequest_emptyPoints() {
+      request.setPoints( null );
+
+      thrown.expect( IllegalArgumentException.class );
+      thrown.expectMessage( "There are no JAXB DistanceRequest points" );
+
+      service.processDistanceRequest( request );
+
    }
 
    private org.loverde.geographiccoordinate.ws.model.generated.Point newJaxbPoint( final double lat, final double lon ) {

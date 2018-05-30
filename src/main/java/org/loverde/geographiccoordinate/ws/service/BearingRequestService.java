@@ -40,7 +40,7 @@ import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingRequest
 import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingResponse;
 
 
-public interface BearingService {
+public interface BearingRequestService {
 
    public InitialBearingResponse processInitialBearingRequest( InitialBearingRequest request );
 }

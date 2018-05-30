@@ -60,7 +60,7 @@ import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingRespons
 import org.loverde.geographiccoordinate.ws.model.generated.ObjectFactory;
 
 
-public class BearingServiceImpl implements BearingService {
+public class BearingRequestServiceImpl implements BearingRequestService {
 
    private static final Map<Object, Class<? extends CompassDirection>> compassTypeMap;
    private ObjectFactory objectFactory;
@@ -78,7 +78,7 @@ public class BearingServiceImpl implements BearingService {
       compassTypeMap = Collections.unmodifiableMap( tempMap );
    }
 
-   public BearingServiceImpl() {
+   public BearingRequestServiceImpl() {
       objectFactory = new ObjectFactory();
    }
 
