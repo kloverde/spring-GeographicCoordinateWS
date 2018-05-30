@@ -48,47 +48,60 @@ import org.loverde.geographiccoordinate.compass.CompassDirection16;
 import org.loverde.geographiccoordinate.compass.CompassDirection32;
 import org.loverde.geographiccoordinate.compass.CompassDirection8;
 import org.loverde.geographiccoordinate.ws.model.convert.TypeConverter;
-import org.loverde.geographiccoordinate.ws.model.generated.CompassTypeEnum;
+import org.loverde.geographiccoordinate.ws.model.generated.Compass16Point;
+import org.loverde.geographiccoordinate.ws.model.generated.Compass32Point;
+import org.loverde.geographiccoordinate.ws.model.generated.Compass8Point;
+import org.loverde.geographiccoordinate.ws.model.generated.CompassType;
 import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingRequest;
+import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingResponse;
+import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingResponse.Compass16Bearing;
+import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingResponse.Compass32Bearing;
+import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingResponse.Compass8Bearing;
+import org.loverde.geographiccoordinate.ws.model.generated.ObjectFactory;
 
 
 public class BearingServiceImpl implements BearingService {
 
-   private static final Map<CompassTypeEnum, Class<? extends CompassDirection>> compassTypeMap;
+   private static final Map<Object, Class<? extends CompassDirection>> compassTypeMap;
+   private ObjectFactory objectFactory;
 
    static {
-      final Map<CompassTypeEnum, Class<? extends CompassDirection>> tempMap = new HashMap<>();
+      final Map<CompassType, Class<? extends CompassDirection>> tempMap = new HashMap<>();
 
       // CompassTypeEnum doesn't need a hashCode() implementation for the purposes of this
       // map.  Java's default implementation of using the memory address will suffice.
 
-      tempMap.put( CompassTypeEnum.COMPASS_8_POINT, CompassDirection8.class );
-      tempMap.put( CompassTypeEnum.COMPASS_16_POINT, CompassDirection16.class );
-      tempMap.put( CompassTypeEnum.COMPASS_32_POINT, CompassDirection32.class );
+      tempMap.put( CompassType.COMPASS_TYPE_8_POINT, CompassDirection8.class );
+      tempMap.put( CompassType.COMPASS_TYPE_16_POINT, CompassDirection16.class );
+      tempMap.put( CompassType.COMPASS_TYPE_32_POINT, CompassDirection32.class );
 
       compassTypeMap = Collections.unmodifiableMap( tempMap );
    }
 
+   public BearingServiceImpl() {
+      objectFactory = new ObjectFactory();
+   }
 
    @Override
-   public void processInitialBearingRequest( final InitialBearingRequest request ) {
-      final Class<? extends CompassDirection> compassType;
+   public InitialBearingResponse processInitialBearingRequest( final InitialBearingRequest request ) {
+      final Class<? extends CompassDirection> compassDirection;
       final Point from, to;
       final Bearing<? extends CompassDirection> bearing;
+      final InitialBearingResponse response;
 
       if( request == null ) {
          throw new IllegalArgumentException( "Received a null JAXB InitialBearingRequest" );
       }
 
-      final CompassTypeEnum jaxbCompassType = request.getCompassType();
+      final CompassType jaxbCompassType = request.getCompassType();
 
       if( jaxbCompassType == null ) {
          throw new IllegalArgumentException( "There is no JAXB CompassTypeEnum" );
       }
 
-      compassType = compassTypeMap.get( jaxbCompassType );
+      compassDirection = compassTypeMap.get( jaxbCompassType );
 
-      if( compassType == null ) {
+      if( compassDirection == null ) {
          throw new IllegalArgumentException( String.format("Unrecognized JAXB CompassTypeEnum: %s", jaxbCompassType)  );
       }
 
@@ -105,8 +118,21 @@ public class BearingServiceImpl implements BearingService {
 
       from = TypeConverter.convertPoint( jaxbFromPoint.getPoint() );
       to = TypeConverter.convertPoint( jaxbToPoint.getPoint() );
-      bearing = BearingCalculator.initialBearing( compassType, from, to );
+      bearing = BearingCalculator.initialBearing( compassDirection, from, to );
 
-      // TODO:  return InitialBearingResponse
+      response = objectFactory.createInitialBearingResponse();
+
+      if( CompassType.COMPASS_TYPE_8_POINT == jaxbCompassType ) {
+         final Compass8Bearing bearingElement = objectFactory.createInitialBearingResponseCompass8Bearing();
+         bearingElement.setCompassPoint( Compass8Point.fromValue(bearing.getCompassDirection().getAbbreviation()) );
+      } else if( CompassType.COMPASS_TYPE_16_POINT == jaxbCompassType ) {
+         final Compass16Bearing bearingElement = objectFactory.createInitialBearingResponseCompass16Bearing();
+         bearingElement.setCompassPoint( Compass16Point.fromValue(bearing.getCompassDirection().getAbbreviation()) );
+      } else if( CompassType.COMPASS_TYPE_32_POINT == jaxbCompassType ) {
+         final Compass32Bearing bearingElement = objectFactory.createInitialBearingResponseCompass32Bearing();
+         bearingElement.setCompassPoint( Compass32Point.fromValue(bearing.getCompassDirection().getAbbreviation()) );
+      }
+
+      return response;
    }
 }

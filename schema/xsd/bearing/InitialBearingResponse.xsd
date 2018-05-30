@@ -41,34 +41,32 @@
    xmlns:kl="https://www.github.com/kloverde/spring-GeographicCoordinateWS">
 
    <xs:include schemaLocation="CompassType.xsd"/>
-   <xs:include schemaLocation="../coordinates/Point.xsd"/>
 
-   <xs:element name="initialBearingRequest">
+   <xs:element name="initialBearingResponse">
       <xs:complexType>
-         <xs:sequence>
-            <xs:element name="compassType" type="kl:compassType" minOccurs="1" maxOccurs="1"/>
-
-            <xs:sequence minOccurs="1" maxOccurs="1">
-               <xs:element name="fromPoint" minOccurs="1" maxOccurs="1">
+         <xs:choice>
+            <xs:sequence>
+               <xs:element name="compass8Bearing" minOccurs="1" maxOccurs="1">
                   <xs:complexType>
-                     <xs:sequence>
-                        <xs:element ref="kl:point" minOccurs="1" maxOccurs="1"/>
-                     </xs:sequence>
+                     <xs:attribute name="compassPoint" type="kl:compass8Point"/>
                   </xs:complexType>
                </xs:element>
             </xs:sequence>
-
-            <xs:sequence minOccurs="1" maxOccurs="1">
-               <xs:element name="toPoint" minOccurs="1" maxOccurs="1">
+            <xs:sequence>
+               <xs:element name="compass16Bearing" minOccurs="1" maxOccurs="1">
                   <xs:complexType>
-                     <xs:sequence>
-                        <xs:element ref="kl:point" minOccurs="1" maxOccurs="1"/>
-                     </xs:sequence>
+                     <xs:attribute name="compassPoint" type="kl:compass16Point"/>
                   </xs:complexType>
                </xs:element>
             </xs:sequence>
-
-         </xs:sequence>
+            <xs:sequence>
+               <xs:element name="compass32Bearing" minOccurs="1" maxOccurs="1">
+                  <xs:complexType>
+                     <xs:attribute name="compassPoint" type="kl:compass32Point"/>
+                  </xs:complexType>
+               </xs:element>
+            </xs:sequence>
+         </xs:choice>
       </xs:complexType>
    </xs:element>
 

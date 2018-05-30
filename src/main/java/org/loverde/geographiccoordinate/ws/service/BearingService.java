@@ -37,9 +37,10 @@
 package org.loverde.geographiccoordinate.ws.service;
 
 import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingRequest;
+import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingResponse;
 
 
 public interface BearingService {
 
-   public void processInitialBearingRequest( InitialBearingRequest request );
+   public InitialBearingResponse processInitialBearingRequest( InitialBearingRequest request );
 }
