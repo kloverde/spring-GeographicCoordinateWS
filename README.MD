@@ -3,6 +3,6 @@ GeographicCoordinateWS
 
 See LICENSE for this software's licensing terms.  At first glance, it resembles the BSD-3 license, but it contains a significant difference which prohibits certain use.  Read it carefully.
 
-This project is going to provide [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate)'s calculation functionality over Web services using Spring Boot.
+This is my newest project.  It's a work in progress, and is in a rather early stage.  When finished, this will be a Spring Boot application that exposes the functionality of my [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate) library over Web services.
 
-So far, schemas for latitude, longitude and distance calculation request & response have been written, as well as a service class.
+A majority of the schemas are written and are being compiled with xjc.  Some POJO service classes have been completed to handle requests & responses.  Spring has not been added yet.
