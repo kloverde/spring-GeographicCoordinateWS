@@ -39,6 +39,7 @@ package org.loverde.geographiccoordinate.ws.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -92,7 +93,7 @@ public class DistanceRequestServiceTest {
    @Test
    public void processDistanceRequest_nullRequest() {
       thrown.expect( IllegalArgumentException.class );
-      thrown.expectMessage( "Received a null JAXB DistanceRequest" );
+      thrown.expectMessage( CoreMatchers.is("Received a null JAXB DistanceRequest") );
 
       service.processDistanceRequest( null );
    }
@@ -102,7 +103,7 @@ public class DistanceRequestServiceTest {
       request.getPoints().getPoint().clear();
 
       thrown.expect( IllegalArgumentException.class );
-      thrown.expectMessage( "There are no JAXB DistanceRequest points" );
+      thrown.expectMessage( CoreMatchers.is("There are no JAXB DistanceRequest points") );
 
       service.processDistanceRequest( request );
    }
@@ -112,10 +113,30 @@ public class DistanceRequestServiceTest {
       request.setPoints( null );
 
       thrown.expect( IllegalArgumentException.class );
-      thrown.expectMessage( "There are no JAXB DistanceRequest points" );
+      thrown.expectMessage( CoreMatchers.is("There are no JAXB DistanceRequest points") );
 
       service.processDistanceRequest( request );
 
+   }
+
+   @Test
+   public void processDistanceRequest_nullLatitude() {
+      request.getPoints().getPoint().get( 0 ).setLatitude( null );
+
+      thrown.expect( IllegalArgumentException.class );
+      thrown.expectMessage( CoreMatchers.is("Attempted to convert a null JAXB Latitude") );
+
+      service.processDistanceRequest( request );
+   }
+
+   @Test
+   public void processDistanceRequest_nullLongitude() {
+      request.getPoints().getPoint().get( 0 ).setLongitude( null );
+
+      thrown.expect( IllegalArgumentException.class );
+      thrown.expectMessage( CoreMatchers.is("Attempted to convert a null JAXB Longitude") );
+
+      service.processDistanceRequest( request );
    }
 
    private org.loverde.geographiccoordinate.ws.model.generated.Point newJaxbPoint( final double lat, final double lon ) {

@@ -47,7 +47,7 @@
       </xs:restriction>
    </xs:simpleType>
 
-   <xs:simpleType name="compass8Point">
+   <xs:simpleType name="compass8Direction">
       <xs:restriction base="xs:string">
          <xs:enumeration value="N"/>
          <xs:enumeration value="NE"/>
@@ -61,7 +61,7 @@
       </xs:restriction>
    </xs:simpleType>
 
-   <xs:simpleType name="compass16Point">
+   <xs:simpleType name="compass16Direction">
       <xs:restriction base="xs:string">
          <xs:enumeration value="N"/>
          <xs:enumeration value="NNE"/>
@@ -82,7 +82,7 @@
       </xs:restriction>
    </xs:simpleType>
 
-   <xs:simpleType name="compass32Point">
+   <xs:simpleType name="compass32Direction">
       <xs:restriction base="xs:string">
          <xs:enumeration value="N"/>
          <xs:enumeration value="NbE"/>
