@@ -67,7 +67,7 @@ import org.loverde.geographiccoordinate.ws.model.generated.ObjectFactory;
 
 public class BearingRequestServiceTest {
 
-   private BearingRequestService service = new BearingRequestServiceImpl();
+   private BearingRequestService service = new BearingRequestServiceImpl();  // TODO:  Autowire
 
    private ObjectFactory factory = new ObjectFactory();
    private InitialBearingRequest request;
@@ -92,7 +92,7 @@ public class BearingRequestServiceTest {
    }
 
    @Test
-   public void processInitialBearingRequest_8() {
+   public void processInitialBearingRequest_8_success() {
       request.setCompassType( CompassType.COMPASS_TYPE_8_POINT );
 
       final InitialBearingResponse response = service.processInitialBearingRequest( request );
@@ -119,7 +119,7 @@ public class BearingRequestServiceTest {
    }
 
    @Test
-   public void processInitialBearingRequest_16() {
+   public void processInitialBearingRequest_16_success() {
       request.setCompassType( CompassType.COMPASS_TYPE_16_POINT );
 
       final InitialBearingResponse response = service.processInitialBearingRequest( request );
@@ -146,7 +146,7 @@ public class BearingRequestServiceTest {
    }
 
    @Test
-   public void processInitialBearingRequest_32() {
+   public void processInitialBearingRequest_32_success() {
       request.setCompassType( CompassType.COMPASS_TYPE_32_POINT );
 
       final InitialBearingResponse response = service.processInitialBearingRequest( request );

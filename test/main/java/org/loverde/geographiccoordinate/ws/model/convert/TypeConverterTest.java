@@ -38,10 +38,15 @@ package org.loverde.geographiccoordinate.ws.model.convert;
 
 import static org.junit.Assert.assertEquals;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.loverde.geographiccoordinate.compass.CompassDirection16;
+import org.loverde.geographiccoordinate.compass.CompassDirection32;
+import org.loverde.geographiccoordinate.compass.CompassDirection8;
+import org.loverde.geographiccoordinate.ws.model.generated.CompassType;
 import org.loverde.geographiccoordinate.ws.model.generated.ObjectFactory;
 
 
@@ -70,6 +75,20 @@ public class TypeConverterTest {
       jaxbPoint = factory.createPoint();
       jaxbPoint.setLatitude( jaxbLatitude );
       jaxbPoint.setLongitude( jaxbLongitude );
+   }
+
+   @Test
+   public void convertJaxbCompassTypeToCompassDirection_success() {
+      assertEquals( TypeConverter.convertJaxbCompassTypeToCompassDirection(CompassType.COMPASS_TYPE_8_POINT), CompassDirection8.class );
+      assertEquals( TypeConverter.convertJaxbCompassTypeToCompassDirection(CompassType.COMPASS_TYPE_16_POINT), CompassDirection16.class );
+      assertEquals( TypeConverter.convertJaxbCompassTypeToCompassDirection(CompassType.COMPASS_TYPE_32_POINT), CompassDirection32.class );
+   }
+
+   @Test
+   public void convertJaxbCompassTypeToCompassDirection_nullJaxbCompassType() {
+      thrown.expect( IllegalArgumentException.class );
+      thrown.expectMessage( CoreMatchers.is("Attempted to convert a null JAXB CompassType") );
+      TypeConverter.convertJaxbCompassTypeToCompassDirection( null );
    }
 
    @Test

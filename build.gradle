@@ -18,15 +18,15 @@ configurations {
 dependencies {
    compile (
       "javax.xml.bind:jaxb-api:2.2.7",
-
-      files( "lib/numberutil/numberutil-1.0.jar" ),
       files( "lib/geographiccoordinate/geographiccoordinate-4.0.jar" )
    )
 
    runtime (
       "com.sun.xml.bind:jaxb-core:2.2.7",
       "com.sun.xml.bind:jaxb-impl:2.2.7",
-      "javax.activation:activation:1.1.1"
+      "javax.activation:activation:1.1.1",
+      files( "lib/geographiccoordinate/geographiccoordinate-4.0.jar" ),
+      files( "lib/numberutil/numberutil-1.0.jar" )
    )
 
    jaxb (

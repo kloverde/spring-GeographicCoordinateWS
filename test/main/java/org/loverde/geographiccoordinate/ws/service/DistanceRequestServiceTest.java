@@ -54,7 +54,7 @@ import org.loverde.geographiccoordinate.ws.model.generated.ObjectFactory;
 
 public class DistanceRequestServiceTest {
 
-   private DistanceRequestService service;
+   private DistanceRequestService service = new DistanceRequestServiceImpl();  // TODO:  Autowire
 
    private ObjectFactory factory;
    private DistanceRequest request;
@@ -65,7 +65,6 @@ public class DistanceRequestServiceTest {
 
    @Before
    public void setUp() {
-      service = new DistanceRequestServiceImpl();
       factory = new ObjectFactory();
       request = factory.createDistanceRequest();
 

@@ -49,7 +49,12 @@ import org.loverde.geographiccoordinate.ws.model.generated.ObjectFactory;
 
 public class DistanceRequestServiceImpl implements DistanceRequestService {
 
-   private static final ObjectFactory objectFactory = new ObjectFactory();
+   private static final ObjectFactory objectFactory;
+
+
+   static {
+      objectFactory = new ObjectFactory();  // TODO:  Inject this once Spring is added.  No need for multiple classes to have their own instances.
+   }
 
 
    @Override
