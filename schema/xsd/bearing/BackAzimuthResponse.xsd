@@ -40,13 +40,14 @@
    targetNamespace="https://www.github.com/kloverde/spring-GeographicCoordinateWS"
    xmlns:kl="https://www.github.com/kloverde/spring-GeographicCoordinateWS">
 
-   <xs:include schemaLocation="bearing/InitialBearingRequest.xsd"/>
-   <xs:include schemaLocation="bearing/InitialBearingResponse.xsd"/>
+   <xs:include schemaLocation="BearingResponseType.xsd"/>
 
-   <xs:include schemaLocation="bearing/BackAzimuthRequest.xsd"/>
-   <xs:include schemaLocation="bearing/BackAzimuthResponse.xsd"/>
-
-   <xs:include schemaLocation="distance/DistanceRequest.xsd"/>
-   <xs:include schemaLocation="distance/DistanceResponse.xsd"/>
+   <xs:element name="backAzimuthResponse">
+      <xs:complexType>
+         <xs:complexContent>
+            <xs:extension base="kl:bearingResponseType"/>
+         </xs:complexContent>
+      </xs:complexType>
+   </xs:element>
 
 </xs:schema>

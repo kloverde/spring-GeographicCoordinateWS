@@ -48,15 +48,15 @@ import org.loverde.geographiccoordinate.compass.CompassDirection16;
 import org.loverde.geographiccoordinate.compass.CompassDirection32;
 import org.loverde.geographiccoordinate.compass.CompassDirection8;
 import org.loverde.geographiccoordinate.ws.model.convert.TypeConverter;
+import org.loverde.geographiccoordinate.ws.model.generated.BearingResponseType.Compass16Bearing;
+import org.loverde.geographiccoordinate.ws.model.generated.BearingResponseType.Compass32Bearing;
+import org.loverde.geographiccoordinate.ws.model.generated.BearingResponseType.Compass8Bearing;
 import org.loverde.geographiccoordinate.ws.model.generated.Compass16Direction;
 import org.loverde.geographiccoordinate.ws.model.generated.Compass32Direction;
 import org.loverde.geographiccoordinate.ws.model.generated.Compass8Direction;
 import org.loverde.geographiccoordinate.ws.model.generated.CompassType;
 import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingRequest;
 import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingResponse;
-import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingResponse.Compass16Bearing;
-import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingResponse.Compass32Bearing;
-import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingResponse.Compass8Bearing;
 import org.loverde.geographiccoordinate.ws.model.generated.ObjectFactory;
 
 
@@ -123,17 +123,17 @@ public class BearingRequestServiceImpl implements BearingRequestService {
       response = objectFactory.createInitialBearingResponse();
 
       if( CompassType.COMPASS_TYPE_8_POINT == jaxbCompassType ) {
-         final Compass8Bearing bearingElement = objectFactory.createInitialBearingResponseCompass8Bearing();
+         final Compass8Bearing bearingElement = objectFactory.createBearingResponseTypeCompass8Bearing();;//createInitialBearingResponseCompass8Bearing();
          bearingElement.setDirection( Compass8Direction.fromValue(bearing.getCompassDirection().getAbbreviation()) );
          bearingElement.setBearing( bearing.getBearing().doubleValue() );
          response.setCompass8Bearing( bearingElement );
       } else if( CompassType.COMPASS_TYPE_16_POINT == jaxbCompassType ) {
-         final Compass16Bearing bearingElement = objectFactory.createInitialBearingResponseCompass16Bearing();
+         final Compass16Bearing bearingElement = objectFactory.createBearingResponseTypeCompass16Bearing();//createInitialBearingResponseCompass16Bearing();
          bearingElement.setDirection( Compass16Direction.fromValue(bearing.getCompassDirection().getAbbreviation()) );
          bearingElement.setBearing( bearing.getBearing().doubleValue() );
          response.setCompass16Bearing( bearingElement );
       } else if( CompassType.COMPASS_TYPE_32_POINT == jaxbCompassType ) {
-         final Compass32Bearing bearingElement = objectFactory.createInitialBearingResponseCompass32Bearing();
+         final Compass32Bearing bearingElement = objectFactory.createBearingResponseTypeCompass32Bearing();//createInitialBearingResponseCompass32Bearing();
          bearingElement.setDirection( Compass32Direction.fromValue(bearing.getCompassDirection().getAbbreviation()) );
          bearingElement.setBearing( bearing.getBearing().doubleValue() );
          response.setCompass32Bearing( bearingElement );

@@ -40,13 +40,42 @@
    targetNamespace="https://www.github.com/kloverde/spring-GeographicCoordinateWS"
    xmlns:kl="https://www.github.com/kloverde/spring-GeographicCoordinateWS">
 
-   <xs:include schemaLocation="bearing/InitialBearingRequest.xsd"/>
-   <xs:include schemaLocation="bearing/InitialBearingResponse.xsd"/>
+   <xs:include schemaLocation="CompassType.xsd"/>
+   <xs:include schemaLocation="BearingType.xsd"/>
 
-   <xs:include schemaLocation="bearing/BackAzimuthRequest.xsd"/>
-   <xs:include schemaLocation="bearing/BackAzimuthResponse.xsd"/>
-
-   <xs:include schemaLocation="distance/DistanceRequest.xsd"/>
-   <xs:include schemaLocation="distance/DistanceResponse.xsd"/>
+   <xs:complexType name="bearingResponseType">
+      <xs:choice>
+         <xs:sequence>
+            <xs:element name="compass8Bearing" minOccurs="1" maxOccurs="1">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element name="direction" type="kl:compass8Direction" minOccurs="1" maxOccurs="1"/>
+                     <xs:element name="bearing" type="kl:bearingType" minOccurs="1" maxOccurs="1"/>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+         </xs:sequence>
+         <xs:sequence>
+            <xs:element name="compass16Bearing" minOccurs="1" maxOccurs="1">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element name="direction" type="kl:compass16Direction" minOccurs="1" maxOccurs="1"/>
+                     <xs:element name="bearing" type="kl:bearingType" minOccurs="1" maxOccurs="1"/>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+         </xs:sequence>
+         <xs:sequence>
+            <xs:element name="compass32Bearing" minOccurs="1" maxOccurs="1">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element name="direction" type="kl:compass32Direction" minOccurs="1" maxOccurs="1"/>
+                     <xs:element name="bearing" type="kl:bearingType" minOccurs="1" maxOccurs="1"/>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+         </xs:sequence>
+      </xs:choice>
+   </xs:complexType>
 
 </xs:schema>
