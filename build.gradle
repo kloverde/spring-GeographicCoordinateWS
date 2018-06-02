@@ -41,6 +41,13 @@ dependencies {
    )
 }
 
+test {
+   reports {
+      junitXml.enabled = true
+      html.enabled = true
+   }
+}
+
 task init {
    delete "src/main/java/org/loverde/geographiccoordinate/ws/model/generated"
    delete "bin"

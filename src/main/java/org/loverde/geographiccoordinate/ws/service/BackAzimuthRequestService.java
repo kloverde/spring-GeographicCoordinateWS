@@ -40,7 +40,7 @@ import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthRequest;
 import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthResponse;
 
 
-public interface BackAzimuthService {
+public interface BackAzimuthRequestService {
 
    public BackAzimuthResponse processBackAzimithRequest( BackAzimuthRequest request );
 }

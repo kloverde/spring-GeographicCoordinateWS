@@ -48,7 +48,7 @@ import org.loverde.geographiccoordinate.ws.model.generated.ObjectFactory;
 import org.loverde.geographiccoordinate.ws.service.helper.ResponseHelper;
 
 
-public class BackAzimuthServiceImpl implements BackAzimuthService {
+public class BackAzimuthServiceImpl implements BackAzimuthRequestService {
 
    private static final ObjectFactory objectFactory;
 

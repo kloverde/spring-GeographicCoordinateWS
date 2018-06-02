@@ -58,9 +58,9 @@ import org.loverde.geographiccoordinate.ws.model.generated.CompassType;
 import org.loverde.geographiccoordinate.ws.model.generated.ObjectFactory;
 
 
-public class BackAzimuthServiceTest {
+public class BackAzimuthRequestServiceTest {
 
-   private BackAzimuthService service  = new BackAzimuthServiceImpl();  // TODO:  Autowire
+   private BackAzimuthRequestService service  = new BackAzimuthServiceImpl();  // TODO:  Autowire
    private ObjectFactory factory = new ObjectFactory();
    private BackAzimuthRequest request;
 
