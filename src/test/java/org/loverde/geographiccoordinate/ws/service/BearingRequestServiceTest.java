@@ -170,7 +170,6 @@ public class BearingRequestServiceTest {
 
       assertEquals( geoBearing.getCompassDirection().getAbbreviation(), response.getCompass32Bearing().getDirection().value() );
       assertEquals( geoBearing.getBearing().doubleValue(), response.getCompass32Bearing().getBearing(), 0 );
-
    }
 
    @Test

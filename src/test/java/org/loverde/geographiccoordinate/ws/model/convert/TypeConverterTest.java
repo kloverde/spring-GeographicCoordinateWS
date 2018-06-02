@@ -88,7 +88,23 @@ public class TypeConverterTest {
    public void convertJaxbCompassTypeToCompassDirection_nullJaxbCompassType() {
       thrown.expect( IllegalArgumentException.class );
       thrown.expectMessage( CoreMatchers.is("Attempted to convert a null JAXB CompassType") );
+
       TypeConverter.convertJaxbCompassTypeToCompassDirection( null );
+   }
+
+   @Test
+   public void convertCompassDirctionToJaxbCompassType_success() {
+      assertEquals( CompassType.COMPASS_TYPE_8_POINT, TypeConverter.convertCompassDirctionToJaxbCompassType(CompassDirection8.class) );
+      assertEquals( CompassType.COMPASS_TYPE_16_POINT, TypeConverter.convertCompassDirctionToJaxbCompassType(CompassDirection16.class) );
+      assertEquals( CompassType.COMPASS_TYPE_32_POINT, TypeConverter.convertCompassDirctionToJaxbCompassType(CompassDirection32.class) );
+   }
+
+   @Test
+   public void convertCompassDirctionToJaxbCompassType_success_nullCompassDirection() {
+      thrown.expect( IllegalArgumentException.class );
+      thrown.expectMessage( CoreMatchers.is("Attempted to convert a null CompassDirection") );
+
+      TypeConverter.convertCompassDirctionToJaxbCompassType( null );
    }
 
    @Test
@@ -143,5 +159,4 @@ public class TypeConverterTest {
       thrown.expect( IllegalArgumentException.class );
       TypeConverter.convertLongitude( null );
    }
-
 }

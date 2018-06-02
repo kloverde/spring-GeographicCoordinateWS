@@ -115,7 +115,6 @@ public class DistanceRequestServiceTest {
       thrown.expectMessage( CoreMatchers.is("There are no JAXB DistanceRequest points") );
 
       service.processDistanceRequest( request );
-
    }
 
    @Test
