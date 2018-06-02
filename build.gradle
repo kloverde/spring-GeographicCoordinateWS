@@ -17,22 +17,30 @@ configurations {
 
 dependencies {
    compile (
-      "javax.xml.bind:jaxb-api:2.2.7",
+      "javax.xml.bind:jaxb-api:2.3.0",
       files( "lib/geographiccoordinate/geographiccoordinate-4.0.jar" )
    )
 
    runtime (
-      "com.sun.xml.bind:jaxb-core:2.2.7",
-      "com.sun.xml.bind:jaxb-impl:2.2.7",
+      "com.sun.xml.bind:jaxb-core:2.3.0",
+      "com.sun.xml.bind:jaxb-impl:2.3.0",
       "javax.activation:activation:1.1.1",
       files( "lib/geographiccoordinate/geographiccoordinate-4.0.jar" ),
       files( "lib/numberutil/numberutil-1.0.jar" )
    )
 
    jaxb (
-      "com.sun.xml.bind:jaxb-xjc:2.2.7",
-      "com.sun.xml.bind:jaxb-impl:2.2.7",
-      "javax.activation:activation:1.1"
+      // Using the JAXB libs with Java 9+ results in a warning about illegal reflective access.  In 2.2.x, this happens
+      // with any application that uses JAXB; in 2.3.0, xjc also generates this warning.  Since there's no way to
+      // completely escape it, might as well use 2.3.0.  Supposedly a future release will address this.  See here:
+      // https://github.com/javaee/jaxb-v2/issues/1197
+      // https://stackoverflow.com/questions/50237516/proper-fix-for-java-10-complaining-about-illegal-reflection-access-by-jaxb-impl
+
+      "javax.xml.bind:jaxb-api:2.3.0",
+      "com.sun.xml.bind:jaxb-core:2.3.0",
+      "com.sun.xml.bind:jaxb-xjc:2.3.0",
+      "com.sun.xml.bind:jaxb-impl:2.3.0",
+      "javax.activation:activation:1.1.1"
    )
 
    testCompile (
@@ -71,7 +79,7 @@ task jaxb {
          classpath: configurations.jaxb.asPath
       )
 
-      ant.xjc( destdir: "${jaxbTargetDir}", package: "${jaxbTargetPkg}" ) {
+      ant.xjc( fork: true, destdir: "${jaxbTargetDir}", package: "${jaxbTargetPkg}" ) {
          schema( dir: "${jaxbSourceDir}", includes: "GeographicCoordinateWS.xsd" )
       }
    }
