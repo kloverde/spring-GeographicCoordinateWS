@@ -21,54 +21,8 @@ repositories {
    mavenCentral()
 }
 
-task init {
-   delete "src/main/java/org/loverde/geographiccoordinate/ws/model/generated"
-   delete "bin"
-   delete "build"
-   delete "gradle"
-}
-
-task genJaxb {
-   def sourcesDir = "src/main/java"
-   def schema = "schema/xsd/GeographicCoordinateWS.xsd"
-   def jaxbTargetPkg = "org.loverde.geographiccoordinate.ws.model.generated"
-
-   doLast() {
-      project.ant {
-         taskdef name: "xjc",
-         classname: "com.sun.tools.xjc.XJCTask",
-         classpath: configurations.jaxb.asPath
-
-         xjc( fork : true,
-              package : "${jaxbTargetPkg}",
-              destdir : "${sourcesDir}",
-              schema  : "${schema}"
-         ) {
-            arg( value: "-wsdl" )
-            produces( dir: sourcesDir, includes: "**/*.java" )
-         }
-      }
-   }
-}
-
-test {
-   reports {
-      junitXml.enabled = true
-      html.enabled = true
-   }
-}
-
-task afterEclipseImport {
-   dependsOn "genJaxb"
-}
-
 configurations {
    jaxb
-}
-
-bootJar {
-   baseName = "geographiccoordinate-ws"
-   version =  "0.0.0"
 }
 
 dependencies {
@@ -76,8 +30,7 @@ dependencies {
       "javax.xml.bind:jaxb-api:2.3.0",
       "org.springframework.boot:spring-boot-starter-web-services",
       "wsdl4j:wsdl4j:1.6.1",
-      files( "lib/geographiccoordinate/geographiccoordinate-4.0.jar" ),
-      //files( genJaxb.classesDir ).builtBy( genJaxb )
+      files( "lib/geographiccoordinate/geographiccoordinate-4.0.jar" )
    )
 
    testCompile(
@@ -105,5 +58,46 @@ dependencies {
    )
 }
 
-clean.dependsOn init
+task genJaxb {
+   def jaxbOutputDir = "${buildDir}/generated-sources/jaxb"
+   def jaxbTargetPkg = "org.loverde.geographiccoordinate.ws.model.generated"
+   def schema = "schema/xsd/GeographicCoordinateWS.xsd"
+
+   doLast() {
+      project.ant {
+         taskdef name: "xjc",
+         classname: "com.sun.tools.xjc.XJCTask",
+         classpath: configurations.jaxb.asPath
+
+         mkdir( dir: jaxbOutputDir )
+
+         xjc( fork : true,
+              package : "${jaxbTargetPkg}",
+              destdir : "${jaxbOutputDir}",
+              schema  : "${schema}"
+         ) {
+            arg( value: "-wsdl" )
+            produces( dir: jaxbOutputDir, includes: "**/*.java" )
+         }
+      }
+   }
+}
+
+test {
+   reports {
+      junitXml.enabled = true
+      html.enabled = true
+   }
+}
+
+task afterEclipseImport {
+   dependsOn "genJaxb"
+}
+
+
+bootJar {
+   baseName = "GeographicCoordinateWS"
+   version =  "0.0.0"
+}
+
 compileJava.dependsOn clean, genJaxb
