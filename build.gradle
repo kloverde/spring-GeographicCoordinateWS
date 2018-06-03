@@ -54,6 +54,10 @@ dependencies {
    )
 
    runtime(
+     "com.sun.xml.bind:jaxb-core:2.3.0",
+      "com.sun.xml.bind:jaxb-impl:2.3.0",
+      "javax.activation:activation:1.1.1",
+      files( "lib/geographiccoordinate/geographiccoordinate-4.0.jar" ),
       files( "lib/numberutil/numberutil-1.0.jar" )
    )
 }
