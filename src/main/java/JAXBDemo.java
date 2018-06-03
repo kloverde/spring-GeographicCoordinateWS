@@ -38,7 +38,6 @@ import java.io.StringWriter;
 
 import javax.xml.bind.JAXB;
 
-import org.loverde.geographiccoordinate.ws.model.generated.BearingResponseType;
 import org.loverde.geographiccoordinate.ws.model.generated.BearingResponseType.Compass8Bearing;
 import org.loverde.geographiccoordinate.ws.model.generated.Compass8Direction;
 import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingResponse;
@@ -58,9 +57,6 @@ public class JAXBDemo {
       final Compass8Bearing compass8 = factory.createBearingResponseTypeCompass8Bearing();
       compass8.setBearing( 123.456 );
       compass8.setDirection( Compass8Direction.NE );
-
-      final BearingResponseType bearingResponseType = factory.createBearingResponseType();
-      bearingResponseType.setCompass8Bearing( compass8 );
 
       final InitialBearingResponse initialBearingResponse = factory.createInitialBearingResponse();
       initialBearingResponse.setCompass8Bearing( compass8 );
