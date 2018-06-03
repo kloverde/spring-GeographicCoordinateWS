@@ -1,32 +1,89 @@
-apply plugin: "eclipse"   // Run 'gradle eclipse' to rebuild .classpath for other systems
 apply plugin: "java"
-
+apply plugin: "eclipse"
+apply plugin: "idea"
+apply plugin: "org.springframework.boot"
+apply plugin: "io.spring.dependency-management"
 
 sourceCompatibility = 1.10
 targetCompatibility = 1.10
 
-repositories {
-	mavenCentral()
+buildscript {
+   repositories {
+      mavenCentral()
+   }
+
+   dependencies {
+      classpath( "org.springframework.boot:spring-boot-gradle-plugin:2.0.2.RELEASE" )
+   }
 }
 
-sourceSets.main.java.srcDirs "src/main/java"
+repositories {
+   mavenCentral()
+}
+
+task init {
+   delete "src/main/java/org/loverde/geographiccoordinate/ws/model/generated"
+   delete "bin"
+   delete "build"
+   delete "gradle"
+}
+
+task genJaxb {
+   def sourcesDir = "src/main/java"
+   def schema = "schema/xsd/GeographicCoordinateWS.xsd"
+   def jaxbTargetPkg = "org.loverde.geographiccoordinate.ws.model.generated"
+
+   doLast() {
+      project.ant {
+         taskdef name: "xjc",
+         classname: "com.sun.tools.xjc.XJCTask",
+         classpath: configurations.jaxb.asPath
+
+         xjc( fork : true,
+              package : "${jaxbTargetPkg}",
+              destdir : "${sourcesDir}",
+              schema  : "${schema}"
+         ) {
+            arg( value: "-wsdl" )
+            produces( dir: sourcesDir, includes: "**/*.java" )
+         }
+      }
+   }
+}
+
+test {
+   reports {
+      junitXml.enabled = true
+      html.enabled = true
+   }
+}
+
+task afterEclipseImport {
+   dependsOn "genJaxb"
+}
 
 configurations {
-    jaxb
+   jaxb
+}
+
+bootJar {
+   baseName = "geographiccoordinate-ws"
+   version =  "0.0.0"
 }
 
 dependencies {
-   compile (
+   compile(
       "javax.xml.bind:jaxb-api:2.3.0",
-      files( "lib/geographiccoordinate/geographiccoordinate-4.0.jar" )
+      "org.springframework.boot:spring-boot-starter-web-services",
+      "wsdl4j:wsdl4j:1.6.1",
+      files( "lib/geographiccoordinate/geographiccoordinate-4.0.jar" ),
+      //files( genJaxb.classesDir ).builtBy( genJaxb )
    )
 
-   runtime (
-      "com.sun.xml.bind:jaxb-core:2.3.0",
-      "com.sun.xml.bind:jaxb-impl:2.3.0",
-      "javax.activation:activation:1.1.1",
-      files( "lib/geographiccoordinate/geographiccoordinate-4.0.jar" ),
-      files( "lib/numberutil/numberutil-1.0.jar" )
+   testCompile(
+      "junit:junit:4.12",
+      //"org.mockito:mockito-core:2.18.3",
+      //"org.springframework.boot:spring-boot-starter-test"
    )
 
    jaxb (
@@ -43,46 +100,10 @@ dependencies {
       "javax.activation:activation:1.1.1"
    )
 
-   testCompile (
-      "junit:junit:4.12",
-      //"org.mockito:mockito-core:2.18.3"
+   runtime(
+      files( "lib/numberutil/numberutil-1.0.jar" )
    )
 }
 
-test {
-   reports {
-      junitXml.enabled = true
-      html.enabled = true
-   }
-}
-
-task init {
-   delete "src/main/java/org/loverde/geographiccoordinate/ws/model/generated"
-   delete "bin"
-   delete "build"
-   delete "gradle"
-}
-
-task jaxb {
-   System.setProperty( "javax.xml.accessExternalSchema", "all" )
-
-   def jaxbSourceDir = "schema/xsd"
-   def jaxbTargetDir = file( "src/main/java" )
-   def jaxbTargetPkg = "org.loverde.geographiccoordinate.ws.model.generated"
-
-   doLast {
-      jaxbTargetDir.mkdirs()
-
-      ant.taskdef(
-         name: "xjc",
-         classname: "com.sun.tools.xjc.XJCTask",
-         classpath: configurations.jaxb.asPath
-      )
-
-      ant.xjc( fork: true, destdir: "${jaxbTargetDir}", package: "${jaxbTargetPkg}" ) {
-         schema( dir: "${jaxbSourceDir}", includes: "GeographicCoordinateWS.xsd" )
-      }
-   }
-}
-
-compileJava.dependsOn init, jaxb
+clean.dependsOn init
+compileJava.dependsOn clean, genJaxb
