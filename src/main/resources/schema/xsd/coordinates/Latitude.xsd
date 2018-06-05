@@ -36,9 +36,11 @@
    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+<xs:schema
+   xmlns:xs="http://www.w3.org/2001/XMLSchema"
    targetNamespace="https://www.github.com/kloverde/spring-GeographicCoordinateWS"
-   xmlns:kl="https://www.github.com/kloverde/spring-GeographicCoordinateWS">
+   xmlns:kl="https://www.github.com/kloverde/spring-GeographicCoordinateWS"
+   elementFormDefault="qualified">
 
    <xs:simpleType name="latitudeType">
       <xs:restriction base="xs:double">
