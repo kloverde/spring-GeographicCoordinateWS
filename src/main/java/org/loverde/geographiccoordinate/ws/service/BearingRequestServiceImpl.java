@@ -41,21 +41,20 @@ import org.loverde.geographiccoordinate.Point;
 import org.loverde.geographiccoordinate.calculator.BearingCalculator;
 import org.loverde.geographiccoordinate.compass.CompassDirection;
 import org.loverde.geographiccoordinate.ws.model.convert.TypeConverter;
+import org.loverde.geographiccoordinate.ws.model.generated.AutowireableObjectFactory;
 import org.loverde.geographiccoordinate.ws.model.generated.CompassType;
 import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingRequest;
 import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingResponse;
-import org.loverde.geographiccoordinate.ws.model.generated.ObjectFactory;
 import org.loverde.geographiccoordinate.ws.service.helper.ResponseHelper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 
+@Service
 public class BearingRequestServiceImpl implements BearingRequestService {
 
-   private static ObjectFactory objectFactory;
-
-
-   static {
-      objectFactory = new ObjectFactory();  // TODO:  Inject this once Spring is added.  No need for multiple classes to have their own instances.
-   }
+   @Autowired
+   private AutowireableObjectFactory objectFactory;
 
 
    @Override

@@ -42,20 +42,19 @@ import org.loverde.geographiccoordinate.Bearing;
 import org.loverde.geographiccoordinate.calculator.BearingCalculator;
 import org.loverde.geographiccoordinate.compass.CompassDirection;
 import org.loverde.geographiccoordinate.ws.model.convert.TypeConverter;
+import org.loverde.geographiccoordinate.ws.model.generated.AutowireableObjectFactory;
 import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthRequest;
 import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthResponse;
-import org.loverde.geographiccoordinate.ws.model.generated.ObjectFactory;
 import org.loverde.geographiccoordinate.ws.service.helper.ResponseHelper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 
+@Service
 public class BackAzimuthServiceImpl implements BackAzimuthRequestService {
 
-   private static final ObjectFactory objectFactory;
-
-
-   static {
-      objectFactory = new ObjectFactory();  // TODO:  Inject this once Spring is added.  No need for multiple classes to have their own instances.
-   }
+   @Autowired
+   private AutowireableObjectFactory objectFactory;
 
 
    @Override

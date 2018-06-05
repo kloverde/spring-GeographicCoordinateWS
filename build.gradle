@@ -25,47 +25,13 @@ configurations {
    jaxb
 }
 
-dependencies {
-   compile(
-      "javax.xml.bind:jaxb-api:2.3.0",
-      "org.springframework.boot:spring-boot-starter-web-services",
-      "wsdl4j:wsdl4j:1.6.1",
-      files( "lib/geographiccoordinate/geographiccoordinate-4.0.jar" )
-   )
-
-   testCompile(
-      "junit:junit:4.12",
-      //"org.mockito:mockito-core:2.18.3",
-      //"org.springframework.boot:spring-boot-starter-test"
-   )
-
-   jaxb (
-      // Using the JAXB libs with Java 9+ results in a warning about illegal reflective access.  In 2.2.x, this happens
-      // with any application that uses JAXB; in 2.3.0, xjc also generates this warning.  Since there's no way to
-      // completely escape it, might as well use 2.3.0.  Supposedly a future release will address this.  See here:
-      // https://github.com/javaee/jaxb-v2/issues/1197
-      // https://stackoverflow.com/questions/50237516/proper-fix-for-java-10-complaining-about-illegal-reflection-access-by-jaxb-impl
-
-      "javax.xml.bind:jaxb-api:2.3.0",
-      "com.sun.xml.bind:jaxb-core:2.3.0",
-      "com.sun.xml.bind:jaxb-xjc:2.3.0",
-      "com.sun.xml.bind:jaxb-impl:2.3.0",
-      "javax.activation:activation:1.1.1"
-   )
-
-   runtime(
-     "com.sun.xml.bind:jaxb-core:2.3.0",
-      "com.sun.xml.bind:jaxb-impl:2.3.0",
-      "javax.activation:activation:1.1.1",
-      files( "lib/geographiccoordinate/geographiccoordinate-4.0.jar" ),
-      files( "lib/numberutil/numberutil-1.0.jar" )
-   )
-}
-
 task genJaxb {
-   def jaxbOutputDir = "${buildDir}/generated-sources/jaxb"
-   def jaxbTargetPkg = "org.loverde.geographiccoordinate.ws.model.generated"
-   def schema = "schema/xsd/GeographicCoordinateWS.xsd"
+   def jaxbTargetPkg  = "org.loverde.geographiccoordinate.ws.model.generated"
+   def jaxbSourcesDir = "${buildDir}/generated-sources/jaxb"
+   ext.jaxbClassesDir = "${buildDir}/generated-classes/jaxb"
+   def schema         = "src/main/resources/schema/xsd/GeographicCoordinateWS.xsd"
+
+   outputs.dir jaxbClassesDir
 
    doLast() {
       project.ant {
@@ -73,15 +39,34 @@ task genJaxb {
          classname: "com.sun.tools.xjc.XJCTask",
          classpath: configurations.jaxb.asPath
 
-         mkdir( dir: jaxbOutputDir )
+         mkdir( dir: jaxbSourcesDir )
+         mkdir( dir: jaxbClassesDir )
 
          xjc( fork : true,
               package : "${jaxbTargetPkg}",
-              destdir : "${jaxbOutputDir}",
+              destdir : "${jaxbSourcesDir}",
               schema  : "${schema}"
          ) {
             arg( value: "-wsdl" )
-            produces( dir: jaxbOutputDir, includes: "**/*.java" )
+            produces( dir: jaxbSourcesDir, includes: "**/*.java" )
+         }
+
+         javac( destdir: jaxbClassesDir,
+                source: 1.10,
+                target: 1.10,
+                debug: true,
+                debugLevel: "lines,vars,source",
+                classpath: configurations.jaxb.asPath
+         ) {
+            src( path: jaxbSourcesDir )
+            include( name: "**/*.java" )
+            include( name: "*.java" )
+         }
+
+         copy( todir: jaxbClassesDir ) {
+            fileset( dir: jaxbSourcesDir, erroronmissingdir: false ) {
+               exclude( name: "**/*.java" )
+            }
          }
       }
    }
@@ -102,6 +87,49 @@ task afterEclipseImport {
 bootJar {
    baseName = "GeographicCoordinateWS"
    version =  "0.0.0"
+   from genJaxb.jaxbClassesDir
+}
+
+dependencies {
+   compile(
+      "javax.xml.bind:jaxb-api:2.3.0",
+      "org.springframework.boot:spring-boot-starter-web-services",
+      "wsdl4j:wsdl4j:1.6.1",
+      "org.apache.ws.xmlschema:xmlschema-core:2.2.3",
+      files( "lib/geographiccoordinate/geographiccoordinate-4.0.jar" ),
+      compile( files(genJaxb.jaxbClassesDir).builtBy(genJaxb) )
+   )
+
+   testCompile(
+      "junit:junit:4.12",
+      //"org.mockito:mockito-core:2.18.3",
+      //"org.springframework.boot:spring-boot-starter-test"
+   )
+
+   jaxb (
+      // Using the com.sun.xml libs with Java 9+ results in a warning about illegal reflective access.  In 2.2.x, this happens
+      // with any application that uses JAXB; in 2.3.0, xjc also generates this warning.  Since there's no way to completely
+      // escape it, might as well use 2.3.0.  Supposedly a future release will address this.  See here:
+      // https://github.com/javaee/jaxb-v2/issues/1197
+      // https://stackoverflow.com/questions/50237516/proper-fix-for-java-10-complaining-about-illegal-reflection-access-by-jaxb-impl
+
+      "javax.xml.bind:jaxb-api:2.3.0",
+      "com.sun.xml.bind:jaxb-core:2.3.0",
+      "com.sun.xml.bind:jaxb-xjc:2.3.0",
+      "com.sun.xml.bind:jaxb-impl:2.3.0",
+      "javax.activation:activation:1.1.1"
+   )
+
+   runtime(
+      "com.sun.xml.bind:jaxb-core:2.3.0",
+      "com.sun.xml.bind:jaxb-impl:2.3.0",
+      "javax.activation:activation:1.1.1",
+      "javax.xml.soap:javax.xml.soap-api:1.4.0",
+      "com.sun.xml.messaging.saaj:saaj-impl:1.4.0",
+      "org.apache.ws.xmlschema:xmlschema-core:2.2.3",
+      files( "lib/geographiccoordinate/geographiccoordinate-4.0.jar" ),
+      files( "lib/numberutil/numberutil-1.0.jar" )
+   )
 }
 
 compileJava.dependsOn clean, genJaxb

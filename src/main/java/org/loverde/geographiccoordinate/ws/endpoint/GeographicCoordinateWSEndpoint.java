@@ -34,64 +34,57 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.service;
+package org.loverde.geographiccoordinate.ws.endpoint;
 
-import java.util.List;
-
-import org.loverde.geographiccoordinate.Point;
-import org.loverde.geographiccoordinate.calculator.DistanceCalculator;
-import org.loverde.geographiccoordinate.ws.model.convert.TypeConverter;
-import org.loverde.geographiccoordinate.ws.model.generated.AutowireableObjectFactory;
+import org.loverde.geographiccoordinate.ws.config.GeographicCoordinateWSConfig;
+import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthRequest;
+import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthResponse;
 import org.loverde.geographiccoordinate.ws.model.generated.DistanceRequest;
 import org.loverde.geographiccoordinate.ws.model.generated.DistanceResponse;
-import org.loverde.geographiccoordinate.ws.model.generated.DistanceUnit;
+import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingRequest;
+import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingResponse;
+import org.loverde.geographiccoordinate.ws.service.BackAzimuthRequestService;
+import org.loverde.geographiccoordinate.ws.service.BearingRequestService;
+import org.loverde.geographiccoordinate.ws.service.DistanceRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.ws.server.endpoint.annotation.Endpoint;
+import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
+import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 
-@Service
-public class DistanceRequestServiceImpl implements DistanceRequestService {
+@Endpoint
+public class GeographicCoordinateWSEndpoint {
 
    @Autowired
-   private AutowireableObjectFactory objectFactory;
+   private DistanceRequestService distanceService;
+
+   @Autowired
+   private BearingRequestService  bearingService;
+
+   @Autowired
+   private BackAzimuthRequestService backAzimuthService;
 
 
-   @Override
-   public DistanceResponse processDistanceRequest( final DistanceRequest request ) {
-      if( request == null ) {
-         throw new IllegalArgumentException( "Received a null JAXB DistanceRequest" );
-      }
+   @PayloadRoot( namespace = GeographicCoordinateWSConfig.NAMESPACE, localPart = "distanceRequest" )
+   @ResponsePayload
+   public DistanceResponse getDistance( final DistanceRequest request ) {
+      final DistanceResponse response = distanceService.processDistanceRequest( request );
 
-      final DistanceUnit jaxbUnit = request.getUnit();
-      final DistanceCalculator.Unit unit = DistanceCalculator.Unit.valueOf( jaxbUnit.name() );
+      return response;
+   }
 
-      if( unit == null ) {
-         throw new IllegalArgumentException( String.format("Unsupported JAXB DistanceRequest unit: %s", jaxbUnit) );
-      }
+   @PayloadRoot( namespace = GeographicCoordinateWSConfig.NAMESPACE, localPart = "initialBearingRequest" )
+   @ResponsePayload
+   public InitialBearingResponse getInitialBearing( final InitialBearingRequest request ) {
+      final InitialBearingResponse response = bearingService.processInitialBearingRequest( request );
 
-      final DistanceRequest.Points jaxbPoints = request.getPoints();
+      return response;
+   }
 
-      if( jaxbPoints == null ) {
-         throw new IllegalArgumentException( "There are no JAXB DistanceRequest points" );
-      }
-
-      final List<org.loverde.geographiccoordinate.ws.model.generated.Point> noReallyJaxbPoints = jaxbPoints.getPoint();
-
-      if( noReallyJaxbPoints == null || noReallyJaxbPoints.isEmpty() ) {  // TODO:  Consider replacing with a call to Apache Commons or Spring's embedded Commons
-         throw new IllegalArgumentException( "There are no JAXB DistanceRequest points" );
-      }
-
-      final Point[] points = new Point[ noReallyJaxbPoints.size() ];
-
-      for( int i = 0; i < noReallyJaxbPoints.size(); i++ ) {
-         points[i] = TypeConverter.convertPoint( noReallyJaxbPoints.get(i) );
-      }
-
-      final double distance = DistanceCalculator.distance( unit, points );
-      final DistanceResponse response = objectFactory.createDistanceResponse();
-
-      response.setUnit( jaxbUnit );
-      response.setDistance( distance );
+   @PayloadRoot( namespace = GeographicCoordinateWSConfig.NAMESPACE, localPart = "backAzimuthRequest" )
+   @ResponsePayload
+   public BackAzimuthResponse getBackAzimuth( final BackAzimuthRequest request ) {
+      final BackAzimuthResponse response = backAzimuthService.processBackAzimithRequest( request );
 
       return response;
    }
