@@ -49,6 +49,7 @@ import org.loverde.geographiccoordinate.ws.service.DistanceRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
+import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 
@@ -67,7 +68,7 @@ public class GeographicCoordinateWSEndpoint {
 
    @PayloadRoot( namespace = GeographicCoordinateWSConfig.NAMESPACE, localPart = "distanceRequest" )
    @ResponsePayload
-   public DistanceResponse getDistance( final DistanceRequest request ) {
+   public DistanceResponse getDistance( @RequestPayload final DistanceRequest request ) {
       final DistanceResponse response = distanceService.processDistanceRequest( request );
 
       return response;
@@ -75,7 +76,7 @@ public class GeographicCoordinateWSEndpoint {
 
    @PayloadRoot( namespace = GeographicCoordinateWSConfig.NAMESPACE, localPart = "initialBearingRequest" )
    @ResponsePayload
-   public InitialBearingResponse getInitialBearing( final InitialBearingRequest request ) {
+   public InitialBearingResponse getInitialBearing( @RequestPayload final InitialBearingRequest request ) {
       final InitialBearingResponse response = bearingService.processInitialBearingRequest( request );
 
       return response;
@@ -83,7 +84,7 @@ public class GeographicCoordinateWSEndpoint {
 
    @PayloadRoot( namespace = GeographicCoordinateWSConfig.NAMESPACE, localPart = "backAzimuthRequest" )
    @ResponsePayload
-   public BackAzimuthResponse getBackAzimuth( final BackAzimuthRequest request ) {
+   public BackAzimuthResponse getBackAzimuth( @RequestPayload final BackAzimuthRequest request ) {
       final BackAzimuthResponse response = backAzimuthService.processBackAzimithRequest( request );
 
       return response;
