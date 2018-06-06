@@ -12,8 +12,7 @@ GeographicCoordinateWS is my newest project.  When finished, it will be a Spring
 2. Gradle 4.7
 3. Eclipse Oxygen.3a (4.7.3a)
 
-
-Java 10 or later is required unless you want to take the time to get older versions to work.  Version 4.0 of my [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate) library is packaged with this application, and v4.0 is restricted to Java 10.  See GeographicCoordinate's release notes for an explanation about why that is.  You can use an older release of GeographicCoordinate if you want to, but only if the `Specification-Version` matches the one packaged with GeographicCoordinateWS.  You'll also need to tweak `build.gradle`.
+Java 10 or later is required unless you want to take the time to get older versions to work.  This is due to a dependency on my [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate) library, which requires Java 10.  See GeographicCoordinate 4.0's release notes for an explanation about why that is.  If you absolutely must use an older version of Java, you can use a pre-4.0 release of GeographicCoordinate if you want to -- bugs and all -- but only if the `Specification-Version` matches the one packaged with GeographicCoordinateWS.  You'll also need to tweak `build.gradle`.
 
 Other versions of Gradle (earlier or later) may or may not work.  I've come to learn that Gradle is still going through growing pains, unfortunately.
 
