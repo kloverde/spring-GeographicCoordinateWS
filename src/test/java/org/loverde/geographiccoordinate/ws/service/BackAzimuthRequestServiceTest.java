@@ -47,6 +47,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 import org.loverde.geographiccoordinate.Bearing;
 import org.loverde.geographiccoordinate.calculator.BearingCalculator;
 import org.loverde.geographiccoordinate.compass.CompassDirection16;
@@ -56,11 +57,19 @@ import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthRequest;
 import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthResponse;
 import org.loverde.geographiccoordinate.ws.model.generated.CompassType;
 import org.loverde.geographiccoordinate.ws.model.generated.ObjectFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.context.junit4.SpringRunner;
 
 
+@RunWith( SpringRunner.class )
+@SpringBootTest( webEnvironment = WebEnvironment.NONE )
 public class BackAzimuthRequestServiceTest {
 
-   private BackAzimuthRequestService service  = new BackAzimuthServiceImpl();  // TODO:  Autowire
+   @Autowired
+   private BackAzimuthRequestService service;
+
    private ObjectFactory factory = new ObjectFactory();
    private BackAzimuthRequest request;
 
@@ -79,7 +88,7 @@ public class BackAzimuthRequestServiceTest {
    }
 
    @Test
-   public void processBackAzimuthRequest_8_sccess() {
+   public void processBackAzimuthRequest_8_success() {
       request.setCompassType( CompassType.COMPASS_TYPE_8_POINT );
 
       final BackAzimuthResponse response = service.processBackAzimithRequest( request );
