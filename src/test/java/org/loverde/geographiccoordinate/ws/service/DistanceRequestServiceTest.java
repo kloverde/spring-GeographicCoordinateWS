@@ -98,6 +98,16 @@ public class DistanceRequestServiceTest {
    }
 
    @Test
+   public void processDistanceRequest_nullUnit() {
+      request.setUnit( null );
+
+      thrown.expect( IllegalArgumentException.class );
+      thrown.expectMessage( CoreMatchers.is("There is no unit in the JAXB DistanceRequest") );
+
+      service.processDistanceRequest( request );
+   }
+
+   @Test
    public void processDistanceRequest_nullPoints() {
       request.getPoints().getPoint().clear();
 

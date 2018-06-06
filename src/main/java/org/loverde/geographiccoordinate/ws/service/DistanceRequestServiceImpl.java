@@ -62,6 +62,10 @@ public class DistanceRequestServiceImpl implements DistanceRequestService {
          throw new IllegalArgumentException( "Received a null JAXB DistanceRequest" );
       }
 
+      if( request.getUnit() == null ) {
+         throw new IllegalArgumentException( "There is no unit in the JAXB DistanceRequest" );
+      }
+
       final DistanceUnit jaxbUnit = request.getUnit();
       final DistanceCalculator.Unit unit = DistanceCalculator.Unit.valueOf( jaxbUnit.name() );
 
