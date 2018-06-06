@@ -36,6 +36,8 @@
 
 package org.loverde.geographiccoordinate.ws.config;
 
+import java.util.List;
+
 import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
@@ -45,6 +47,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.ws.config.annotation.EnableWs;
 import org.springframework.ws.config.annotation.WsConfigurerAdapter;
+import org.springframework.ws.server.EndpointInterceptor;
+import org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor;
 import org.springframework.ws.transport.http.MessageDispatcherServlet;
 import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
 import org.springframework.xml.xsd.commons.CommonsXsdSchemaCollection;
@@ -79,6 +83,17 @@ public class GeographicCoordinateWSConfig extends WsConfigurerAdapter {
       wsdlDef.setSchemaCollection( schema );
 
       return wsdlDef;
+   }
+
+   @Override
+   public void addInterceptors( final List<EndpointInterceptor> interceptors ) {
+       final PayloadValidatingInterceptor validatingInterceptor = new PayloadValidatingInterceptor();
+
+       validatingInterceptor.setValidateRequest( true );
+       validatingInterceptor.setValidateResponse( true );
+       validatingInterceptor.setXsdSchemaCollection( this.schemas() );
+
+       interceptors.add(validatingInterceptor);
    }
 
    @Bean
