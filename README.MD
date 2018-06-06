@@ -48,4 +48,4 @@ java -jar GeographicCoordinateWS-0.0.0.jar
 
 ## Accessing the Web Service
 
-Put http://localhost:8080/ws/GeographicCoordinateWS.wsdl into SoapUI to generate a SOAP project.
+Put http://localhost:8080/GeographicCoordinateWS/GeographicCoordinateWS.wsdl into SoapUI to generate a SOAP project.

@@ -56,7 +56,7 @@ public class GeographicCoordinateWSConfig extends WsConfigurerAdapter {
 
    public static final String NAMESPACE = "https://www.github.com/kloverde/spring-GeographicCoordinateWS";
 
-   private static final String GEOGRAPHIC_COORDINATE_WS = "GeographicCoordinateWS";
+   private static final String WS_NAME = "GeographicCoordinateWS";
 
 
    @Bean
@@ -66,15 +66,15 @@ public class GeographicCoordinateWSConfig extends WsConfigurerAdapter {
       servlet.setApplicationContext( ctx );
       servlet.setTransformWsdlLocations( true );
 
-      return new ServletRegistrationBean<MessageDispatcherServlet>( servlet, "/ws/*"  );
+      return new ServletRegistrationBean<MessageDispatcherServlet>( servlet, "/" + WS_NAME + "/*"  );
    }
 
-   @Bean( name = GEOGRAPHIC_COORDINATE_WS )
+   @Bean( name = WS_NAME )  // The bean name is the filename that the WSDL will be made available as
    public DefaultWsdl11Definition defaultWsdl11Definition( final CommonsXsdSchemaCollection schema ) {
       final DefaultWsdl11Definition wsdlDef = new DefaultWsdl11Definition();
 
-      wsdlDef.setPortTypeName( GEOGRAPHIC_COORDINATE_WS + "_PortType" );
-      wsdlDef.setLocationUri( "/ws" );
+      wsdlDef.setPortTypeName( WS_NAME );
+      wsdlDef.setLocationUri( "/" + WS_NAME );  // endpoint URL
       wsdlDef.setTargetNamespace( NAMESPACE );
       wsdlDef.setSchemaCollection( schema );
 
@@ -90,12 +90,13 @@ public class GeographicCoordinateWSConfig extends WsConfigurerAdapter {
 
       final CommonsXsdSchemaCollection collection = new CommonsXsdSchemaCollection( schemas );
 
+      collection.setInline( true );
+
       // This is the magic that causes relative XSD paths to be resolved.  Without this, we'd have to
       // populate the array with every XSD in increasing order of dependency.  But since only 1 is
       // ever put in here, perhaps there's a better class on which a DefaultURIResolver can be set?
-      collection.setUriResolver( new DefaultURIResolver() );
 
-      collection.setInline( true );
+      collection.setUriResolver( new DefaultURIResolver() );
 
       return collection;
    }
