@@ -44,17 +44,25 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 import org.loverde.geographiccoordinate.calculator.DistanceCalculator;
 import org.loverde.geographiccoordinate.ws.model.convert.TypeConverter;
 import org.loverde.geographiccoordinate.ws.model.generated.DistanceRequest;
 import org.loverde.geographiccoordinate.ws.model.generated.DistanceResponse;
 import org.loverde.geographiccoordinate.ws.model.generated.DistanceUnit;
 import org.loverde.geographiccoordinate.ws.model.generated.ObjectFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.context.junit4.SpringRunner;
 
 
+@RunWith( SpringRunner.class )
+@SpringBootTest( webEnvironment = WebEnvironment.NONE )
 public class DistanceRequestServiceTest {
 
-   private DistanceRequestService service = new DistanceRequestServiceImpl();  // TODO:  Autowire
+   @Autowired
+   private DistanceRequestService service;
 
    private ObjectFactory factory;
    private DistanceRequest request;
