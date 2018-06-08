@@ -87,7 +87,6 @@ task afterEclipseImport {
 bootJar {
    baseName = "GeographicCoordinateWS"
    version =  "0.0.0"
-   from genJaxb.jaxbClassesDir
 }
 
 dependencies {
