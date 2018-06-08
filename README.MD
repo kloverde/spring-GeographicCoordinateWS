@@ -5,7 +5,7 @@ See LICENSE for this software's licensing terms.  At first glance, it resembles 
 
 GeographicCoordinateWS is a Spring Boot application that exposes the functionality of my [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate) library over a SOAP Web service.
 
-This is my newest project, so although it's mostly all the way there, it's not ready for release yet.
+This is my newest project.  Although it's mostly done, it's not ready for release yet.  Requests are responses are fully implemented and working fine, but there are quite a few finishing touches I can add, such as adding log4j, etc.
 
 
 ## Development Environment
@@ -48,6 +48,9 @@ Run with:
 java -jar GeographicCoordinateWS-0.0.0.jar
 ```
 
+A batch script which launches the application with remote debugging enabled can be found in the root directory.
+
+
 ## Accessing the Web Service
 
-Put http://localhost:8080/GeographicCoordinateWS/GeographicCoordinateWS.wsdl into SoapUI to generate a SOAP project.
+The WSDL is retrievable from http://localhost:8080/GeographicCoordinateWS/GeographicCoordinateWS.wsdl.  What you do with it from there is up to you.  :p
