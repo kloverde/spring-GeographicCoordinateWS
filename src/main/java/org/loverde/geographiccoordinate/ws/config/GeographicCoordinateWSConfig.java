@@ -39,6 +39,7 @@ package org.loverde.geographiccoordinate.ws.config;
 import java.util.List;
 
 import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -51,6 +52,8 @@ import org.springframework.ws.server.EndpointInterceptor;
 import org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor;
 import org.springframework.ws.transport.http.MessageDispatcherServlet;
 import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
+import org.springframework.ws.wsdl.wsdl11.SimpleWsdl11Definition;
+import org.springframework.ws.wsdl.wsdl11.Wsdl11Definition;
 import org.springframework.xml.xsd.commons.CommonsXsdSchemaCollection;
 
 
@@ -61,6 +64,11 @@ public class GeographicCoordinateWSConfig extends WsConfigurerAdapter {
    public static final String NAMESPACE = "https://www.github.com/kloverde/spring-GeographicCoordinateWS";
 
    private static final String WS_NAME = "GeographicCoordinateWS";
+
+   private static final String SCHEMA_DIR = "schema/soap/";
+
+   @Value( "${wsdl.dynamic}" )
+   private boolean dynamicWsdl;
 
 
    @Bean
@@ -74,13 +82,24 @@ public class GeographicCoordinateWSConfig extends WsConfigurerAdapter {
    }
 
    @Bean( name = WS_NAME )  // The bean name is the filename that the WSDL will be made available as
-   public DefaultWsdl11Definition defaultWsdl11Definition( final CommonsXsdSchemaCollection schema ) {
-      final DefaultWsdl11Definition wsdlDef = new DefaultWsdl11Definition();
+   public Wsdl11Definition defaultWsdl11Definition( final CommonsXsdSchemaCollection schema ) {
+      final Wsdl11Definition wsdlDef;
 
-      wsdlDef.setPortTypeName( WS_NAME );
-      wsdlDef.setLocationUri( "/" + WS_NAME );  // endpoint URL
-      wsdlDef.setTargetNamespace( NAMESPACE );
-      wsdlDef.setSchemaCollection( schema );
+      if( dynamicWsdl ) {
+         System.err.println("dynamic");
+
+         final DefaultWsdl11Definition wsdl = new DefaultWsdl11Definition();
+
+         wsdl.setPortTypeName( WS_NAME );
+         wsdl.setLocationUri( "/" + WS_NAME );  // endpoint URL
+         wsdl.setTargetNamespace( NAMESPACE );
+         wsdl.setSchemaCollection( schema );
+
+         wsdlDef = wsdl;
+      } else {
+         System.err.println("not dynamic");
+         wsdlDef = new SimpleWsdl11Definition( new ClassPathResource(SCHEMA_DIR + "GeographicCoordinateWS.wsdl") );
+      }
 
       return wsdlDef;
    }
@@ -91,7 +110,7 @@ public class GeographicCoordinateWSConfig extends WsConfigurerAdapter {
 
        validatingInterceptor.setValidateRequest( true );
        validatingInterceptor.setValidateResponse( true );
-       validatingInterceptor.setXsdSchemaCollection( this.schemas() );
+       validatingInterceptor.setXsdSchemaCollection( schemas() );
 
        interceptors.add(validatingInterceptor);
    }
@@ -100,7 +119,7 @@ public class GeographicCoordinateWSConfig extends WsConfigurerAdapter {
    public CommonsXsdSchemaCollection schemas() {
 
       final Resource[] schemas = {
-         new ClassPathResource( "schema/xsd/GeographicCoordinateWS.xsd" ),
+         new ClassPathResource( SCHEMA_DIR + "GeographicCoordinateWS.xsd" ),
       };
 
       final CommonsXsdSchemaCollection collection = new CommonsXsdSchemaCollection( schemas );

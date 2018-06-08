@@ -29,7 +29,7 @@ task genJaxb {
    def jaxbTargetPkg  = "org.loverde.geographiccoordinate.ws.model.generated"
    def jaxbSourcesDir = "${buildDir}/generated-sources/jaxb"
    ext.jaxbClassesDir = "${buildDir}/generated-classes/jaxb"
-   def schema         = "src/main/resources/schema/xsd/GeographicCoordinateWS.xsd"
+   def schema         = "src/main/resources/schema/soap/GeographicCoordinateWS.xsd"
 
    outputs.dir jaxbClassesDir
 
