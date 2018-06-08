@@ -3,9 +3,7 @@ GeographicCoordinateWS
 
 See LICENSE for this software's licensing terms.  At first glance, it resembles the BSD-3 license, but it contains a significant difference which prohibits certain use.  Read it carefully.
 
-GeographicCoordinateWS is a Spring Boot application that exposes the functionality of my [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate) library over a SOAP Web service.
-
-This is my newest project.  Although it's mostly done, it's not ready for release yet.  Requests are responses are fully implemented and working fine, but there are quite a few finishing touches I can add, such as adding log4j, etc.
+GeographicCoordinateWS is a Spring Boot application that exposes the functionality of my [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate) library over a SOAP Web service.  Although fully functional, it's still considered a work in progress.
 
 
 ## Development Environment
