@@ -32,9 +32,9 @@ Eclipse seems to think it knows more about my project than I do.  Once the proje
 
 ## Building and Running
 
-Eventually I'm going to change this so that a WAR is built, but for now, the build generates a Spring Boot uber jar.
+You can specify whether the WSDL is generated dynamically or loaded from disk by modifying the `wsdl.dynamic` property in `application.properties`.  The included WSDL uses localhost as the endpoint, so unless the only client is on the same machine as the server, you'll want to overwrite the provided WSDL with a regenerated one.
 
-Build in your IDE or, if you want to build from the command line:
+Eventually I'm going to change this so that a WAR is built, but for now, the build generates a Spring Boot uber jar.  Build in your IDE or, if you want to build from the command line:
 
 ```shell
 gradle bootJar
@@ -51,7 +51,7 @@ A batch script which launches the application with remote debugging enabled can 
 
 ## Accessing the Web Service
 
-The WSDL is retrievable from http://localhost:8080/GeographicCoordinateWS/GeographicCoordinateWS.wsdl.  What you do with it from there is up to you.  :p
+The WSDL is retrievable from http://localhost:8080/GeographicCoordinateWS/GeographicCoordinateWS.wsdl.
 
 
 ## Donations
