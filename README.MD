@@ -52,3 +52,8 @@ A batch script which launches the application with remote debugging enabled can 
 ## Accessing the Web Service
 
 The WSDL is retrievable from http://localhost:8080/GeographicCoordinateWS/GeographicCoordinateWS.wsdl.  What you do with it from there is up to you.  :p
+
+
+## Donations
+
+https://paypal.me/KurtisLoVerde/10
