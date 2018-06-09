@@ -49,12 +49,24 @@
       <xs:restriction base="xs:string">
          <xs:enumeration value="CENTIMETERS"/>
          <xs:enumeration value="INCHES"/>
-         <xs:enumeration value="FEET"/>
+         <xs:enumeration value="FEET">
+            <xs:annotation>
+               <xs:documentation>This is the international foot.  For those in the U.S., yes, that is the foot you are accustomed to (12 inches = 1 ft).</xs:documentation>
+            </xs:annotation>
+         </xs:enumeration>
          <xs:enumeration value="KILOMETERS"/>
          <xs:enumeration value="METERS"/>
          <xs:enumeration value="MILES"/>
-         <xs:enumeration value="NAUTICAL_MILES"/>
-         <xs:enumeration value="US_SURVEY_FEET"/>
+         <xs:enumeration value="NAUTICAL_MILES">
+            <xs:annotation>
+               <xs:documentation>This is the international nautical mile.  It's not to be confused with the U.S. nautical mile, which was abandoned in 1954, or the Imperial (UK) nautical mile (also known as the Admiralty mile), which was abandoned in 1970.  See https://en.wikipedia.org/wiki/Nautical_mile.</xs:documentation>
+            </xs:annotation>
+         </xs:enumeration>
+         <xs:enumeration value="US_SURVEY_FEET">
+            <xs:annotation>
+               <xs:documentation>For those of you living in the U.S., the U.S. Survey Foot is NOT the foot you think of when you think of feet.  That is the international foot.  The survey foot is used in geodetic surveys.  As defined by the National Bureau of Standards in 1959: "Any data expressed in feet derived from and published as a result of geodetic surveys within the United States will continue to bear the following relationship as defined in 1893:  1 foot = 1200/3937 meter."  See http://www.ngs.noaa.gov/PUBS_LIB/FedRegister/FRdoc59-5442.pdf</xs:documentation>
+            </xs:annotation>
+         </xs:enumeration>
          <xs:enumeration value="YARDS"/>
       </xs:restriction>
    </xs:simpleType>

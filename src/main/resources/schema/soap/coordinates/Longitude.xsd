@@ -43,6 +43,10 @@
    elementFormDefault="qualified">
 
    <xs:simpleType name="longitudeType">
+      <xs:annotation>
+         <xs:documentation>Lines of longitude run parallel to the Prime Meridian (perpendicular to the Equator).  Longitude denotes whether a location is east or west of the Prime Meridian.  When expressed as a floating-point number, valid longitudes sit in a range of +/- 180.0.  Positive values are east; negative values are west.  The Prime Meridian is located at longitude 0.</xs:documentation>
+      </xs:annotation>
+
       <xs:restriction base="xs:double">
          <xs:minInclusive value="-180"/>
          <xs:maxInclusive value="180"/>

@@ -43,6 +43,10 @@
    elementFormDefault="qualified">
 
    <xs:simpleType name="latitudeType">
+      <xs:annotation>
+         <xs:documentation>Lines of latitude run parallel to the Equator (perpendicular to the Prime Meridian).  Latitude denotes whether a location is north or south of the Equator.  When expressed as a floating-point number, valid latitudes sit in a range of +/- 90.0.  The Equator is located at latitude 0.</xs:documentation>
+      </xs:annotation>
+
       <xs:restriction base="xs:double">
          <xs:minInclusive value="-90"/>
          <xs:maxInclusive value="90"/>

@@ -50,6 +50,10 @@
    </xs:simpleType>
 
    <xs:simpleType name="compass8Direction">
+      <xs:annotation>
+         <xs:documentation>Represents the directions on an 8-point compass, where points are 45 degrees apart</xs:documentation>
+      </xs:annotation>
+
       <xs:restriction base="xs:string">
          <xs:enumeration value="N"/>
          <xs:enumeration value="NE"/>
@@ -64,6 +68,10 @@
    </xs:simpleType>
 
    <xs:simpleType name="compass16Direction">
+      <xs:annotation>
+         <xs:documentation>Represents the directions on a 16-point compass, where points are 22.5 degrees apart</xs:documentation>
+      </xs:annotation>
+
       <xs:restriction base="xs:string">
          <xs:enumeration value="N"/>
          <xs:enumeration value="NNE"/>
@@ -85,6 +93,10 @@
    </xs:simpleType>
 
    <xs:simpleType name="compass32Direction">
+      <xs:annotation>
+         <xs:documentation>Represents the directions on a 32-point compass, where points are 11.25 degrees apart</xs:documentation>
+      </xs:annotation>
+
       <xs:restriction base="xs:string">
          <xs:enumeration value="N"/>
          <xs:enumeration value="NbE"/>
