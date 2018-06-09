@@ -97,7 +97,6 @@ public class GeographicCoordinateWSConfig extends WsConfigurerAdapter {
 
          wsdlDef = wsdl;
       } else {
-         System.err.println("not dynamic");
          wsdlDef = new SimpleWsdl11Definition( new ClassPathResource(SCHEMA_DIR + "GeographicCoordinateWS.wsdl") );
       }
 
