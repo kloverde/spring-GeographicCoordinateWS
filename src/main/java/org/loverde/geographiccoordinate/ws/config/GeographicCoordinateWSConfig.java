@@ -86,8 +86,6 @@ public class GeographicCoordinateWSConfig extends WsConfigurerAdapter {
       final Wsdl11Definition wsdlDef;
 
       if( dynamicWsdl ) {
-         System.err.println("dynamic");
-
          final DefaultWsdl11Definition wsdl = new DefaultWsdl11Definition();
 
          wsdl.setPortTypeName( WS_NAME );
