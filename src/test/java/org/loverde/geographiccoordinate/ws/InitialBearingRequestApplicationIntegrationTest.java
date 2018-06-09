@@ -12,7 +12,9 @@
  *
  *     1. This software may not be used, in whole in or in part, by any for-profit
  *        entity, whether a business, person, or other, or for any for-profit
- *        purpose.
+ *        purpose.  This restriction shall not be interpreted to amend or modify
+ *        the license of GeographicCoordinate, a standalone library which is
+ *        governed by its own license.
  *     2. Redistributions of source code must retain the above copyright
  *        notice, this list of conditions and the following disclaimer.
  *     3. Redistributions in binary form must reproduce the above copyright
@@ -33,7 +35,6 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 package org.loverde.geographiccoordinate.ws;
 

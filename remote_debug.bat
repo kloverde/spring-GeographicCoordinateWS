@@ -1,6 +1,6 @@
 @echo off
 
-REM RealtimeMonitor
+REM GeographicCoordinateWS
 REM https://github.com/kloverde/spring-GeographicCoordinateWS
 REM
 REM Copyright (c) 2018, Kurtis LoVerde
@@ -11,8 +11,11 @@ REM
 REM Redistribution and use in source and binary forms, with or without
 REM modification, are permitted provided that the following conditions are met:
 REM
-REM     1. This software may not be used by any for-profit entity, whether a
-REM        business, person, or other, or for any for-profit purpose.
+REM     1. This software may not be used, in whole in or in part, by any for-profit
+REM        entity, whether a business, person, or other, or for any for-profit
+REM        purpose.  This restriction shall not be interpreted to amend or modify
+REM        the license of GeographicCoordinate, a standalone library which is
+REM        governed by its own license.
 REM     2. Redistributions of source code must retain the above copyright
 REM        notice, this list of conditions and the following disclaimer.
 REM     3. Redistributions in binary form must reproduce the above copyright
