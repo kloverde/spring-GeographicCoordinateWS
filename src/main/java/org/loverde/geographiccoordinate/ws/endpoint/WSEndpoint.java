@@ -38,7 +38,7 @@
 
 package org.loverde.geographiccoordinate.ws.endpoint;
 
-import org.loverde.geographiccoordinate.ws.config.GeographicCoordinateWSConfig;
+import org.loverde.geographiccoordinate.ws.config.WSConfig;
 import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthRequest;
 import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthResponse;
 import org.loverde.geographiccoordinate.ws.model.generated.DistanceRequest;
@@ -56,7 +56,7 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 
 @Endpoint
-public class GeographicCoordinateWSEndpoint {
+public class WSEndpoint {
 
    @Autowired
    private DistanceRequestService distanceService;
@@ -68,7 +68,7 @@ public class GeographicCoordinateWSEndpoint {
    private BackAzimuthRequestService backAzimuthService;
 
 
-   @PayloadRoot( namespace = GeographicCoordinateWSConfig.NAMESPACE, localPart = "distanceRequest" )
+   @PayloadRoot( namespace = WSConfig.NAMESPACE, localPart = "distanceRequest" )
    @ResponsePayload
    public DistanceResponse getDistance( @RequestPayload final DistanceRequest request ) {
       final DistanceResponse response = distanceService.processDistanceRequest( request );
@@ -76,7 +76,7 @@ public class GeographicCoordinateWSEndpoint {
       return response;
    }
 
-   @PayloadRoot( namespace = GeographicCoordinateWSConfig.NAMESPACE, localPart = "initialBearingRequest" )
+   @PayloadRoot( namespace = WSConfig.NAMESPACE, localPart = "initialBearingRequest" )
    @ResponsePayload
    public InitialBearingResponse getInitialBearing( @RequestPayload final InitialBearingRequest request ) {
       final InitialBearingResponse response = bearingService.processInitialBearingRequest( request );
@@ -84,7 +84,7 @@ public class GeographicCoordinateWSEndpoint {
       return response;
    }
 
-   @PayloadRoot( namespace = GeographicCoordinateWSConfig.NAMESPACE, localPart = "backAzimuthRequest" )
+   @PayloadRoot( namespace = WSConfig.NAMESPACE, localPart = "backAzimuthRequest" )
    @ResponsePayload
    public BackAzimuthResponse getBackAzimuth( @RequestPayload final BackAzimuthRequest request ) {
       final BackAzimuthResponse response = backAzimuthService.processBackAzimithRequest( request );

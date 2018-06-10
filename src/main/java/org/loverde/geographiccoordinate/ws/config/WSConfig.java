@@ -61,7 +61,7 @@ import org.springframework.xml.xsd.commons.CommonsXsdSchemaCollection;
 
 @EnableWs
 @Configuration
-public class GeographicCoordinateWSConfig extends WsConfigurerAdapter {
+public class WSConfig extends WsConfigurerAdapter {
 
    public static final String NAMESPACE = "https://www.github.com/kloverde/spring-GeographicCoordinateWS";
 
