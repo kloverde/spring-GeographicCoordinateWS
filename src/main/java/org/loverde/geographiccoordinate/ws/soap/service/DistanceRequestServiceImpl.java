@@ -36,57 +36,68 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.service;
+package org.loverde.geographiccoordinate.ws.soap.service;
 
-import java.math.BigDecimal;
+import java.util.List;
 
-import org.loverde.geographiccoordinate.Bearing;
-import org.loverde.geographiccoordinate.calculator.BearingCalculator;
-import org.loverde.geographiccoordinate.compass.CompassDirection;
-import org.loverde.geographiccoordinate.ws.model.convert.TypeConverter;
-import org.loverde.geographiccoordinate.ws.model.generated.AutowireableObjectFactory;
-import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthRequest;
-import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthResponse;
-import org.loverde.geographiccoordinate.ws.service.helper.ResponseHelper;
+import org.loverde.geographiccoordinate.Point;
+import org.loverde.geographiccoordinate.calculator.DistanceCalculator;
+import org.loverde.geographiccoordinate.ws.soap.model.convert.TypeConverter;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.AutowireableObjectFactory;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceRequest;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceResponse;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
 @Service
-public class BackAzimuthServiceImpl implements BackAzimuthRequestService {
+public class DistanceRequestServiceImpl implements DistanceRequestService {
 
    @Autowired
    private AutowireableObjectFactory objectFactory;
 
 
    @Override
-   public BackAzimuthResponse processBackAzimithRequest( final BackAzimuthRequest request ) {
-      final Class<? extends CompassDirection> compassDirection;
-      final Bearing<? extends CompassDirection> bearing;
-      final BackAzimuthResponse response;
-
+   public DistanceResponse processDistanceRequest( final DistanceRequest request ) {
       if( request == null ) {
-         throw new IllegalArgumentException( "Received a null JAXB BackAzimuthRequest" );
+         throw new IllegalArgumentException( "Received a null JAXB DistanceRequest" );
       }
 
-      if( request.getBearing() == null ) {
-         throw new IllegalArgumentException( "There is no Bearing in the JAXB BackAzimuthRequest" );
+      if( request.getUnit() == null ) {
+         throw new IllegalArgumentException( "There is no unit in the JAXB DistanceRequest" );
       }
 
-      if( request.getCompassType() == null ) {
-         throw new IllegalArgumentException( "There is no CompassType in the JAXB BackAzimuthRequest" );
+      final DistanceUnit jaxbUnit = request.getUnit();
+      final DistanceCalculator.Unit unit = DistanceCalculator.Unit.valueOf( jaxbUnit.name() );
+
+      if( unit == null ) {
+         throw new IllegalArgumentException( String.format("Unsupported JAXB DistanceRequest unit: %s", jaxbUnit) );
       }
 
-      compassDirection = TypeConverter.convertJaxbCompassTypeToCompassDirection( request.getCompassType() );
+      final DistanceRequest.Points jaxbPoints = request.getPoints();
 
-      if( compassDirection == null ) {
-         throw new IllegalArgumentException( String.format("Unrecognized JAXB CompassType: %s", request.getCompassType())  );
+      if( jaxbPoints == null ) {
+         throw new IllegalArgumentException( "There are no JAXB DistanceRequest points" );
       }
 
-      response = objectFactory.createBackAzimuthResponse();
-      bearing = BearingCalculator.backAzimuth( compassDirection, new BigDecimal(request.getBearing().getValue()) );
+      final List<org.loverde.geographiccoordinate.ws.soap.model.generated.Point> noReallyJaxbPoints = jaxbPoints.getPoint();
 
-      ResponseHelper.populateBearingResponse( response, request.getCompassType(), bearing );
+      if( noReallyJaxbPoints == null || noReallyJaxbPoints.isEmpty() ) {  // TODO:  Consider replacing with a call to Apache Commons or Spring's embedded Commons
+         throw new IllegalArgumentException( "There are no JAXB DistanceRequest points" );
+      }
+
+      final Point[] points = new Point[ noReallyJaxbPoints.size() ];
+
+      for( int i = 0; i < noReallyJaxbPoints.size(); i++ ) {
+         points[i] = TypeConverter.convertPoint( noReallyJaxbPoints.get(i) );
+      }
+
+      final double distance = DistanceCalculator.distance( unit, points );
+      final DistanceResponse response = objectFactory.createDistanceResponse();
+
+      response.setUnit( jaxbUnit );
+      response.setDistance( distance );
 
       return response;
    }

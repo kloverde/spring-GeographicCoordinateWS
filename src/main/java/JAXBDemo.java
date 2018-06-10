@@ -40,10 +40,10 @@ import java.io.StringWriter;
 
 import javax.xml.bind.JAXB;
 
-import org.loverde.geographiccoordinate.ws.model.generated.BearingResponseType.Compass8Bearing;
-import org.loverde.geographiccoordinate.ws.model.generated.Compass8Direction;
-import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingResponse;
-import org.loverde.geographiccoordinate.ws.model.generated.ObjectFactory;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.BearingResponseType.Compass8Bearing;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.Compass8Direction;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingResponse;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.ObjectFactory;
 
 
 public class JAXBDemo {

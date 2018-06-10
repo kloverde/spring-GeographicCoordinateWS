@@ -36,7 +36,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.model.convert;
+package org.loverde.geographiccoordinate.ws.soap.model.convert;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,7 +49,7 @@ import org.loverde.geographiccoordinate.compass.CompassDirection;
 import org.loverde.geographiccoordinate.compass.CompassDirection16;
 import org.loverde.geographiccoordinate.compass.CompassDirection32;
 import org.loverde.geographiccoordinate.compass.CompassDirection8;
-import org.loverde.geographiccoordinate.ws.model.generated.CompassType;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.CompassType;
 
 
 public class TypeConverter {
@@ -80,7 +80,7 @@ public class TypeConverter {
    }
 
 
-   public static Class<? extends CompassDirection> convertJaxbCompassTypeToCompassDirection( final org.loverde.geographiccoordinate.ws.model.generated.CompassType jaxbCompassType ) {
+   public static Class<? extends CompassDirection> convertJaxbCompassTypeToCompassDirection( final org.loverde.geographiccoordinate.ws.soap.model.generated.CompassType jaxbCompassType ) {
       if( jaxbCompassType == null ) {
          throw new IllegalArgumentException( "Attempted to convert a null JAXB CompassType" );
       }
@@ -96,7 +96,7 @@ public class TypeConverter {
       return compassDirectionToCompassTypeMap.get( compassDirection );
    }
 
-   public static Latitude convertLatitude( final org.loverde.geographiccoordinate.ws.model.generated.Latitude jaxbLatitude ) {
+   public static Latitude convertLatitude( final org.loverde.geographiccoordinate.ws.soap.model.generated.Latitude jaxbLatitude ) {
       if( jaxbLatitude == null ) {
          throw new IllegalArgumentException( "Attempted to convert a null JAXB Latitude" );
       }
@@ -106,7 +106,7 @@ public class TypeConverter {
       return latitude;
    }
 
-   public static Longitude convertLongitude( final org.loverde.geographiccoordinate.ws.model.generated.Longitude jaxbLongitude ) {
+   public static Longitude convertLongitude( final org.loverde.geographiccoordinate.ws.soap.model.generated.Longitude jaxbLongitude ) {
       if( jaxbLongitude == null ) {
          throw new IllegalArgumentException( "Attempted to convert a null JAXB Longitude" );
       }
@@ -116,7 +116,7 @@ public class TypeConverter {
       return longitude;
    }
 
-   public static Point convertPoint( final org.loverde.geographiccoordinate.ws.model.generated.Point jaxbPoint ) {
+   public static Point convertPoint( final org.loverde.geographiccoordinate.ws.soap.model.generated.Point jaxbPoint ) {
       if( jaxbPoint == null ) {
          throw new IllegalArgumentException( "Attempted to convert a null JAXB Point" );
       }

@@ -36,13 +36,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.service;
+package org.loverde.geographiccoordinate.ws.soap.service;
 
-import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthRequest;
-import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthResponse;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceRequest;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceResponse;
 
 
-public interface BackAzimuthRequestService {
+public interface DistanceRequestService {
 
-   public BackAzimuthResponse processBackAzimithRequest( BackAzimuthRequest request );
+   public DistanceResponse processDistanceRequest( DistanceRequest request );
 }

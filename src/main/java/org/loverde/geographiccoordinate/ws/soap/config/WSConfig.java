@@ -36,7 +36,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.config;
+package org.loverde.geographiccoordinate.ws.soap.config;
 
 import java.util.List;
 

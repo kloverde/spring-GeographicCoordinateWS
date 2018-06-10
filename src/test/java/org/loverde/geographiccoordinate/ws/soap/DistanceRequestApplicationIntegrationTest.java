@@ -36,7 +36,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws;
+package org.loverde.geographiccoordinate.ws.soap;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -46,14 +46,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.loverde.geographiccoordinate.ws.model.generated.AutowireableObjectFactory;
-import org.loverde.geographiccoordinate.ws.model.generated.DistanceRequest;
-import org.loverde.geographiccoordinate.ws.model.generated.DistanceRequest.Points;
-import org.loverde.geographiccoordinate.ws.model.generated.DistanceResponse;
-import org.loverde.geographiccoordinate.ws.model.generated.DistanceUnit;
-import org.loverde.geographiccoordinate.ws.model.generated.Latitude;
-import org.loverde.geographiccoordinate.ws.model.generated.Longitude;
-import org.loverde.geographiccoordinate.ws.model.generated.Point;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.AutowireableObjectFactory;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceRequest;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceRequest.Points;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceResponse;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceUnit;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.Latitude;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.Longitude;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;

@@ -36,70 +36,57 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.service;
+package org.loverde.geographiccoordinate.ws.soap.service;
+
+import java.math.BigDecimal;
 
 import org.loverde.geographiccoordinate.Bearing;
-import org.loverde.geographiccoordinate.Point;
 import org.loverde.geographiccoordinate.calculator.BearingCalculator;
 import org.loverde.geographiccoordinate.compass.CompassDirection;
-import org.loverde.geographiccoordinate.ws.model.convert.TypeConverter;
-import org.loverde.geographiccoordinate.ws.model.generated.AutowireableObjectFactory;
-import org.loverde.geographiccoordinate.ws.model.generated.CompassType;
-import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingRequest;
-import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingResponse;
-import org.loverde.geographiccoordinate.ws.service.helper.ResponseHelper;
+import org.loverde.geographiccoordinate.ws.soap.model.convert.TypeConverter;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.AutowireableObjectFactory;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.BackAzimuthRequest;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.BackAzimuthResponse;
+import org.loverde.geographiccoordinate.ws.soap.service.helper.ResponseHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
 @Service
-public class BearingRequestServiceImpl implements BearingRequestService {
+public class BackAzimuthServiceImpl implements BackAzimuthRequestService {
 
    @Autowired
    private AutowireableObjectFactory objectFactory;
 
 
    @Override
-   public InitialBearingResponse processInitialBearingRequest( final InitialBearingRequest request ) {
+   public BackAzimuthResponse processBackAzimithRequest( final BackAzimuthRequest request ) {
       final Class<? extends CompassDirection> compassDirection;
-      final Point from, to;
       final Bearing<? extends CompassDirection> bearing;
-      final InitialBearingResponse response;
+      final BackAzimuthResponse response;
 
       if( request == null ) {
-         throw new IllegalArgumentException( "Received a null JAXB InitialBearingRequest" );
+         throw new IllegalArgumentException( "Received a null JAXB BackAzimuthRequest" );
       }
 
-      final CompassType jaxbCompassType = request.getCompassType();
-
-      if( jaxbCompassType == null ) {
-         throw new IllegalArgumentException( "There is no JAXB CompassType" );
+      if( request.getBearing() == null ) {
+         throw new IllegalArgumentException( "There is no Bearing in the JAXB BackAzimuthRequest" );
       }
 
-      compassDirection = TypeConverter.convertJaxbCompassTypeToCompassDirection( jaxbCompassType );
+      if( request.getCompassType() == null ) {
+         throw new IllegalArgumentException( "There is no CompassType in the JAXB BackAzimuthRequest" );
+      }
+
+      compassDirection = TypeConverter.convertJaxbCompassTypeToCompassDirection( request.getCompassType() );
 
       if( compassDirection == null ) {
-         throw new IllegalArgumentException( String.format("Unrecognized JAXB CompassType: %s", jaxbCompassType)  );
+         throw new IllegalArgumentException( String.format("Unrecognized JAXB CompassType: %s", request.getCompassType())  );
       }
 
-      final org.loverde.geographiccoordinate.ws.model.generated.InitialBearingRequest.FromPoint jaxbFromPoint = request.getFromPoint();
-      final org.loverde.geographiccoordinate.ws.model.generated.InitialBearingRequest.ToPoint jaxbToPoint = request.getToPoint();
+      response = objectFactory.createBackAzimuthResponse();
+      bearing = BearingCalculator.backAzimuth( compassDirection, new BigDecimal(request.getBearing().getValue()) );
 
-      if( jaxbFromPoint == null ) {
-         throw new IllegalArgumentException( "There is no JAXB InitialBearingRequest.FromPoint" );
-      }
-
-      if( jaxbToPoint == null ) {
-         throw new IllegalArgumentException( "There is no JAXB InitialBearingRequest.ToPoint" );
-      }
-
-      from = TypeConverter.convertPoint( jaxbFromPoint.getPoint() );
-      to = TypeConverter.convertPoint( jaxbToPoint.getPoint() );
-      bearing = BearingCalculator.initialBearing( compassDirection, from, to );
-
-      response = objectFactory.createInitialBearingResponse();
-
-      ResponseHelper.populateBearingResponse( response, jaxbCompassType, bearing );
+      ResponseHelper.populateBearingResponse( response, request.getCompassType(), bearing );
 
       return response;
    }

@@ -36,7 +36,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws;
+package org.loverde.geographiccoordinate.ws.soap;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -47,12 +47,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.loverde.geographiccoordinate.ws.model.generated.AutowireableObjectFactory;
-import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthRequest;
-import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthResponse;
-import org.loverde.geographiccoordinate.ws.model.generated.Bearing;
-import org.loverde.geographiccoordinate.ws.model.generated.CompassType;
-import org.loverde.geographiccoordinate.ws.model.generated.DistanceRequest;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.AutowireableObjectFactory;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.BackAzimuthRequest;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.BackAzimuthResponse;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.Bearing;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.CompassType;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;

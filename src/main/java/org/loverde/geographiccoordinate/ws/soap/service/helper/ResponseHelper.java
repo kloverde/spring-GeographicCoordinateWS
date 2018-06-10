@@ -36,29 +36,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.service.helper;
+package org.loverde.geographiccoordinate.ws.soap.service.helper;
 
 import org.loverde.geographiccoordinate.Bearing;
 import org.loverde.geographiccoordinate.compass.CompassDirection;
-import org.loverde.geographiccoordinate.ws.model.generated.BearingResponseType;
-import org.loverde.geographiccoordinate.ws.model.generated.BearingResponseType.Compass16Bearing;
-import org.loverde.geographiccoordinate.ws.model.generated.BearingResponseType.Compass32Bearing;
-import org.loverde.geographiccoordinate.ws.model.generated.BearingResponseType.Compass8Bearing;
-import org.loverde.geographiccoordinate.ws.model.generated.Compass16Direction;
-import org.loverde.geographiccoordinate.ws.model.generated.Compass32Direction;
-import org.loverde.geographiccoordinate.ws.model.generated.Compass8Direction;
-import org.loverde.geographiccoordinate.ws.model.generated.CompassType;
-import org.loverde.geographiccoordinate.ws.model.generated.ObjectFactory;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.BearingResponseType;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.BearingResponseType.Compass16Bearing;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.BearingResponseType.Compass32Bearing;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.BearingResponseType.Compass8Bearing;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.Compass16Direction;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.Compass32Direction;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.Compass8Direction;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.CompassType;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.ObjectFactory;
 
 
 public class ResponseHelper {
 
-   private static final ObjectFactory objectFactory;
-
-
-   static {
-      objectFactory = new ObjectFactory();  // TODO:  Inject this once Spring is added.  No need for multiple classes to have their own instances.
-   }
+   private static ObjectFactory objectFactory = new ObjectFactory();
 
 
    /**

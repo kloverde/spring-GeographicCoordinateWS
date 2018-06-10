@@ -36,7 +36,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws;
+package org.loverde.geographiccoordinate.ws.soap;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -46,15 +46,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.loverde.geographiccoordinate.ws.model.generated.AutowireableObjectFactory;
-import org.loverde.geographiccoordinate.ws.model.generated.CompassType;
-import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingRequest;
-import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingRequest.FromPoint;
-import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingRequest.ToPoint;
-import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingResponse;
-import org.loverde.geographiccoordinate.ws.model.generated.Latitude;
-import org.loverde.geographiccoordinate.ws.model.generated.Longitude;
-import org.loverde.geographiccoordinate.ws.model.generated.Point;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.AutowireableObjectFactory;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.CompassType;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingRequest;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingRequest.FromPoint;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingRequest.ToPoint;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingResponse;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.Latitude;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.Longitude;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -289,8 +289,8 @@ public class InitialBearingRequestApplicationIntegrationTest {
       final Point point2 = factory.createPoint();
       final ToPoint toPoint = factory.createInitialBearingRequestToPoint();
 
-      lat1.setValue( 90 );
-      lon1.setValue( 180 );
+      lat2.setValue( 90 );
+      lon2.setValue( 180 );
 
       point2.setLatitude( lat2 );
       point2.setLongitude( lon2 );

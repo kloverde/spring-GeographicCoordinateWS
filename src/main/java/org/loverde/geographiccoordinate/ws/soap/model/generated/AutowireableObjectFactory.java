@@ -36,13 +36,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.service;
+package org.loverde.geographiccoordinate.ws.soap.model.generated;
 
-import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingRequest;
-import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingResponse;
+import org.springframework.stereotype.Component;
 
 
-public interface BearingRequestService {
+/**
+ * This class extends the JAXB-generated ObjectFactory class to make it usable with
+ * {@literal @}Autowired without adding hacks like adding an annotation to the class
+ * post-generation, and without having to define it as a bean in XML configuration.
+ * It does not add or change functionality.
+ */
+@Component
+public class AutowireableObjectFactory extends ObjectFactory {
 
-   public InitialBearingResponse processInitialBearingRequest( InitialBearingRequest request );
+   public AutowireableObjectFactory() {
+      super();
+   }
 }

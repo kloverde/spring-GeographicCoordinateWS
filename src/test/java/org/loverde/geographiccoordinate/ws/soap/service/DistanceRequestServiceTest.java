@@ -36,7 +36,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.service;
+package org.loverde.geographiccoordinate.ws.soap.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -48,11 +48,11 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.loverde.geographiccoordinate.calculator.DistanceCalculator;
-import org.loverde.geographiccoordinate.ws.model.convert.TypeConverter;
-import org.loverde.geographiccoordinate.ws.model.generated.DistanceRequest;
-import org.loverde.geographiccoordinate.ws.model.generated.DistanceResponse;
-import org.loverde.geographiccoordinate.ws.model.generated.DistanceUnit;
-import org.loverde.geographiccoordinate.ws.model.generated.ObjectFactory;
+import org.loverde.geographiccoordinate.ws.soap.model.convert.TypeConverter;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceRequest;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceResponse;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceUnit;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -157,10 +157,10 @@ public class DistanceRequestServiceTest {
       service.processDistanceRequest( request );
    }
 
-   private org.loverde.geographiccoordinate.ws.model.generated.Point newJaxbPoint( final double lat, final double lon ) {
-      org.loverde.geographiccoordinate.ws.model.generated.Point point = factory.createPoint();
-      org.loverde.geographiccoordinate.ws.model.generated.Latitude latitude = factory.createLatitude();
-      org.loverde.geographiccoordinate.ws.model.generated.Longitude longitude = factory.createLongitude();
+   private org.loverde.geographiccoordinate.ws.soap.model.generated.Point newJaxbPoint( final double lat, final double lon ) {
+      org.loverde.geographiccoordinate.ws.soap.model.generated.Point point = factory.createPoint();
+      org.loverde.geographiccoordinate.ws.soap.model.generated.Latitude latitude = factory.createLatitude();
+      org.loverde.geographiccoordinate.ws.soap.model.generated.Longitude longitude = factory.createLongitude();
 
       latitude.setValue( lat );
       longitude.setValue( lon );

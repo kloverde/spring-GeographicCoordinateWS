@@ -36,7 +36,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.service;
+package org.loverde.geographiccoordinate.ws.soap.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -55,10 +55,10 @@ import org.loverde.geographiccoordinate.calculator.BearingCalculator;
 import org.loverde.geographiccoordinate.compass.CompassDirection16;
 import org.loverde.geographiccoordinate.compass.CompassDirection32;
 import org.loverde.geographiccoordinate.compass.CompassDirection8;
-import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthRequest;
-import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthResponse;
-import org.loverde.geographiccoordinate.ws.model.generated.CompassType;
-import org.loverde.geographiccoordinate.ws.model.generated.ObjectFactory;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.BackAzimuthRequest;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.BackAzimuthResponse;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.CompassType;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -81,7 +81,7 @@ public class BackAzimuthRequestServiceTest {
 
    @Before
    public void setUp() {
-      final org.loverde.geographiccoordinate.ws.model.generated.Bearing bearing = factory.createBearing();
+      final org.loverde.geographiccoordinate.ws.soap.model.generated.Bearing bearing = factory.createBearing();
       bearing.setValue( 123.456 );
 
       request = factory.createBackAzimuthRequest();

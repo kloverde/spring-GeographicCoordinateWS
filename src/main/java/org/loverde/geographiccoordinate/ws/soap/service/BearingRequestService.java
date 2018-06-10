@@ -36,13 +36,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.service;
+package org.loverde.geographiccoordinate.ws.soap.service;
 
-import org.loverde.geographiccoordinate.ws.model.generated.DistanceRequest;
-import org.loverde.geographiccoordinate.ws.model.generated.DistanceResponse;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingRequest;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingResponse;
 
 
-public interface DistanceRequestService {
+public interface BearingRequestService {
 
-   public DistanceResponse processDistanceRequest( DistanceRequest request );
+   public InitialBearingResponse processInitialBearingRequest( InitialBearingRequest request );
 }

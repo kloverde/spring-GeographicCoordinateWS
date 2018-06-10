@@ -26,7 +26,7 @@ configurations {
 }
 
 task genJaxb {
-   def jaxbTargetPkg  = "org.loverde.geographiccoordinate.ws.model.generated"
+   def jaxbTargetPkg  = "org.loverde.geographiccoordinate.ws.soap.model.generated"
    def jaxbSourcesDir = "${buildDir}/generated-sources/jaxb"
    ext.jaxbClassesDir = "${buildDir}/generated-classes/jaxb"
    def schema         = "src/main/resources/schema/soap/GeographicCoordinateWS.xsd"

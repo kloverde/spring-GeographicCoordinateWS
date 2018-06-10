@@ -36,7 +36,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.service;
+package org.loverde.geographiccoordinate.ws.soap.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -57,15 +57,15 @@ import org.loverde.geographiccoordinate.compass.CompassDirection;
 import org.loverde.geographiccoordinate.compass.CompassDirection16;
 import org.loverde.geographiccoordinate.compass.CompassDirection32;
 import org.loverde.geographiccoordinate.compass.CompassDirection8;
-import org.loverde.geographiccoordinate.ws.model.generated.Compass16Direction;
-import org.loverde.geographiccoordinate.ws.model.generated.Compass32Direction;
-import org.loverde.geographiccoordinate.ws.model.generated.Compass8Direction;
-import org.loverde.geographiccoordinate.ws.model.generated.CompassType;
-import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingRequest;
-import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingRequest.FromPoint;
-import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingRequest.ToPoint;
-import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingResponse;
-import org.loverde.geographiccoordinate.ws.model.generated.ObjectFactory;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.Compass16Direction;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.Compass32Direction;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.Compass8Direction;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.CompassType;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingRequest;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingRequest.FromPoint;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingRequest.ToPoint;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingResponse;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -245,10 +245,10 @@ public class BearingRequestServiceTest {
       service.processInitialBearingRequest( request );
    }
 
-   private org.loverde.geographiccoordinate.ws.model.generated.Point newJaxbPoint( final double lat, final double lon ) {
-      org.loverde.geographiccoordinate.ws.model.generated.Point point = factory.createPoint();
-      org.loverde.geographiccoordinate.ws.model.generated.Latitude latitude = factory.createLatitude();
-      org.loverde.geographiccoordinate.ws.model.generated.Longitude longitude = factory.createLongitude();
+   private org.loverde.geographiccoordinate.ws.soap.model.generated.Point newJaxbPoint( final double lat, final double lon ) {
+      org.loverde.geographiccoordinate.ws.soap.model.generated.Point point = factory.createPoint();
+      org.loverde.geographiccoordinate.ws.soap.model.generated.Latitude latitude = factory.createLatitude();
+      org.loverde.geographiccoordinate.ws.soap.model.generated.Longitude longitude = factory.createLongitude();
 
       latitude.setValue( lat );
       longitude.setValue( lon );

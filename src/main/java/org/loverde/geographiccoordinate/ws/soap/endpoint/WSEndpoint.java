@@ -36,18 +36,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.endpoint;
+package org.loverde.geographiccoordinate.ws.soap.endpoint;
 
-import org.loverde.geographiccoordinate.ws.config.WSConfig;
-import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthRequest;
-import org.loverde.geographiccoordinate.ws.model.generated.BackAzimuthResponse;
-import org.loverde.geographiccoordinate.ws.model.generated.DistanceRequest;
-import org.loverde.geographiccoordinate.ws.model.generated.DistanceResponse;
-import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingRequest;
-import org.loverde.geographiccoordinate.ws.model.generated.InitialBearingResponse;
-import org.loverde.geographiccoordinate.ws.service.BackAzimuthRequestService;
-import org.loverde.geographiccoordinate.ws.service.BearingRequestService;
-import org.loverde.geographiccoordinate.ws.service.DistanceRequestService;
+import org.loverde.geographiccoordinate.ws.soap.config.WSConfig;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.BackAzimuthRequest;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.BackAzimuthResponse;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceRequest;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceResponse;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingRequest;
+import org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingResponse;
+import org.loverde.geographiccoordinate.ws.soap.service.BackAzimuthRequestService;
+import org.loverde.geographiccoordinate.ws.soap.service.BearingRequestService;
+import org.loverde.geographiccoordinate.ws.soap.service.DistanceRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
