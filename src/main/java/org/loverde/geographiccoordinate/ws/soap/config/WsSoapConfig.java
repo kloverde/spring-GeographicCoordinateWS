@@ -61,11 +61,11 @@ import org.springframework.xml.xsd.commons.CommonsXsdSchemaCollection;
 
 @EnableWs
 @Configuration
-public class WSConfig extends WsConfigurerAdapter {
+public class WsSoapConfig extends WsConfigurerAdapter {
 
    public static final String NAMESPACE = "https://www.github.com/kloverde/spring-GeographicCoordinateWS";
 
-   private static final String WS_NAME = "GeographicCoordinateWS";
+   public static final String WS_NAME = "GeographicCoordinateWS";
 
    private static final String SCHEMA_DIR = "schema/soap/";
 
@@ -80,7 +80,7 @@ public class WSConfig extends WsConfigurerAdapter {
       servlet.setApplicationContext( ctx );
       servlet.setTransformWsdlLocations( true );
 
-      return new ServletRegistrationBean<MessageDispatcherServlet>( servlet, "/" + WS_NAME + "/*"  );
+      return new ServletRegistrationBean<MessageDispatcherServlet>( servlet, "/" + WS_NAME + "/soap/*"  );
    }
 
    @Bean( name = WS_NAME )  // The bean name is the filename that the WSDL will be made available as
@@ -91,7 +91,7 @@ public class WSConfig extends WsConfigurerAdapter {
          final DefaultWsdl11Definition wsdl = new DefaultWsdl11Definition();
 
          wsdl.setPortTypeName( WS_NAME );
-         wsdl.setLocationUri( "/" + WS_NAME );  // endpoint URL
+         wsdl.setLocationUri( "/soap" );  // endpoint URL
          wsdl.setTargetNamespace( NAMESPACE );
          wsdl.setSchemaCollection( schema );
 
