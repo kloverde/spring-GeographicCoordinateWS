@@ -124,4 +124,21 @@ public class WsRestController {
 
       return distanceStr;
    }
+
+   @RequestMapping( "initialBearing/compassType/{compassType}/from/{from}/to/{to}" )
+   public String initialBearingRequest( @PathVariable("compassType") final String compassType,
+                                        @PathVariable("from") final String from,
+                                        @PathVariable("to") final String to ) {
+
+
+      return "initialBearing placeholder";
+   }
+
+   @RequestMapping( "backAzimuth/compassType/{compassType}/bearing/{bearing}" )
+   public String backAzimuthRequest( @PathVariable("compassType") final String compassType,
+                                     @PathVariable("bearing") final String bearing ) {
+
+
+      return "backAzimuth placeholder";
+   }
 }
