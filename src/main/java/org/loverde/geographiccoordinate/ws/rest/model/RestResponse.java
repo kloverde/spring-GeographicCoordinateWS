@@ -77,7 +77,7 @@ public class RestResponse {
     *
     * @return
     */
-   public String getErrMsg() {
+   public String getErrorMessage() {
       return errorMessage;
    }
 }
