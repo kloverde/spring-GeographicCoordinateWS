@@ -49,6 +49,7 @@ import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceResponse
 import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 
 @Service
@@ -83,7 +84,7 @@ public class DistanceRequestServiceImpl implements DistanceRequestService {
 
       final List<org.loverde.geographiccoordinate.ws.soap.model.generated.Point> noReallyJaxbPoints = jaxbPoints.getPoint();
 
-      if( noReallyJaxbPoints == null || noReallyJaxbPoints.isEmpty() ) {  // TODO:  Consider replacing with a call to Apache Commons or Spring's embedded Commons
+      if( CollectionUtils.isEmpty(noReallyJaxbPoints) ) {
          throw new IllegalArgumentException( "There are no JAXB DistanceRequest points" );
       }
 
