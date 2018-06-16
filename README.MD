@@ -68,7 +68,7 @@ http://localhost:8080/GeographicCoordinateWS/rest/distance/miles/30.111:120.222,
 
 http://localhost:8080/GeographicCoordinateWS/rest/initialBearing/compassType/16/from/74.12:89.34/to/79.56:83.78
 
-http://localhost:8080/GeographicCoordinateWS/rest/backAzimuth/compassType/32/bearing/100.1123
+http://localhost:8080/GeographicCoordinateWS/rest/backAzimuth/compassType/32/initialBearing/100.1123
 
 
 ## Donations

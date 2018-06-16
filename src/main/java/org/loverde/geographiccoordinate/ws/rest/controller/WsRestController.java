@@ -38,6 +38,7 @@
 
 package org.loverde.geographiccoordinate.ws.rest.controller;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -105,12 +106,6 @@ public class WsRestController {
                latitude = latitudeFromPathVar( coordinates[i] );
                longitude = longitudeFromPathVar( coordinates[i] );
             } catch( final CoodinatePathVariableParseException e ) {
-               /* TODO:  logging
-               if( logger.isTraceEnabled() ) {
-                  logger.trace( e );
-               }
-               */
-
                return String.format( "Latitude #%d: %s", (i + 1), e.getLocalizedMessage() );
             }
 
@@ -138,14 +133,10 @@ public class WsRestController {
       final String initialBearingStr;
       final Class<? extends CompassDirection> compassDirection;
 
-      if( StringUtils.isEmpty(compassTypeStr) ) {
-         return String.format( "No compass type was provided.  Valid compass types are %s", COMPASS_TYPE_MAP.keySet() );
-      } else {
-         compassDirection = COMPASS_TYPE_MAP.get( compassTypeStr );
-
-         if( compassDirection == null ) {
-            return String.format( "'%s' is an invalid compassType.  Valid values are %s", compassTypeStr, COMPASS_TYPE_MAP.keySet() );
-         }
+      try {
+         compassDirection = compassDirectionFromPathVar( compassTypeStr );
+      } catch( final CoodinatePathVariableParseException e ) {
+         return e.getLocalizedMessage();
       }
 
       final Point from;
@@ -155,13 +146,7 @@ public class WsRestController {
          from = pointFromPathVar( fromStr );
          to = pointFromPathVar( toStr );
       } catch( final CoodinatePathVariableParseException e ) {
-         /* TODO:  logging
-         if( logger.isTraceEnabled() ) {
-            logger.trace( e );
-         }
-         */
-
-         return String.format( "Invalid 'from' or 'to' value: %s", e.getMessage() );
+         return String.format( "Invalid value for 'from' or 'to': [%s]", e.getMessage() );
       }
 
       final Bearing<? extends CompassDirection> bearing = BearingCalculator.initialBearing( compassDirection, from, to );
@@ -171,17 +156,50 @@ public class WsRestController {
       return initialBearingStr;
    }
 
-   @RequestMapping( "backAzimuth/compassType/{compassType}/bearing/{bearing}" )
+   @RequestMapping( "backAzimuth/compassType/{compassType}/initialBearing/{initialBearing}" )
    public String backAzimuthRequest( @PathVariable("compassType") final String compassType,
-                                     @PathVariable("bearing") final String bearing ) {
+                                     @PathVariable("initialBearing") final String initialBearingStr ) {
 
+      final Class<? extends CompassDirection> compassDirection;
 
-      return "backAzimuth placeholder";
+      try {
+         compassDirection = compassDirectionFromPathVar( compassType );
+      } catch( final CoodinatePathVariableParseException e ) {
+         return e.getLocalizedMessage();
+      }
+
+      final  BigDecimal initialBearing;
+
+      try{
+         initialBearing = new BigDecimal( initialBearingStr );
+      } catch( final NumberFormatException e ) {
+         return String.format( "Invalid value for 'initialBearing':  [%s]", initialBearingStr );
+      }
+
+      Bearing<? extends CompassDirection> bearing = BearingCalculator.backAzimuth( compassDirection, initialBearing );
+
+      return bearing.getBearing() + "\n" + bearing.getCompassDirection().getAbbreviation();
    }
 
-   private static Latitude latitudeFromPathVar( final String s ) throws CoodinatePathVariableParseException {
+   private static Class<? extends CompassDirection> compassDirectionFromPathVar( final String pathVar ) throws CoodinatePathVariableParseException {
+      final Class<? extends CompassDirection> compassDirection;
 
-      final String split[] = s.split( ":" );
+      if( StringUtils.isEmpty(pathVar) ) {
+         throw new CoodinatePathVariableParseException( String.format( "No compass type was provided.  Valid compass types are %s", COMPASS_TYPE_MAP.keySet()) );
+      } else {
+         compassDirection = COMPASS_TYPE_MAP.get( pathVar );
+
+         if( compassDirection == null ) {
+            throw new CoodinatePathVariableParseException( String.format( "'%s' is an invalid compassType.  Valid values are %s", pathVar, COMPASS_TYPE_MAP.keySet()) );
+         }
+      }
+
+      return compassDirection;
+   }
+
+   private static Latitude latitudeFromPathVar( final String pathVar ) throws CoodinatePathVariableParseException {
+
+      final String split[] = pathVar.split( ":" );
 
       Double latDbl = null;
       Latitude latitude = null;
@@ -205,11 +223,11 @@ public class WsRestController {
       return latitude;
    }
 
-   private static Longitude longitudeFromPathVar( final String s ) throws CoodinatePathVariableParseException {
+   private static Longitude longitudeFromPathVar( final String pathVar ) throws CoodinatePathVariableParseException {
       Longitude longitude = null;
       Double lonDbl = null;
 
-      final String split[] = s.split( ":" );
+      final String split[] = pathVar.split( ":" );
 
       if( split != null && split.length != 2 ) {
          throw new CoodinatePathVariableParseException( String.format("%d token(s) detected instead of 2", split.length) );
@@ -230,7 +248,7 @@ public class WsRestController {
       return longitude;
    }
 
-   private static Point pointFromPathVar( final String s ) throws CoodinatePathVariableParseException {
-      return new Point( latitudeFromPathVar(s), longitudeFromPathVar(s) );
+   private static Point pointFromPathVar( final String pathVar ) throws CoodinatePathVariableParseException {
+      return new Point( latitudeFromPathVar(pathVar), longitudeFromPathVar(pathVar) );
    }
 }
