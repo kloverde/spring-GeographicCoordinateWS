@@ -58,7 +58,7 @@ With the application running locally, the WSDL is retrievable from http://localh
 
 ## Using the REST Web Service
 
-Okay, so this might not really qualify as a REST API.  It only uses `GET` because there's no use for the other HTTP verbs, and it's not like a `/books` URL where `/books` gives you a list of all books and `/books/sports` narrows it down to a list of sports books.  In fact, there's no discoverability at all because there's nothing to discover - all of the path variables are inputs into equations.  So I guess you can call it "RESTish".
+Okay, so this might not really qualify as a REST API.  `GET` is the only HTTP verb used (the others have no purpose in this context), and it's not like a `/books` URL where `/books` gives you a list of all books and `/books/sports` narrows it down to a list of sports books.  In fact, there's no discoverability at all because there's nothing to discover - all of the path variables are inputs into equations.  So I guess you can call it "RESTish".
 
 Anyway, each of the SOAP operations have a RESTish version:  distance, initial bearing and back azimuth calculations are all available via `GET`.  All responses are in JSON.
 
