@@ -56,6 +56,9 @@ import org.loverde.geographiccoordinate.compass.CompassDirection32;
 import org.loverde.geographiccoordinate.compass.CompassDirection8;
 import org.loverde.geographiccoordinate.exception.GeographicCoordinateException;
 import org.loverde.geographiccoordinate.ws.rest.exception.PathVariableParseException;
+import org.loverde.geographiccoordinate.ws.rest.model.BackAzimuthResponse;
+import org.loverde.geographiccoordinate.ws.rest.model.DistanceResponse;
+import org.loverde.geographiccoordinate.ws.rest.model.InitialBearingResponse;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -81,18 +84,20 @@ public class WsRestController {
 
 
    @RequestMapping( "distance/{unit}/{coordinates}" )
-   public String distanceRequest( @PathVariable final String unit,
-                                  @PathVariable final String ... coordinates ) {
+   public DistanceResponse distanceRequest( @PathVariable final String unit,
+                                            @PathVariable final String ... coordinates ) {
+
+      final DistanceResponse response = new DistanceResponse();
 
       DistanceCalculator.Unit distanceUnit = null;
       final Point points[];
       double distance = -1;
-      String distanceStr = null;
 
       try {
          distanceUnit = DistanceCalculator.Unit.valueOf( unit.toUpperCase() );
       } catch( final IllegalArgumentException e ) {
-         return String.format( "'%s' is an invalid unit of distance.  Valid values are %s", unit, Arrays.asList(DistanceCalculator.Unit.values()) );
+         response.setErrMsg( String.format("'%s' is an invalid unit of distance.  Valid values are %s", unit, Arrays.asList(DistanceCalculator.Unit.values())) );
+         return response;
       }
 
       if( distanceUnit != null ) {
@@ -106,7 +111,8 @@ public class WsRestController {
                latitude = latitudeFromPathVar( coordinates[i] );
                longitude = longitudeFromPathVar( coordinates[i] );
             } catch( final PathVariableParseException e ) {
-               return String.format( "Latitude #%d: %s", (i + 1), e.getLocalizedMessage() );
+               response.setErrMsg( String.format( "Latitude #%d: %s", (i + 1), e.getLocalizedMessage()) );
+               return response;
             }
 
             if( latitude != null && longitude != null ) {
@@ -115,28 +121,33 @@ public class WsRestController {
          }
 
          if( points.length < 2 ) {
-            return "Distance requires at least 2 sets of coordinates";
+            response.setErrMsg( "Distance requires at least 2 sets of coordinates" );
+            return response;
          } else {
             distance = DistanceCalculator.distance( distanceUnit, points );
-            distanceStr = Double.toString( distance );
          }
       }
 
-      return distanceStr;
+      response.setDistance( Double.toString(distance) );
+      response.setUnit( unit );
+
+      return response;
    }
 
    @RequestMapping( "initialBearing/compassType/{compassType}/from/{from}/to/{to}" )
-   public String initialBearingRequest( @PathVariable("compassType") final String compassTypeStr,
-                                        @PathVariable("from") final String fromStr,
-                                        @PathVariable("to") final String toStr ) {
+   public InitialBearingResponse initialBearingRequest( @PathVariable("compassType") final String compassTypeStr,
+                                                        @PathVariable("from") final String fromStr,
+                                                        @PathVariable("to") final String toStr ) {
 
-      final String initialBearingStr;
+      final InitialBearingResponse response = new InitialBearingResponse();
+
       final Class<? extends CompassDirection> compassDirection;
 
       try {
          compassDirection = compassDirectionFromPathVar( compassTypeStr );
       } catch( final PathVariableParseException e ) {
-         return e.getLocalizedMessage();
+         response.setErrMsg( e.getLocalizedMessage() );
+         return response;
       }
 
       final Point from;
@@ -146,26 +157,32 @@ public class WsRestController {
          from = pointFromPathVar( fromStr );
          to = pointFromPathVar( toStr );
       } catch( final PathVariableParseException e ) {
-         return String.format( "Invalid value for 'from' or 'to': [%s]", e.getMessage() );
+         response.setErrMsg( String.format( "Invalid value for 'from' or 'to': [%s]", e.getMessage()) );
+         return response;
       }
 
       final Bearing<? extends CompassDirection> bearing = BearingCalculator.initialBearing( compassDirection, from, to );
 
-      initialBearingStr = bearing.getBearing() + "\n" + bearing.getCompassDirection().getAbbreviation();
+      response.setBearing( bearing.getBearing().toPlainString() );
+      response.setCompassDirection( bearing.getCompassDirection().getAbbreviation() );
+      response.setCompassType( compassTypeStr );
 
-      return initialBearingStr;
+      return response;
    }
 
    @RequestMapping( "backAzimuth/compassType/{compassType}/initialBearing/{initialBearing}" )
-   public String backAzimuthRequest( @PathVariable("compassType") final String compassType,
-                                     @PathVariable("initialBearing") final String initialBearingStr ) {
+   public BackAzimuthResponse backAzimuthRequest( @PathVariable("compassType") final String compassTypeStr,
+                                                  @PathVariable("initialBearing") final String initialBearingStr ) {
+
+      final BackAzimuthResponse response = new BackAzimuthResponse();
 
       final Class<? extends CompassDirection> compassDirection;
 
       try {
-         compassDirection = compassDirectionFromPathVar( compassType );
+         compassDirection = compassDirectionFromPathVar( compassTypeStr );
       } catch( final PathVariableParseException e ) {
-         return e.getLocalizedMessage();
+         response.setErrMsg( e.getLocalizedMessage() );
+         return response;
       }
 
       final  BigDecimal initialBearing;
@@ -173,12 +190,16 @@ public class WsRestController {
       try {
          initialBearing = new BigDecimal( initialBearingStr );
       } catch( final NumberFormatException e ) {
-         return String.format( "Invalid value for 'initialBearing':  [%s]", initialBearingStr );
+         response.setErrMsg( String.format("Invalid value for 'initialBearing':  [%s]", initialBearingStr) );
+         return response;
       }
 
-      Bearing<? extends CompassDirection> bearing = BearingCalculator.backAzimuth( compassDirection, initialBearing );
+      final Bearing<? extends CompassDirection> bearing = BearingCalculator.backAzimuth( compassDirection, initialBearing );
 
-      return bearing.getBearing() + "\n" + bearing.getCompassDirection().getAbbreviation();
+      response.setBearing( bearing.getBearing().toPlainString() );
+      response.setCompassDirection( bearing.getCompassDirection().getAbbreviation() );
+      response.setCompassType( compassTypeStr );
+      return response;
    }
 
    private static Class<? extends CompassDirection> compassDirectionFromPathVar( final String pathVar ) throws PathVariableParseException {
