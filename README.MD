@@ -3,7 +3,9 @@ GeographicCoordinateWS
 
 See LICENSE for this software's licensing terms.  At first glance, it resembles the BSD-3 license, but it contains a significant difference which prohibits certain use.  Read it carefully.
 
-GeographicCoordinateWS is a Spring Boot application that exposes the functionality of my [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate) library as a SOAP Web service.  Although fully functional, it's still considered a work in progress.
+GeographicCoordinateWS is a Spring Boot application that exposes the functionality of my [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate) library as SOAP and REST Web services.
+
+Although fully functional, the application is still considered a work in progress.
 
 
 ## Development Environment
@@ -32,9 +34,9 @@ Eclipse seems to think it knows more about my project than I do.  Once the proje
 
 ## Building and Running
 
-You can specify whether the WSDL is generated dynamically or loaded from disk by modifying the `wsdl.dynamic` property in `application.properties`.  The included WSDL uses localhost as the endpoint, so unless the only client is on the same machine as the server, you'll want to overwrite the provided WSDL with a regenerated one.
+You can specify whether the WSDL is generated dynamically or loaded from disk by modifying the `wsdl.dynamic` property in `application.properties`.  The included WSDL uses localhost as the endpoint.  That won't work for you if you intend to actually deploy this application somewhere, so you'll want to overwrite the provided WSDL with a regenerated one.
 
-Eventually I'm going to change this so that a WAR is built, but for now, the build generates a Spring Boot uber jar.  Build in your IDE or, if you want to build from the command line:
+Eventually I'm going to change the build script so that it generates a WAR, but for now, it generates a Spring Boot uber jar.  Build in your IDE or, if you want to build from the command line:
 
 ```shell
 gradle bootJar
@@ -49,9 +51,28 @@ java -jar GeographicCoordinateWS-0.0.0.jar
 A batch script which launches the application with remote debugging enabled can be found in the root directory.
 
 
-## Accessing the Web Service
+## Using the SOAP Web Service
 
-The WSDL is retrievable from http://localhost:8080/GeographicCoordinateWS/GeographicCoordinateWS.wsdl.
+With the application running locally, the WSDL is retrievable from http://localhost:8080/GeographicCoordinateWS/soap/GeographicCoordinateWS.wsdl.
+
+
+## Using the REST Web Service
+
+Okay, so this might not really qualify as a REST API.  `GET` is the only HTTP verb used (the others have no purpose in this context), and it's not like a `/books` URL where `/books` gives you a list of all books and `/books/sports` narrows it down to a list of sports books.  In fact, there's no discoverability at all because there's nothing to discover - all of the path variables are inputs into equations.  So I guess you can call it "RESTish".
+
+Anyway, each of the SOAP operations have a RESTish version:  distance, initial bearing and back azimuth calculations are all available via `GET`.  All responses are in JSON.
+
+For URLs that accept lists of coordinates (where 'coordinate' means a latitude plus a longitude), coordinates are separated by commas.
+
+Latitude and longitude are separated by a colon.
+
+Examples:
+
+http://localhost:8080/GeographicCoordinateWS/rest/distance/miles/30.111:120.222,86.333:-110.122
+
+http://localhost:8080/GeographicCoordinateWS/rest/initialBearing/compassType/16/from/74.12:89.34/to/79.56:83.78
+
+http://localhost:8080/GeographicCoordinateWS/rest/backAzimuth/compassType/32/initialBearing/100.1123
 
 
 ## Donations
