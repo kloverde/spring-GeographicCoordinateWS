@@ -67,7 +67,7 @@ public class WsSoapConfig extends WsConfigurerAdapter {
 
    public static final String WS_NAME = "GeographicCoordinateWS";
 
-   private static final String SCHEMA_DIR = "schema/soap/";
+   private static final String SCHEMA_DIR = "schema/";
 
    @Value( "${wsdl.dynamic}" )
    private boolean dynamicWsdl;
@@ -91,13 +91,13 @@ public class WsSoapConfig extends WsConfigurerAdapter {
          final DefaultWsdl11Definition wsdl = new DefaultWsdl11Definition();
 
          wsdl.setPortTypeName( WS_NAME );
-         wsdl.setLocationUri( "/soap" );  // endpoint URL
+         wsdl.setLocationUri( WS_NAME + "/soap" );  // endpoint URL
          wsdl.setTargetNamespace( NAMESPACE );
          wsdl.setSchemaCollection( schema );
 
          wsdlDef = wsdl;
       } else {
-         wsdlDef = new SimpleWsdl11Definition( new ClassPathResource(SCHEMA_DIR + "GeographicCoordinateWS.wsdl") );
+         wsdlDef = new SimpleWsdl11Definition( new ClassPathResource(SCHEMA_DIR + WS_NAME + ".wsdl") );
       }
 
       return wsdlDef;

@@ -120,7 +120,7 @@
   </wsdl:binding>
   <wsdl:service name="GeographicCoordinateWSService">
     <wsdl:port binding="tns:GeographicCoordinateWSSoap11" name="GeographicCoordinateWSSoap11">
-      <soap:address location="http://localhost:8080/GeographicCoordinateWS"/>
+      <soap:address location="GeographicCoordinateWS/soap"/>
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>
