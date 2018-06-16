@@ -124,7 +124,12 @@ public class WsRestController {
             response.setErrorMessage( "Distance requires at least 2 sets of coordinates" );
             return response;
          } else {
-            distance = DistanceCalculator.distance( distanceUnit, points );
+            try {
+               distance = DistanceCalculator.distance( distanceUnit, points );
+            } catch( final GeographicCoordinateException gce ) {
+               response.setErrorMessage( gce.getLocalizedMessage() );
+               return response;
+            }
          }
       }
 
@@ -157,11 +162,18 @@ public class WsRestController {
          from = pointFromPathVar( fromStr );
          to = pointFromPathVar( toStr );
       } catch( final PathVariableParseException e ) {
-         response.setErrorMessage( String.format( "Invalid value for 'from' or 'to': [%s]", e.getMessage()) );
+         response.setErrorMessage( String.format( "Invalid value for 'from' or 'to': %s", e.getLocalizedMessage()) );
          return response;
       }
 
-      final Bearing<? extends CompassDirection> bearing = BearingCalculator.initialBearing( compassDirection, from, to );
+      final Bearing<? extends CompassDirection> bearing;
+
+      try {
+         bearing = BearingCalculator.initialBearing( compassDirection, from, to );
+      } catch( final GeographicCoordinateException gce ) {
+         response.setErrorMessage( gce.getLocalizedMessage() );
+         return response;
+      }
 
       response.setBearing( bearing.getBearing().toPlainString() );
       response.setCompassDirectionAbbr( bearing.getCompassDirection().getAbbreviation() );
@@ -195,7 +207,14 @@ public class WsRestController {
          return response;
       }
 
-      final Bearing<? extends CompassDirection> bearing = BearingCalculator.backAzimuth( compassDirection, initialBearing );
+      final Bearing<? extends CompassDirection> bearing;
+
+      try {
+         bearing = BearingCalculator.backAzimuth( compassDirection, initialBearing );
+      } catch( final GeographicCoordinateException gce ) {
+         response.setErrorMessage( gce.getLocalizedMessage() );
+         return response;
+      }
 
       response.setBearing( bearing.getBearing().toPlainString() );
       response.setCompassDirectionAbbr( bearing.getCompassDirection().getAbbreviation() );
