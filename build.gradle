@@ -95,7 +95,7 @@ dependencies {
       "org.springframework.boot:spring-boot-starter-web:2.0.2.RELEASE",
       "wsdl4j:wsdl4j:1.6.1",
       "org.apache.ws.xmlschema:xmlschema-core:2.2.3",
-      files( "lib/geographiccoordinate/geographiccoordinate-4.1.1.jar" ),
+      files( "lib/geographiccoordinate/geographiccoordinate-4.2.jar" ),
       compile( files(genJaxb.jaxbClassesDir).builtBy(genJaxb) )
    )
 
@@ -125,7 +125,7 @@ dependencies {
       "javax.xml.soap:javax.xml.soap-api:1.4.0",
       "com.sun.xml.messaging.saaj:saaj-impl:1.4.0",
       "org.apache.ws.xmlschema:xmlschema-core:2.2.3",
-      files( "lib/geographiccoordinate/geographiccoordinate-4.1.1.jar" ),
+      files( "lib/geographiccoordinate/geographiccoordinate-4.2.jar" ),
       files( "lib/numberutil/numberutil-1.0.jar" )
    )
 }

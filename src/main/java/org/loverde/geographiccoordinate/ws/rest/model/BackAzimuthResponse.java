@@ -42,7 +42,8 @@ package org.loverde.geographiccoordinate.ws.rest.model;
 public class BackAzimuthResponse extends RestResponse {
 
    private String compassType;
-   private String compassDirection;
+   private String compassDirectionAbbr;
+   private String compassDirectionText;
    private String bearing;
 
 
@@ -54,12 +55,20 @@ public class BackAzimuthResponse extends RestResponse {
       return compassType;
    }
 
-   public void setCompassDirection( final String compassDirection ) {
-      this.compassDirection = compassDirection;
+   public void setCompassDirectionAbbr( final String compassDirectionAbbr ) {
+      this.compassDirectionAbbr = compassDirectionAbbr;
    }
 
-   public String getCompassDirection() {
-      return compassDirection;
+   public String getCompassDirectionAbbr() {
+      return compassDirectionAbbr;
+   }
+
+   public void setCompassDirectionText( final String compassDirectionText ) {
+      this.compassDirectionText = compassDirectionText;
+   }
+
+   public String getCompassDirectionText() {
+      return compassDirectionText;
    }
 
    public void setBearing( final String bearing ) {

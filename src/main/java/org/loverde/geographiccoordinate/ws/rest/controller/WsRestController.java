@@ -96,7 +96,7 @@ public class WsRestController {
       try {
          distanceUnit = DistanceCalculator.Unit.valueOf( unit.toUpperCase() );
       } catch( final IllegalArgumentException e ) {
-         response.setErrMsg( String.format("'%s' is an invalid unit of distance.  Valid values are %s", unit, Arrays.asList(DistanceCalculator.Unit.values())) );
+         response.setErrorMessage( String.format("'%s' is an invalid unit of distance.  Valid values are %s", unit, Arrays.asList(DistanceCalculator.Unit.values())) );
          return response;
       }
 
@@ -111,7 +111,7 @@ public class WsRestController {
                latitude = latitudeFromPathVar( coordinates[i] );
                longitude = longitudeFromPathVar( coordinates[i] );
             } catch( final PathVariableParseException e ) {
-               response.setErrMsg( String.format( "Latitude #%d: %s", (i + 1), e.getLocalizedMessage()) );
+               response.setErrorMessage( String.format( "Latitude #%d: %s", (i + 1), e.getLocalizedMessage()) );
                return response;
             }
 
@@ -121,7 +121,7 @@ public class WsRestController {
          }
 
          if( points.length < 2 ) {
-            response.setErrMsg( "Distance requires at least 2 sets of coordinates" );
+            response.setErrorMessage( "Distance requires at least 2 sets of coordinates" );
             return response;
          } else {
             distance = DistanceCalculator.distance( distanceUnit, points );
@@ -146,7 +146,7 @@ public class WsRestController {
       try {
          compassDirection = compassDirectionFromPathVar( compassTypeStr );
       } catch( final PathVariableParseException e ) {
-         response.setErrMsg( e.getLocalizedMessage() );
+         response.setErrorMessage( e.getLocalizedMessage() );
          return response;
       }
 
@@ -157,14 +157,15 @@ public class WsRestController {
          from = pointFromPathVar( fromStr );
          to = pointFromPathVar( toStr );
       } catch( final PathVariableParseException e ) {
-         response.setErrMsg( String.format( "Invalid value for 'from' or 'to': [%s]", e.getMessage()) );
+         response.setErrorMessage( String.format( "Invalid value for 'from' or 'to': [%s]", e.getMessage()) );
          return response;
       }
 
       final Bearing<? extends CompassDirection> bearing = BearingCalculator.initialBearing( compassDirection, from, to );
 
       response.setBearing( bearing.getBearing().toPlainString() );
-      response.setCompassDirection( bearing.getCompassDirection().getAbbreviation() );
+      response.setCompassDirectionAbbr( bearing.getCompassDirection().getAbbreviation() );
+      response.setCompassDirectionText( bearing.getCompassDirection().getPrintName() );
       response.setCompassType( compassTypeStr );
 
       return response;
@@ -181,7 +182,7 @@ public class WsRestController {
       try {
          compassDirection = compassDirectionFromPathVar( compassTypeStr );
       } catch( final PathVariableParseException e ) {
-         response.setErrMsg( e.getLocalizedMessage() );
+         response.setErrorMessage( e.getLocalizedMessage() );
          return response;
       }
 
@@ -190,15 +191,17 @@ public class WsRestController {
       try {
          initialBearing = new BigDecimal( initialBearingStr );
       } catch( final NumberFormatException e ) {
-         response.setErrMsg( String.format("Invalid value for 'initialBearing':  [%s]", initialBearingStr) );
+         response.setErrorMessage( String.format("Invalid value for 'initialBearing':  [%s]", initialBearingStr) );
          return response;
       }
 
       final Bearing<? extends CompassDirection> bearing = BearingCalculator.backAzimuth( compassDirection, initialBearing );
 
       response.setBearing( bearing.getBearing().toPlainString() );
-      response.setCompassDirection( bearing.getCompassDirection().getAbbreviation() );
+      response.setCompassDirectionAbbr( bearing.getCompassDirection().getAbbreviation() );
+      response.setCompassDirectionText( bearing.getCompassDirection().getPrintName() );
       response.setCompassType( compassTypeStr );
+
       return response;
    }
 

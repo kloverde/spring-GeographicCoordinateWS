@@ -14,7 +14,7 @@ Although fully functional, the application is still considered a work in progres
 2. Gradle 4.7
 3. Eclipse Oxygen.3a (4.7.3a)
 
-Java 10 or later is required unless you want to take the time to get older versions to work.  This is due to a dependency on my [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate) library, which requires Java 10.  See GeographicCoordinate 4.0's release notes for an explanation about why that is.  If you absolutely must use an older version of Java, you can use a pre-4.0 release of GeographicCoordinate if you want to -- bugs and all -- but only if the `Specification-Version` matches the one packaged with GeographicCoordinateWS.  You'll also need to tweak `build.gradle`.
+Java 10 or later is required unless you want to invest the time to get things working on older Java.  This is due to a dependency on version 4.2 of my [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate) library, which is compiled for Java 10 and has required APIs that aren't present in earlier versions.  Rebuilding v4.2 on older Java might or might not succeed with JUnit tests enabled due to a floating point bug in *some, but not all* earlier JREs.  See GeographicCoordinate 4.0's release notes for more information.  You'll also need to tweak `build.gradle` in GeographicCoordinateWS.
 
 Other versions of Gradle (earlier or later) may or may not work.  I've come to learn that Gradle is still going through growing pains, unfortunately.
 

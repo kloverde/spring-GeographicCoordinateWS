@@ -41,43 +41,43 @@ package org.loverde.geographiccoordinate.ws.rest.model;
 
 public class RestResponse {
 
-   private String id;
-   private String errMsg;
+   private String echoValue;
+   private String errorMessage;
 
 
    /**
-    * Sets a client-specified unique identifier, if needed to pair the response with the request that generated it.
+    * Sets an optional client-supplied value that gets echoed back in the response
     *
     * @param id Any string
     */
-   public void setId( final String id ) {
-      this.id = id;
+   public void setEchoValue( final String echoValue ) {
+      this.echoValue = echoValue;
    }
 
    /**
-    * If defined, returns a client-specified unique identifier to pair the response with the request that generated it
+    * An optional client-supplied value that gets echoed back in the response
     *
     * @return Any string
     */
-   public String getId() {
-      return id;
+   public String getEchoValue() {
+      return echoValue;
    }
 
    /**
-    * If this value is populated, the request was not processed successfully.
+    * If this value is not null, the request was not processed successfully
     *
-    * @param errMsg
+    * @param errorMessage
     */
-   public void setErrMsg( final String errMsg ) {
-      this.errMsg = errMsg;
+   public void setErrorMessage( final String errorMessage ) {
+      this.errorMessage = errorMessage;
    }
 
    /**
-    * If this value is populated, the request was not processed successfully.
+    * If this value is not null, the request was not processed successfully
     *
     * @return
     */
    public String getErrMsg() {
-      return errMsg;
+      return errorMessage;
    }
 }
