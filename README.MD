@@ -60,10 +60,14 @@ With the application running locally, the WSDL is retrievable from http://localh
 
 #### Distance
 
-Examples
+For URLs that accept lists of coordinates (where 'coordinate' means a latitude plus a longitude), coordinates are separated by commas.
+
+Latitude and longitude are separated by a colon instead of the typical comma.
+
+Examples:
 
 http://localhost:8080/GeographicCoordinateWS/rest/distance/miles/30.111:120.222,86.333:-110.122
-http://localhost:8080/GeographicCoordinateWS/rest/initialBearing/compassType/compass_type_16/from/74.12,89.34/to/79.56,83.78
+http://localhost:8080/GeographicCoordinateWS/rest/initialBearing/compassType/16/from/74.12:89.34/to/79.56:83.78
 http://localhost:8080/GeographicCoordinateWS/rest/backAzimuth/compassType/32/bearing/100.1123
 
 

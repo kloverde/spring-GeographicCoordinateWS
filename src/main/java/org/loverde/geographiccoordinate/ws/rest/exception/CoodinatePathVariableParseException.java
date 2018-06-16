@@ -36,7 +36,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.rest.controller;
+package org.loverde.geographiccoordinate.ws.rest.exception;
 
 
 public class CoodinatePathVariableParseException extends Exception {
@@ -44,23 +44,23 @@ public class CoodinatePathVariableParseException extends Exception {
    private static final long serialVersionUID = 6213391990206312434L;
 
 
-   CoodinatePathVariableParseException() {
+   public CoodinatePathVariableParseException() {
       super();
    }
 
-   CoodinatePathVariableParseException( final String message ) {
+   public CoodinatePathVariableParseException( final String message ) {
       super( message );
    }
 
-   CoodinatePathVariableParseException( final Throwable cause ) {
+   public CoodinatePathVariableParseException( final Throwable cause ) {
       super( cause );
    }
 
-   CoodinatePathVariableParseException( final String message, final Throwable cause ) {
+   public CoodinatePathVariableParseException( final String message, final Throwable cause ) {
       super( message, cause );
    }
 
-   CoodinatePathVariableParseException( final String message, final Throwable cause, final boolean enableSuppression, final boolean writeableStackTrace ) {
+   public CoodinatePathVariableParseException( final String message, final Throwable cause, final boolean enableSuppression, final boolean writeableStackTrace ) {
       super( message, cause, enableSuppression, writeableStackTrace );
    }
 }
