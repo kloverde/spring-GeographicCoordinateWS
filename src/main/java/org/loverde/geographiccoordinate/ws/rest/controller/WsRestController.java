@@ -55,7 +55,7 @@ import org.loverde.geographiccoordinate.compass.CompassDirection16;
 import org.loverde.geographiccoordinate.compass.CompassDirection32;
 import org.loverde.geographiccoordinate.compass.CompassDirection8;
 import org.loverde.geographiccoordinate.exception.GeographicCoordinateException;
-import org.loverde.geographiccoordinate.ws.rest.exception.CoodinatePathVariableParseException;
+import org.loverde.geographiccoordinate.ws.rest.exception.PathVariableParseException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -105,7 +105,7 @@ public class WsRestController {
             try {
                latitude = latitudeFromPathVar( coordinates[i] );
                longitude = longitudeFromPathVar( coordinates[i] );
-            } catch( final CoodinatePathVariableParseException e ) {
+            } catch( final PathVariableParseException e ) {
                return String.format( "Latitude #%d: %s", (i + 1), e.getLocalizedMessage() );
             }
 
@@ -135,7 +135,7 @@ public class WsRestController {
 
       try {
          compassDirection = compassDirectionFromPathVar( compassTypeStr );
-      } catch( final CoodinatePathVariableParseException e ) {
+      } catch( final PathVariableParseException e ) {
          return e.getLocalizedMessage();
       }
 
@@ -145,7 +145,7 @@ public class WsRestController {
       try {
          from = pointFromPathVar( fromStr );
          to = pointFromPathVar( toStr );
-      } catch( final CoodinatePathVariableParseException e ) {
+      } catch( final PathVariableParseException e ) {
          return String.format( "Invalid value for 'from' or 'to': [%s]", e.getMessage() );
       }
 
@@ -164,7 +164,7 @@ public class WsRestController {
 
       try {
          compassDirection = compassDirectionFromPathVar( compassType );
-      } catch( final CoodinatePathVariableParseException e ) {
+      } catch( final PathVariableParseException e ) {
          return e.getLocalizedMessage();
       }
 
@@ -181,23 +181,23 @@ public class WsRestController {
       return bearing.getBearing() + "\n" + bearing.getCompassDirection().getAbbreviation();
    }
 
-   private static Class<? extends CompassDirection> compassDirectionFromPathVar( final String pathVar ) throws CoodinatePathVariableParseException {
+   private static Class<? extends CompassDirection> compassDirectionFromPathVar( final String pathVar ) throws PathVariableParseException {
       final Class<? extends CompassDirection> compassDirection;
 
       if( StringUtils.isEmpty(pathVar) ) {
-         throw new CoodinatePathVariableParseException( String.format( "No compass type was provided.  Valid compass types are %s", COMPASS_TYPE_MAP.keySet()) );
+         throw new PathVariableParseException( String.format( "No compass type was provided.  Valid compass types are %s", COMPASS_TYPE_MAP.keySet()) );
       } else {
          compassDirection = COMPASS_TYPE_MAP.get( pathVar );
 
          if( compassDirection == null ) {
-            throw new CoodinatePathVariableParseException( String.format( "'%s' is an invalid compassType.  Valid values are %s", pathVar, COMPASS_TYPE_MAP.keySet()) );
+            throw new PathVariableParseException( String.format( "'%s' is an invalid compassType.  Valid values are %s", pathVar, COMPASS_TYPE_MAP.keySet()) );
          }
       }
 
       return compassDirection;
    }
 
-   private static Latitude latitudeFromPathVar( final String pathVar ) throws CoodinatePathVariableParseException {
+   private static Latitude latitudeFromPathVar( final String pathVar ) throws PathVariableParseException {
 
       final String split[] = pathVar.split( ":" );
 
@@ -205,50 +205,50 @@ public class WsRestController {
       Latitude latitude = null;
 
       if( split != null && split.length != 2 ) {
-         throw new CoodinatePathVariableParseException( String.format("%d token(s) detected instead of 2", split.length) );
+         throw new PathVariableParseException( String.format("%d token(s) detected instead of 2", split.length) );
       }
 
       try {
          latDbl = Double.valueOf( split[0] );
       } catch( final NumberFormatException nfe ) {
-         throw new CoodinatePathVariableParseException( String.format("not a number [%s]", split[0]), nfe );
+         throw new PathVariableParseException( String.format("not a number [%s]", split[0]), nfe );
       }
 
       try {
          latitude = new Latitude( latDbl );
       } catch( final GeographicCoordinateException gce ) {
-         throw new CoodinatePathVariableParseException( String.format("[%s]:  %s", split[0], gce.getLocalizedMessage()), gce );
+         throw new PathVariableParseException( String.format("[%s]:  %s", split[0], gce.getLocalizedMessage()), gce );
       }
 
       return latitude;
    }
 
-   private static Longitude longitudeFromPathVar( final String pathVar ) throws CoodinatePathVariableParseException {
+   private static Longitude longitudeFromPathVar( final String pathVar ) throws PathVariableParseException {
       Longitude longitude = null;
       Double lonDbl = null;
 
       final String split[] = pathVar.split( ":" );
 
       if( split != null && split.length != 2 ) {
-         throw new CoodinatePathVariableParseException( String.format("%d token(s) detected instead of 2", split.length) );
+         throw new PathVariableParseException( String.format("%d token(s) detected instead of 2", split.length) );
       }
 
       try {
          lonDbl = Double.valueOf( split[1] );
       } catch( final NumberFormatException nfe ) {
-         throw new CoodinatePathVariableParseException( String.format("not a number [%s]", split[1]), nfe );
+         throw new PathVariableParseException( String.format("not a number [%s]", split[1]), nfe );
       }
 
       try {
          longitude = new Longitude( lonDbl );
       } catch( final GeographicCoordinateException gce ) {
-         throw new CoodinatePathVariableParseException( String.format("[%s]:  %s", split[1], gce.getLocalizedMessage()), gce );
+         throw new PathVariableParseException( String.format("[%s]:  %s", split[1], gce.getLocalizedMessage()), gce );
       }
 
       return longitude;
    }
 
-   private static Point pointFromPathVar( final String pathVar ) throws CoodinatePathVariableParseException {
+   private static Point pointFromPathVar( final String pathVar ) throws PathVariableParseException {
       return new Point( latitudeFromPathVar(pathVar), longitudeFromPathVar(pathVar) );
    }
 }

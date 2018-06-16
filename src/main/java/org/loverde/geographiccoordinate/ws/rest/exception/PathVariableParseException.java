@@ -39,28 +39,28 @@
 package org.loverde.geographiccoordinate.ws.rest.exception;
 
 
-public class CoodinatePathVariableParseException extends Exception {
+public class PathVariableParseException extends Exception {
 
    private static final long serialVersionUID = 6213391990206312434L;
 
 
-   public CoodinatePathVariableParseException() {
+   public PathVariableParseException() {
       super();
    }
 
-   public CoodinatePathVariableParseException( final String message ) {
+   public PathVariableParseException( final String message ) {
       super( message );
    }
 
-   public CoodinatePathVariableParseException( final Throwable cause ) {
+   public PathVariableParseException( final Throwable cause ) {
       super( cause );
    }
 
-   public CoodinatePathVariableParseException( final String message, final Throwable cause ) {
+   public PathVariableParseException( final String message, final Throwable cause ) {
       super( message, cause );
    }
 
-   public CoodinatePathVariableParseException( final String message, final Throwable cause, final boolean enableSuppression, final boolean writeableStackTrace ) {
+   public PathVariableParseException( final String message, final Throwable cause, final boolean enableSuppression, final boolean writeableStackTrace ) {
       super( message, cause, enableSuppression, writeableStackTrace );
    }
 }
