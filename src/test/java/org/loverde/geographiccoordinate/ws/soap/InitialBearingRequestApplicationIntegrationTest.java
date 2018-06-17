@@ -75,7 +75,7 @@ public class InitialBearingRequestApplicationIntegrationTest {
    @Autowired
    private AutowireableObjectFactory factory;
 
-   private String ENDPOINT_URL = "http://localhost:8080/GeographicCoordinateWS";
+   private String ENDPOINT_URL = "http://localhost:8080/GeographicCoordinateWS/soap";
 
    private final Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
 
