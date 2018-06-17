@@ -131,3 +131,4 @@ dependencies {
 }
 
 compileJava.dependsOn clean, genJaxb
+bootJar.dependsOn test
