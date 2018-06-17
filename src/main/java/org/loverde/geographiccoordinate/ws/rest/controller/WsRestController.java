@@ -62,7 +62,6 @@ import org.loverde.geographiccoordinate.ws.rest.model.InitialBearingResponse;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -106,11 +105,9 @@ public class WsRestController {
     */
    @RequestMapping( "distance/{unit}/{coordinates}" )
    public DistanceResponse distanceRequest( @PathVariable final String unit,
-                                            @PathVariable final String coordinates[],
-                                            @RequestParam(required = false) final String correlationId ) {
+                                            @PathVariable final String coordinates[] ) {
 
       final DistanceResponse response = new DistanceResponse();
-      response.setCorrelationId( correlationId );
 
       DistanceCalculator.Unit distanceUnit = null;
       final Point points[];
@@ -185,11 +182,9 @@ public class WsRestController {
    @RequestMapping( "initialBearing/compassType/{compassType}/from/{from}/to/{to}" )
    public InitialBearingResponse initialBearingRequest( @PathVariable("compassType") final String compassTypeStr,
                                                         @PathVariable("from") final String fromStr,
-                                                        @PathVariable("to") final String toStr,
-                                                        @RequestParam(required = false) final String correlationId ) {
+                                                        @PathVariable("to") final String toStr ) {
 
       final InitialBearingResponse response = new InitialBearingResponse();
-      response.setCorrelationId( correlationId );
 
       final Class<? extends CompassDirection> compassDirection;
 
@@ -230,11 +225,9 @@ public class WsRestController {
 
    @RequestMapping( "backAzimuth/compassType/{compassType}/initialBearing/{initialBearing}" )
    public BackAzimuthResponse backAzimuthRequest( @PathVariable("compassType")    final String compassTypeStr,
-                                                  @PathVariable("initialBearing") final String initialBearingStr,
-                                                  @RequestParam(required = false) final String correlationId ) {
+                                                  @PathVariable("initialBearing") final String initialBearingStr ) {
 
       final BackAzimuthResponse response = new BackAzimuthResponse();
-      response.setCorrelationId( correlationId );
 
       final Class<? extends CompassDirection> compassDirection;
 

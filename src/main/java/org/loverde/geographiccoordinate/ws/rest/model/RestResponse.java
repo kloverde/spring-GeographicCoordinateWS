@@ -41,27 +41,8 @@ package org.loverde.geographiccoordinate.ws.rest.model;
 
 public class RestResponse {
 
-   private String correlationId;
    private String errorMessage;
 
-
-   /**
-    * Sets an optional client-supplied value that gets echoed back in the response
-    *
-    * @param correlationId Any string
-    */
-   public void setCorrelationId( final String correlationId ) {
-      this.correlationId = correlationId;
-   }
-
-   /**
-    * An optional client-supplied value that gets echoed back in the response
-    *
-    * @return Any string
-    */
-   public String getCorrelationId() {
-      return correlationId;
-   }
 
    /**
     * If this value is not null, the request was not processed successfully

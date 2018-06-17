@@ -67,21 +67,21 @@ Each of the SOAP operations have a RESTish version which return JSON.  A high-le
 
 `GET` /GeographicCoordinateWS/rest/distance/[unit]/[coordinates]
 
-http://localhost:8080/GeographicCoordinateWS/rest/distance/miles/35.048983:118.987977,35.084629:119.025986,35.110199:119.053642?correlationId=4D72F9A458
+http://localhost:8080/GeographicCoordinateWS/rest/distance/miles/35.048983:118.987977,35.084629:119.025986,35.110199:119.053642
 
 
 #### Initial Bearing
 
 `GET` /GeographicCoordinateWS/rest/initialBearing/compassType/[compass type]/from/[coordinate]/to/[coordinate]
 
-http://localhost:8080/GeographicCoordinateWS/rest/initialBearing/compassType/32/from/74.12:89.34/to/79.56:83.78?correlationId=8A7E294F1
+http://localhost:8080/GeographicCoordinateWS/rest/initialBearing/compassType/32/from/74.12:89.34/to/79.56:83.78
 
 
 #### Back Azimuth
 
 `GET` GeographicCoordinateWS/rest/backAzimuth/compassType/[compass type]/initialBearing/[bearing]
 
-http://localhost:8080/GeographicCoordinateWS/rest/backAzimuth/compassType/16/initialBearing/119.1123?correlationId=94H3W6E28
+http://localhost:8080/GeographicCoordinateWS/rest/backAzimuth/compassType/16/initialBearing/119.1123
 
 
 ## Donations
