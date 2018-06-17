@@ -41,17 +41,17 @@ package org.loverde.geographiccoordinate.ws.rest.model;
 
 public class RestResponse {
 
-   private String echoValue;
+   private String correlationId;
    private String errorMessage;
 
 
    /**
     * Sets an optional client-supplied value that gets echoed back in the response
     *
-    * @param id Any string
+    * @param correlationId Any string
     */
-   public void setEchoValue( final String echoValue ) {
-      this.echoValue = echoValue;
+   public void setCorrelationId( final String correlationId ) {
+      this.correlationId = correlationId;
    }
 
    /**
@@ -59,8 +59,8 @@ public class RestResponse {
     *
     * @return Any string
     */
-   public String getEchoValue() {
-      return echoValue;
+   public String getCorrelationId() {
+      return correlationId;
    }
 
    /**

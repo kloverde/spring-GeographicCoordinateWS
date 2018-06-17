@@ -62,6 +62,7 @@ import org.loverde.geographiccoordinate.ws.rest.model.InitialBearingResponse;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -70,7 +71,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class WsRestController {
 
    private static Map<String, Class<? extends CompassDirection>> COMPASS_TYPE_MAP;
-
 
    static {
       final Map<String, Class<? extends CompassDirection>> tempMap = new LinkedHashMap<>();
@@ -82,12 +82,35 @@ public class WsRestController {
       COMPASS_TYPE_MAP = Collections.unmodifiableMap( tempMap );
    }
 
-
+   /**
+    * <p>
+    * Gets the total distance between an unlimited number of points.  For example, if the distance
+    * from point A to point B is 3, and the distance from point B to point C is 2, the total
+    * distance traveled will be (3 + 2) = 5.  Just pass coordinates in the order in which they're
+    * visited.
+    * </p>
+    *
+    * @param unit Any value from the {@linkplain DistanceCalculator.Unit} enumeration.  This value is case-insensitive.
+    *
+    * @param coordinates A comma-separated list of latitude/longitude pairs, where the latitude and longitude are in decimal form and are
+    *                    separated by a colon.  Any number of coordinates are supported, up to the browser's ability to handle the URL
+    *                    length.  This limit varies from browser to browser.  For requests that might challenge this limit, such as a
+    *                    list of many coordinates, and/or coordinates with large fractional parts, you may have to split one large
+    *                    request into smaller requests and add the results together yourself.
+    *
+    * @param correlationId Not evaluated by the application.  This value is simply echoed back in the response.
+    *
+    * @return A JSON representation of {@linkplain DistanceResponse}
+    *
+    * @see DistanceCalculator#distance(org.loverde.geographiccoordinate.calculator.DistanceCalculator.Unit, org.loverde.geographiccoordinate.Point...)
+    */
    @RequestMapping( "distance/{unit}/{coordinates}" )
    public DistanceResponse distanceRequest( @PathVariable final String unit,
-                                            @PathVariable final String ... coordinates ) {
+                                            @PathVariable final String coordinates[],
+                                            @RequestParam(required = false) final String correlationId ) {
 
       final DistanceResponse response = new DistanceResponse();
+      response.setCorrelationId( correlationId );
 
       DistanceCalculator.Unit distanceUnit = null;
       final Point points[];
@@ -139,12 +162,34 @@ public class WsRestController {
       return response;
    }
 
+   /**
+    * <p>
+    * Calculates the initial bearing that will take you from point A to point B.  Keep in mind that the bearing
+    * will change over the course of the trip and will need to be recalculated.
+    * </p>
+    *
+    * @param compassTypeStr Specifies the compass type (whether an 8, 16 or 32-point compass). Valid values are "8", "16"
+    *                       and "32".  This affects the compass direction returned in the response.  It does not affect
+    *                       the returned bearing.
+    *
+    * @param fromStr The starting point.  A latitude/longitude pair, where the latitude and longitude are in decimal form
+    *                and separated by a colon.
+    *
+    * @param toStr The ending point.  A latitude/longitude pair, where the latitude and longitude are in decimal form and
+    *              separated by a colon.
+    *
+    * @param correlationId Not evaluated by the application.  This value is simply echoed back in the response.
+    *
+    * @return A JSON representation of {@linkplain InitialBearingResponse}
+    */
    @RequestMapping( "initialBearing/compassType/{compassType}/from/{from}/to/{to}" )
    public InitialBearingResponse initialBearingRequest( @PathVariable("compassType") final String compassTypeStr,
                                                         @PathVariable("from") final String fromStr,
-                                                        @PathVariable("to") final String toStr ) {
+                                                        @PathVariable("to") final String toStr,
+                                                        @RequestParam(required = false) final String correlationId ) {
 
       final InitialBearingResponse response = new InitialBearingResponse();
+      response.setCorrelationId( correlationId );
 
       final Class<? extends CompassDirection> compassDirection;
 
@@ -184,10 +229,12 @@ public class WsRestController {
    }
 
    @RequestMapping( "backAzimuth/compassType/{compassType}/initialBearing/{initialBearing}" )
-   public BackAzimuthResponse backAzimuthRequest( @PathVariable("compassType") final String compassTypeStr,
-                                                  @PathVariable("initialBearing") final String initialBearingStr ) {
+   public BackAzimuthResponse backAzimuthRequest( @PathVariable("compassType")    final String compassTypeStr,
+                                                  @PathVariable("initialBearing") final String initialBearingStr,
+                                                  @RequestParam(required = false) final String correlationId ) {
 
       final BackAzimuthResponse response = new BackAzimuthResponse();
+      response.setCorrelationId( correlationId );
 
       final Class<? extends CompassDirection> compassDirection;
 
@@ -228,12 +275,12 @@ public class WsRestController {
       final Class<? extends CompassDirection> compassDirection;
 
       if( StringUtils.isEmpty(pathVar) ) {
-         throw new PathVariableParseException( String.format( "No compass type was provided.  Valid compass types are %s", COMPASS_TYPE_MAP.keySet()) );
+         throw new PathVariableParseException( String.format("No compass type was provided.  Valid compass types are %s", COMPASS_TYPE_MAP.keySet()) );
       } else {
          compassDirection = COMPASS_TYPE_MAP.get( pathVar );
 
          if( compassDirection == null ) {
-            throw new PathVariableParseException( String.format( "'%s' is an invalid compassType.  Valid values are %s", pathVar, COMPASS_TYPE_MAP.keySet()) );
+            throw new PathVariableParseException( String.format("'%s' is an invalid compassType.  Valid values are %s", pathVar, COMPASS_TYPE_MAP.keySet()) );
          }
       }
 

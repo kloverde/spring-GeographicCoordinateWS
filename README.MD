@@ -60,19 +60,28 @@ With the application running locally, the WSDL is retrievable from http://localh
 
 Okay, so this might not really qualify as a REST API.  `GET` is the only HTTP verb used (the others have no purpose in this context), and it's not like a `/books` URL where `/books` gives you a list of all books and `/books/sports` narrows it down to a list of sports books.  In fact, there's no discoverability at all because there's nothing to discover - all of the path variables are inputs into equations.  So I guess you can call it "RESTish".
 
-Anyway, each of the SOAP operations have a RESTish version:  distance, initial bearing and back azimuth calculations are all available via `GET`.  All responses are in JSON.
+Each of the SOAP operations have a RESTish version which return JSON.  A high-level summary is provided below.  See the `WsRestController` javadoc for more detail.
 
-For URLs that accept lists of coordinates (where 'coordinate' means a latitude plus a longitude), coordinates are separated by commas.
 
-Latitude and longitude are separated by a colon.
+#### Distance
 
-Examples:
+`GET` /GeographicCoordinateWS/rest/distance/[unit]/[coordinates]
 
-http://localhost:8080/GeographicCoordinateWS/rest/distance/miles/30.111:120.222,86.333:-110.122
+http://localhost:8080/GeographicCoordinateWS/rest/distance/miles/35.048983:118.987977,35.084629:119.025986,35.110199:119.053642?correlationId=4D72F9A458
 
-http://localhost:8080/GeographicCoordinateWS/rest/initialBearing/compassType/16/from/74.12:89.34/to/79.56:83.78
 
-http://localhost:8080/GeographicCoordinateWS/rest/backAzimuth/compassType/32/initialBearing/100.1123
+#### Initial Bearing
+
+`GET` /GeographicCoordinateWS/rest/initialBearing/compassType/[compass type]/from/[coordinate]/to/[coordinate]
+
+http://localhost:8080/GeographicCoordinateWS/rest/initialBearing/compassType/32/from/74.12:89.34/to/79.56:83.78?correlationId=8A7E294F1
+
+
+#### Back Azimuth
+
+`GET` GeographicCoordinateWS/rest/backAzimuth/compassType/[compass type]/initialBearing/[bearing]
+
+http://localhost:8080/GeographicCoordinateWS/rest/backAzimuth/compassType/16/initialBearing/119.1123?correlationId=94H3W6E28
 
 
 ## Donations
