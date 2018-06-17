@@ -59,6 +59,7 @@ import org.loverde.geographiccoordinate.ws.rest.exception.PathVariableParseExcep
 import org.loverde.geographiccoordinate.ws.rest.model.BackAzimuthResponse;
 import org.loverde.geographiccoordinate.ws.rest.model.DistanceResponse;
 import org.loverde.geographiccoordinate.ws.rest.model.InitialBearingResponse;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -131,7 +132,7 @@ public class WsRestController {
                latitude = latitudeFromPathVar( coordinates[i] );
                longitude = longitudeFromPathVar( coordinates[i] );
             } catch( final PathVariableParseException e ) {
-               response.setErrorMessage( String.format( "Latitude #%d: %s", (i + 1), e.getLocalizedMessage()) );
+               response.setErrorMessage( String.format("Coordinate #%d: %s", (i + 1), e.getLocalizedMessage()) );
                return response;
             }
 
@@ -153,7 +154,7 @@ public class WsRestController {
          }
       }
 
-      response.setDistance( Double.toString(distance) );
+      response.setDistance( distance );
       response.setUnit( unit );
 
       return response;
@@ -202,7 +203,7 @@ public class WsRestController {
          from = pointFromPathVar( fromStr );
          to = pointFromPathVar( toStr );
       } catch( final PathVariableParseException e ) {
-         response.setErrorMessage( String.format( "Invalid value for 'from' or 'to': %s", e.getLocalizedMessage()) );
+         response.setErrorMessage( String.format("Invalid value for 'from' or 'to': %s", e.getLocalizedMessage()) );
          return response;
       }
 
@@ -282,19 +283,19 @@ public class WsRestController {
 
    private static Latitude latitudeFromPathVar( final String pathVar ) throws PathVariableParseException {
 
-      final String split[] = pathVar.split( ":" );
+      final String split[] = pathVar.split( ":", 2 );
 
       Double latDbl = null;
       Latitude latitude = null;
 
-      if( split != null && split.length != 2 ) {
-         throw new PathVariableParseException( String.format("%d token(s) detected instead of 2", split.length) );
+      if( ObjectUtils.isEmpty(split) || split.length == 1 || StringUtils.isEmpty(split[0]) || StringUtils.isEmpty(split[1]) ) {
+         throw new PathVariableParseException( String.format("1 token detected instead of 2", split.length) );
       }
 
       try {
          latDbl = Double.valueOf( split[0] );
       } catch( final NumberFormatException nfe ) {
-         throw new PathVariableParseException( String.format("not a number [%s]", split[0]), nfe );
+         throw new PathVariableParseException( String.format("Not a number [%s]", split[0]), nfe );
       }
 
       try {
@@ -310,16 +311,16 @@ public class WsRestController {
       Longitude longitude = null;
       Double lonDbl = null;
 
-      final String split[] = pathVar.split( ":" );
+      final String split[] = pathVar.split( ":", 2 );
 
-      if( split != null && split.length != 2 ) {
-         throw new PathVariableParseException( String.format("%d token(s) detected instead of 2", split.length) );
+      if( ObjectUtils.isEmpty(split) || split.length == 1 || StringUtils.isEmpty(split[0]) || StringUtils.isEmpty(split[1]) ) {
+         throw new PathVariableParseException( String.format("1 token detected instead of 2", split.length) );
       }
 
       try {
          lonDbl = Double.valueOf( split[1] );
       } catch( final NumberFormatException nfe ) {
-         throw new PathVariableParseException( String.format("not a number [%s]", split[1]), nfe );
+         throw new PathVariableParseException( String.format("Not a number [%s]", split[1]), nfe );
       }
 
       try {

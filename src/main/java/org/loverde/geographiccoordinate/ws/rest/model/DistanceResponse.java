@@ -42,14 +42,14 @@ package org.loverde.geographiccoordinate.ws.rest.model;
 public class DistanceResponse extends RestResponse {
 
    private String unit;
-   private String distance;
+   private Double distance;
 
 
    public void setUnit( final String unit ) {
       this.unit = unit;
    }
 
-   public void setDistance( final String distance ) {
+   public void setDistance( final Double distance ) {
       this.distance = distance;
    }
 
@@ -57,7 +57,7 @@ public class DistanceResponse extends RestResponse {
       return unit;
    }
 
-   public String getDistance() {
+   public Double getDistance() {
       return distance;
    }
 }
