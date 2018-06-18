@@ -29,7 +29,17 @@ If you're an Eclipse user, you'll know that this is not where Eclipse keeps them
 
 If you want to use them, read `.eclipse_project_files/README.txt` for a description of the Eclipse plugins you'll need to install.  Copy `.classpath` and `.project` to the project root directory, then import the project.
 
-Eclipse seems to think it knows more about my project than I do.  Once the project is imported, Eclipse might do something annoying:  it might automatically remove the `generated-sources` directory from the build path, thus modifying the .classpath file you copied just a moment before.  It does this because the directory doesn't exist; the directory is created by running the `genJaxb` target.  So, after generating the JAXB classes, you'll need to overwrite .classpath with the version you initially copied.  After that, you're in business.  If you know how to get Eclipse to stop doing that, let me know.
+After importing, you can prevent Eclipse from showing .class files in the Open Resources dialog by setting the following directories as derived:
+
+* bin
+* build/classes
+* build/generated-classes
+
+Right click the folder -> click 'properties' -> click the 'derived' checkbox
+
+Then, in the Open Resources dialog, click the down arrow in the top right, and make sure "show derived resources" is not enabled.  It would be nice if this configuration were saved in .project or .settings, but the Eclipse developers don't seem keen on doing it: [bug1](https://bugs.eclipse.org/bugs/show_bug.cgi?id=150578) [bug2](https://bugs.eclipse.org/bugs/show_bug.cgi?id=30440).
+
+One more Eclipse annoyance:  Eclipse seems to think it knows more about my project than I do.  Once the project is imported, Eclipse might do something annoying:  it might automatically remove the `generated-sources` directory from the build path, thus modifying the .classpath file you copied just a moment before.  It does this because the directory doesn't exist; the directory is created by running the `genJaxb` target.  So, after generating the JAXB classes, you'll need to overwrite .classpath with the version you initially copied.  After that, you're in business.  If you know how to get Eclipse to stop doing that, let me know.
 
 
 ## Building and Running
