@@ -21,7 +21,7 @@ Other versions of Gradle (earlier or later) may or may not work.  I've come to l
 Your Eclipse version shouldn't matter, but if you want to make use of the included pre-configured project files, you'll need certain plugins.  See the [IDE Setup](#ide-setup) section for information about that.
 
 
-## IDE Setup
+## Eclipse Setup
 
 In the root directory, you'll find a subdirectory named `.eclipse_project_files`, which contains... you guessed it, Eclipse project files.  They enable you to import a pre-configured project that "just works" so that you don't have to fuss around.
 
