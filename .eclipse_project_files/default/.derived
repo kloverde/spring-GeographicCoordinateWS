@@ -1,3 +1,7 @@
+## AutoDeriv configuration file
+##
+## Click the dropdown in the Open Resources dialog to hide derived resources.
+
 !/		# Default everything to not derived
 /bin	# Eclipse-managed directory
 /build  # Gradle/Buildship-managed directory
