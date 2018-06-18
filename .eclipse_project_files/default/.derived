@@ -1,5 +1,5 @@
 !/		# Default everything to not derived
 /bin	# Eclipse-managed directory
-/build  # Buildship-managed directory
+/build  # Gradle/Buildship-managed directory
 
 !/build/generated-sources   # Make JAXB classes available from the Open Resources dialog
