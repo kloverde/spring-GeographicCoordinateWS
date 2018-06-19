@@ -38,13 +38,14 @@
 
 package org.loverde.geographiccoordinate.ws.rest.model;
 
+import java.math.BigDecimal;
 
 public class InitialBearingResponse extends RestResponse {
 
    private String compassType;
    private String compassDirectionAbbr;
    private String compassDirectionText;
-   private String bearing;
+   private BigDecimal bearing;
 
 
    public void setCompassType( final String compassType ) {
@@ -71,11 +72,11 @@ public class InitialBearingResponse extends RestResponse {
       return compassDirectionText;
    }
 
-   public void setBearing( final String bearing ) {
+   public void setBearing( final BigDecimal bearing ) {
       this.bearing = bearing;
    }
 
-   public String getBearing() {
+   public BigDecimal getBearing() {
       return bearing;
    }
 }

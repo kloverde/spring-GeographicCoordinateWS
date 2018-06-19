@@ -201,9 +201,15 @@ public class WsRestController {
 
       try {
          from = pointFromPathVar( fromStr );
+      } catch( final PathVariableParseException e ) {
+         response.setErrorMessage( String.format("'From' coordinate: %s", e.getLocalizedMessage()) );
+         return response;
+      }
+
+      try {
          to = pointFromPathVar( toStr );
       } catch( final PathVariableParseException e ) {
-         response.setErrorMessage( String.format("Invalid value for 'from' or 'to': %s", e.getLocalizedMessage()) );
+         response.setErrorMessage( String.format("'To' coordinate: %s", e.getLocalizedMessage()) );
          return response;
       }
 
@@ -216,7 +222,7 @@ public class WsRestController {
          return response;
       }
 
-      response.setBearing( bearing.getBearing().toPlainString() );
+      response.setBearing( bearing.getBearing() );
       response.setCompassDirectionAbbr( bearing.getCompassDirection().getAbbreviation() );
       response.setCompassDirectionText( bearing.getCompassDirection().getPrintName() );
       response.setCompassType( compassTypeStr );
@@ -244,7 +250,7 @@ public class WsRestController {
       try {
          initialBearing = new BigDecimal( initialBearingStr );
       } catch( final NumberFormatException e ) {
-         response.setErrorMessage( String.format("Invalid value for 'initialBearing':  [%s]", initialBearingStr) );
+         response.setErrorMessage( String.format("Invalid value for 'initialBearing': [%s]", initialBearingStr) );
          return response;
       }
 
@@ -274,7 +280,7 @@ public class WsRestController {
          compassDirection = COMPASS_TYPE_MAP.get( pathVar );
 
          if( compassDirection == null ) {
-            throw new PathVariableParseException( String.format("'%s' is an invalid compassType.  Valid values are %s", pathVar, COMPASS_TYPE_MAP.keySet()) );
+            throw new PathVariableParseException( String.format("'%s' is an invalid compassType.  Valid values are %s.", pathVar, COMPASS_TYPE_MAP.keySet()) );
          }
       }
 
@@ -301,7 +307,7 @@ public class WsRestController {
       try {
          latitude = new Latitude( latDbl );
       } catch( final GeographicCoordinateException gce ) {
-         throw new PathVariableParseException( String.format("[%s]:  %s", split[0], gce.getLocalizedMessage()), gce );
+         throw new PathVariableParseException( String.format("[%s]: %s", split[0], gce.getLocalizedMessage()), gce );
       }
 
       return latitude;
@@ -326,7 +332,7 @@ public class WsRestController {
       try {
          longitude = new Longitude( lonDbl );
       } catch( final GeographicCoordinateException gce ) {
-         throw new PathVariableParseException( String.format("[%s]:  %s", split[1], gce.getLocalizedMessage()), gce );
+         throw new PathVariableParseException( String.format("[%s]: %s", split[1], gce.getLocalizedMessage()), gce );
       }
 
       return longitude;
