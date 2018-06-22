@@ -3,9 +3,9 @@ GeographicCoordinateWS
 
 See LICENSE for this software's licensing terms.  At first glance, it resembles the BSD-3 license, but it contains a significant difference which prohibits certain use.  Read it carefully.
 
-GeographicCoordinateWS is a Spring Boot application that exposes the functionality of my [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate) library as SOAP and REST Web services.
+GeographicCoordinateWS is a Spring Boot application that exposes the functionality of my [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate) library's various calculators as SOAP and REST Web services.
 
-Although fully functional, the application is still considered a work in progress.
+It should be noted that although this application is considered feature-complete, and I don't know what else I'd want to do to it, I haven't officially released it yet.  This means that undocumented changes could be made at any time.
 
 
 ## Development Environment
@@ -36,7 +36,7 @@ Eclipse seems to think it knows more about my project than I do.  Once the proje
 
 You can specify whether the WSDL is generated dynamically or loaded from disk by modifying the `wsdl.dynamic` property in `application.properties`.  The included WSDL uses localhost as the endpoint.  That won't work for you if you intend to actually deploy this application somewhere, so you'll want to overwrite the provided WSDL with a regenerated one.
 
-Eventually I'm going to change the build script so that it generates a WAR, but for now, it generates a Spring Boot uber jar.  Build in your IDE or, if you want to build from the command line:
+Eventually I might change the build script so that it generates a WAR, but for now, it generates a Spring Boot uber jar.  Build in your IDE or, if you want to build from the command line:
 
 ```shell
 gradle bootJar
