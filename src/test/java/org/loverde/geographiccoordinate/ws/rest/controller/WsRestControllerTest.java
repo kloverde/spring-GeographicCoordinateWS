@@ -69,12 +69,14 @@ public class WsRestControllerTest {
                          AZIMUTH_BASE  = URL_BASE + "backAzimuth/";
 
 
-   // distance
-   private static final JsonPathResultMatchers JSON_ERRORMESSAGE = jsonPath( "$.errorMessage" ),
-                                               JSON_UNIT         = jsonPath( "$.unit" ),
+   // RestResponse
+   private static final JsonPathResultMatchers JSON_ERRORMESSAGE = jsonPath( "$.errorMessage" );
+
+   // DistanceResponse
+   private static final JsonPathResultMatchers JSON_UNIT         = jsonPath( "$.unit" ),
                                                JSON_DISTANCE     = jsonPath( "$.distance" );
 
-   // initial bearing
+   // InitialBearingResponse, BackAzimuthResponse
    private static final JsonPathResultMatchers JSON_COMPASS_TYPE = jsonPath( "$.compassType" ),
                                                JSON_COMPASS_ABBR = jsonPath( "$.compassDirectionAbbr" ),
                                                JSON_COMPASS_DIR  = jsonPath( "$.compassDirectionText" ),
@@ -417,8 +419,6 @@ public class WsRestControllerTest {
       ra2.andExpect( status().isNotFound() );
    }
 
-   /////////////////////////////////////
-
    @Test
    public void initialBearing_fail_coordinate1MissingLatitude() throws Exception {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/:89.34/to/47.56:67.78") );
@@ -626,6 +626,146 @@ public class WsRestControllerTest {
 
       ra.andExpect( status().isOk() );
       ra.andExpect( JSON_ERRORMESSAGE.value("'To' coordinate: [180.000001]: Longitude must be in a range of -180 to 180") );
+      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
+      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
+      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
+      ra.andExpect( JSON_BEARING.isEmpty() );
+   }
+
+   @Test
+   public void backAzimuth_pass_allCompassTypes() throws Exception {
+      final ResultActions ra1 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/8/initialBearing/257.78") );
+
+      ra1.andExpect( status().isOk() );
+      ra1.andExpect( JSON_ERRORMESSAGE.isEmpty() );
+      ra1.andExpect( JSON_COMPASS_TYPE.value("8") );
+      ra1.andExpect( JSON_COMPASS_ABBR.value("E") );
+      ra1.andExpect( JSON_COMPASS_DIR.value("east") );
+      ra1.andExpect( JSON_BEARING.value("77.78") );
+
+      final ResultActions ra2 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/16/initialBearing/257.78") );
+
+      ra2.andExpect( status().isOk() );
+      ra2.andExpect( JSON_ERRORMESSAGE.isEmpty() );
+      ra2.andExpect( JSON_COMPASS_TYPE.value("16") );
+      ra2.andExpect( JSON_COMPASS_ABBR.value("ENE") );
+      ra2.andExpect( JSON_COMPASS_DIR.value("east northeast") );
+      ra2.andExpect( JSON_BEARING.value("77.78") );
+
+      final ResultActions ra3 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/32/initialBearing/257.78") );
+
+      ra3.andExpect( status().isOk() );
+      ra3.andExpect( JSON_ERRORMESSAGE.isEmpty() );
+      ra3.andExpect( JSON_COMPASS_TYPE.value("32") );
+      ra3.andExpect( JSON_COMPASS_ABBR.value("EbN") );
+      ra3.andExpect( JSON_COMPASS_DIR.value("east by north") );
+      ra3.andExpect( JSON_BEARING.value("77.78") );
+   }
+
+   @Test
+   public void backAzimuth_pass_initialBearingMinRange() throws Exception {
+      final ResultActions ra = mockMvc.perform( get(AZIMUTH_BASE + "compassType/8/initialBearing/0") );
+
+      ra.andExpect( status().isOk() );
+      ra.andExpect( JSON_ERRORMESSAGE.isEmpty() );
+      ra.andExpect( JSON_COMPASS_TYPE.value("8") );
+      ra.andExpect( JSON_COMPASS_ABBR.value("S") );
+      ra.andExpect( JSON_COMPASS_DIR.value("south") );
+      ra.andExpect( JSON_BEARING.value("180") );
+   }
+
+   @Test
+   public void backAzimuth_pass_initialBearingMaxRange() throws Exception {
+      final ResultActions ra = mockMvc.perform( get(AZIMUTH_BASE + "compassType/8/initialBearing/360") );
+
+      ra.andExpect( status().isOk() );
+      ra.andExpect( JSON_ERRORMESSAGE.isEmpty() );
+      ra.andExpect( JSON_COMPASS_TYPE.value("8") );
+      ra.andExpect( JSON_COMPASS_ABBR.value("S") );
+      ra.andExpect( JSON_COMPASS_DIR.value("south") );
+      ra.andExpect( JSON_BEARING.value("180") );
+   }
+
+   public void backAzimuth_fail_incorrectCompassType() throws Exception {
+      final ResultActions ra1 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/2/initialBearing/267.78") );
+
+      ra1.andExpect( status().isOk() );
+      ra1.andExpect( JSON_ERRORMESSAGE.value("'2' is an invalid compassType.  Valid values are [8, 16, 32].") );
+      ra1.andExpect( JSON_COMPASS_TYPE.isEmpty() );
+      ra1.andExpect( JSON_COMPASS_ABBR.isEmpty() );
+      ra1.andExpect( JSON_COMPASS_DIR.isEmpty() );
+      ra1.andExpect( JSON_BEARING.isEmpty() );
+
+      final ResultActions ra2 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/eight/initialBearing/267.78") );
+
+      ra2.andExpect( status().isOk() );
+      ra2.andExpect( JSON_ERRORMESSAGE.value("'eight' is an invalid compassType.  Valid values are [8, 16, 32].") );
+      ra2.andExpect( JSON_COMPASS_TYPE.isEmpty() );
+      ra2.andExpect( JSON_COMPASS_ABBR.isEmpty() );
+      ra2.andExpect( JSON_COMPASS_DIR.isEmpty() );
+      ra2.andExpect( JSON_BEARING.isEmpty() );
+   }
+
+   public void backAzimuth_fail_missingCompassType() throws Exception {
+      final ResultActions ra1 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/initialBearing/267.78") );
+      ra1.andExpect( status().isNotFound() );
+
+      final ResultActions ra2 = mockMvc.perform( get(AZIMUTH_BASE + "compassType//initialBearing/267.78") );
+      ra2.andExpect( status().isNotFound() );
+
+      final ResultActions ra3 = mockMvc.perform( get(AZIMUTH_BASE + "8/initialBearing/267.78") );
+      ra3.andExpect( status().isNotFound() );
+   }
+
+   public void backAzimuth_fail_missingInitialBearing() throws Exception {
+      final ResultActions ra1 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/8/initialBearing") );
+      ra1.andExpect( status().isNotFound() );
+
+      final ResultActions ra2 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/8/initialBearing//") );
+      ra2.andExpect( status().isNotFound() );
+
+      final ResultActions ra3 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/8/267.78") );
+      ra3.andExpect( status().isNotFound() );
+   }
+
+   @Test
+   public void backAzimuth_fail_initialBearingNaN() throws Exception {
+      final ResultActions ra1 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/8/initialBearing/2a67.78") );
+
+      ra1.andExpect( status().isOk() );
+      ra1.andExpect( JSON_ERRORMESSAGE.value("'initialBearing': Not a number [2a67.78]") );
+      ra1.andExpect( JSON_COMPASS_TYPE.isEmpty() );
+      ra1.andExpect( JSON_COMPASS_ABBR.isEmpty() );
+      ra1.andExpect( JSON_COMPASS_DIR.isEmpty() );
+      ra1.andExpect( JSON_BEARING.isEmpty() );
+
+      final ResultActions ra2 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/8/initialBearing/267..78") );
+
+      ra2.andExpect( status().isOk() );
+      ra2.andExpect( JSON_ERRORMESSAGE.value("'initialBearing': Not a number [267..78]") );
+      ra2.andExpect( JSON_COMPASS_TYPE.isEmpty() );
+      ra2.andExpect( JSON_COMPASS_ABBR.isEmpty() );
+      ra2.andExpect( JSON_COMPASS_DIR.isEmpty() );
+      ra2.andExpect( JSON_BEARING.isEmpty() );
+   }
+
+   @Test
+   public void backAzimuth_fail_initialBearingMinValue() throws Exception {
+      final ResultActions ra = mockMvc.perform( get(AZIMUTH_BASE + "compassType/8/initialBearing/-.000001") );
+
+      ra.andExpect( status().isOk() );
+      ra.andExpect( JSON_ERRORMESSAGE.value("Bearing is out of range [0, 360]") );
+      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
+      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
+      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
+      ra.andExpect( JSON_BEARING.isEmpty() );
+   }
+
+   public void backAzimuth_fail_initialBearingMaxValue() throws Exception {
+      final ResultActions ra = mockMvc.perform( get(AZIMUTH_BASE + "compassType/8/initialBearing/360.000001") );
+
+      ra.andExpect( status().isOk() );
+      ra.andExpect( JSON_ERRORMESSAGE.value("Bearing is out of range [0, 360]") );
       ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
       ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
       ra.andExpect( JSON_COMPASS_DIR.isEmpty() );

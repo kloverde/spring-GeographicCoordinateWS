@@ -250,7 +250,7 @@ public class WsRestController {
       try {
          initialBearing = new BigDecimal( initialBearingStr );
       } catch( final NumberFormatException e ) {
-         response.setErrorMessage( String.format("Invalid value for 'initialBearing': [%s]", initialBearingStr) );
+         response.setErrorMessage( String.format("'initialBearing': Not a number [%s]", initialBearingStr) );
          return response;
       }
 
