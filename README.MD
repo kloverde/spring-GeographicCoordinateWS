@@ -18,7 +18,7 @@ Java 10 or later is required unless you want to invest the time to get things wo
 
 Other versions of Gradle (earlier or later) may or may not work.  I've come to learn that Gradle is still going through growing pains, unfortunately.
 
-Your Eclipse version shouldn't matter, but if you want to make use of the included pre-configured project files, you'll need certain plugins.  See the [IDE Setup](#ide-setup) section for information about that.
+Your Eclipse version shouldn't matter, but if you want to make use of the included pre-configured project files, you'll need certain plugins.  See the [Eclipse Setup](#eclipse-setup) section for information about that.
 
 
 ## Eclipse Setup
