@@ -47,7 +47,7 @@ task genJaxb {
               destdir : "${jaxbSourcesDir}",
               schema  : "${schema}"
          ) {
-            arg( value: "-wsdl" )
+            //arg( value: "-wsdl" )
             produces( dir: jaxbSourcesDir, includes: "**/*.java" )
          }
 
