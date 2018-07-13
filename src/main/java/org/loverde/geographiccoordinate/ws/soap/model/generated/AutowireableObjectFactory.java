@@ -48,7 +48,7 @@ import org.springframework.stereotype.Component;
  * It does not add or change functionality.
  */
 @Component
-public class AutowireableObjectFactory extends ObjectFactory {
+public final class AutowireableObjectFactory extends ObjectFactory {
 
    public AutowireableObjectFactory() {
       super();
