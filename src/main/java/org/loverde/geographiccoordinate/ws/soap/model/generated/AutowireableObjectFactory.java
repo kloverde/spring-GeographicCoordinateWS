@@ -44,8 +44,7 @@ import org.springframework.stereotype.Component;
 /**
  * This class extends the JAXB-generated ObjectFactory class to make it usable with
  * {@literal @}Autowired without adding hacks like adding an annotation to the class
- * post-generation, and without having to define it as a bean in XML configuration.
- * It does not add or change functionality.
+ * post-generation.  Functionality is completely unchanged.
  */
 @Component
 public final class AutowireableObjectFactory extends ObjectFactory {

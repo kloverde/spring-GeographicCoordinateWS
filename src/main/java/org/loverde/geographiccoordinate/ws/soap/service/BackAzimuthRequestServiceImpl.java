@@ -53,7 +53,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class BackAzimuthServiceImpl implements BackAzimuthRequestService {
+public class BackAzimuthRequestServiceImpl implements BackAzimuthRequestService {
 
    @Autowired
    private AutowireableObjectFactory objectFactory;

@@ -61,6 +61,7 @@ import org.loverde.geographiccoordinate.ws.rest.model.DistanceResponse;
 import org.loverde.geographiccoordinate.ws.rest.model.InitialBearingResponse;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -98,13 +99,11 @@ public class WsRestController {
     *                    list of many coordinates, and/or coordinates with large fractional parts, you may have to split one large
     *                    request into smaller requests and add the results together yourself.
     *
-    * @param correlationId Not evaluated by the application.  This value is simply echoed back in the response.
-    *
     * @return A JSON representation of {@linkplain DistanceResponse}
     *
     * @see DistanceCalculator#distance(org.loverde.geographiccoordinate.calculator.DistanceCalculator.Unit, org.loverde.geographiccoordinate.Point...)
     */
-   @RequestMapping( "distance/{unit}/{coordinates}" )
+   @GetMapping( "distance/{unit}/{coordinates}" )
    public DistanceResponse distanceRequest( @PathVariable final String unit,
                                             @PathVariable final String coordinates[] ) {
 
@@ -176,11 +175,9 @@ public class WsRestController {
     * @param toStr The ending point.  A latitude/longitude pair, where the latitude and longitude are in decimal form and
     *              separated by a colon.
     *
-    * @param correlationId Not evaluated by the application.  This value is simply echoed back in the response.
-    *
     * @return A JSON representation of {@linkplain InitialBearingResponse}
     */
-   @RequestMapping( "initialBearing/compassType/{compassType}/from/{from}/to/{to}" )
+   @GetMapping( "initialBearing/compassType/{compassType}/from/{from}/to/{to}" )
    public InitialBearingResponse initialBearingRequest( @PathVariable("compassType") final String compassTypeStr,
                                                         @PathVariable("from") final String fromStr,
                                                         @PathVariable("to") final String toStr ) {
@@ -230,7 +227,7 @@ public class WsRestController {
       return response;
    }
 
-   @RequestMapping( "backAzimuth/compassType/{compassType}/initialBearing/{initialBearing}" )
+   @GetMapping( "backAzimuth/compassType/{compassType}/initialBearing/{initialBearing}" )
    public BackAzimuthResponse backAzimuthRequest( @PathVariable("compassType")    final String compassTypeStr,
                                                   @PathVariable("initialBearing") final String initialBearingStr ) {
 

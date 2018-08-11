@@ -111,7 +111,7 @@ public class WsSoapConfig extends WsConfigurerAdapter {
        validatingInterceptor.setValidateResponse( true );
        validatingInterceptor.setXsdSchemaCollection( schemas() );
 
-       interceptors.add(validatingInterceptor);
+       interceptors.add( validatingInterceptor );
    }
 
    @Bean
