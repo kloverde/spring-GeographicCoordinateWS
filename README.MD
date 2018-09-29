@@ -58,7 +58,13 @@ With the application running locally, the WSDL is retrievable from http://localh
 
 ## Using the REST Web Service
 
-Each of the SOAP operations have a REST version which return JSON.  A high-level summary is provided below.  See the `WsRestController` javadoc for more detail.
+The REST service responds with the following HTTP status codes:
+
+* 200:  Request was successfully processed
+* 400:  Request was malformed
+* 422:  Request was correctly formed but semantically incorrect.  Example:  a provided latitude is out of range.
+
+A high-level summary of supported requests is provided below.  See the `WsRestController` javadoc for more detail.
 
 
 #### Distance

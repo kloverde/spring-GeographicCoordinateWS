@@ -44,6 +44,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.loverde.geographiccoordinate.Bearing;
 import org.loverde.geographiccoordinate.Latitude;
 import org.loverde.geographiccoordinate.Longitude;
@@ -55,10 +57,11 @@ import org.loverde.geographiccoordinate.compass.CompassDirection16;
 import org.loverde.geographiccoordinate.compass.CompassDirection32;
 import org.loverde.geographiccoordinate.compass.CompassDirection8;
 import org.loverde.geographiccoordinate.exception.GeographicCoordinateException;
-import org.loverde.geographiccoordinate.ws.rest.exception.PathVariableParseException;
+import org.loverde.geographiccoordinate.ws.rest.exception.MalformedDataException;
 import org.loverde.geographiccoordinate.ws.rest.model.BackAzimuthResponse;
 import org.loverde.geographiccoordinate.ws.rest.model.DistanceResponse;
 import org.loverde.geographiccoordinate.ws.rest.model.InitialBearingResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -104,7 +107,8 @@ public class WsRestController {
     * @see DistanceCalculator#distance(org.loverde.geographiccoordinate.calculator.DistanceCalculator.Unit, org.loverde.geographiccoordinate.Point...)
     */
    @GetMapping( "distance/{unit}/{coordinates}" )
-   public DistanceResponse distanceRequest( @PathVariable final String unit,
+   public DistanceResponse distanceRequest( final HttpServletResponse httpResponse,
+                                            @PathVariable final String unit,
                                             @PathVariable final String coordinates[] ) {
 
       final DistanceResponse response = new DistanceResponse();
@@ -113,9 +117,12 @@ public class WsRestController {
       final Point points[];
       double distance = -1;
 
+      httpResponse.setStatus( HttpStatus.OK.value() );
+
       try {
          distanceUnit = DistanceCalculator.Unit.valueOf( unit.toUpperCase() );
       } catch( final IllegalArgumentException e ) {
+         httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
          response.setErrorMessage( String.format("'%s' is an invalid unit of distance.  Valid values are %s", unit, Arrays.asList(DistanceCalculator.Unit.values())) );
          return response;
       }
@@ -130,7 +137,12 @@ public class WsRestController {
             try {
                latitude = latitudeFromPathVar( coordinates[i] );
                longitude = longitudeFromPathVar( coordinates[i] );
-            } catch( final PathVariableParseException e ) {
+            } catch( final MalformedDataException e ) {
+               httpResponse.setStatus( HttpStatus.BAD_REQUEST.value() );
+               response.setErrorMessage( String.format("Coordinate #%d: %s", (i + 1), e.getLocalizedMessage()) );
+               return response;
+            } catch( final IllegalArgumentException | GeographicCoordinateException e ) {
+               httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
                response.setErrorMessage( String.format("Coordinate #%d: %s", (i + 1), e.getLocalizedMessage()) );
                return response;
             }
@@ -141,12 +153,14 @@ public class WsRestController {
          }
 
          if( points.length < 2 ) {
+            httpResponse.setStatus( HttpStatus.BAD_REQUEST.value() );
             response.setErrorMessage( "Distance requires at least 2 sets of coordinates" );
             return response;
          } else {
             try {
                distance = DistanceCalculator.distance( distanceUnit, points );
             } catch( final GeographicCoordinateException gce ) {
+               httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
                response.setErrorMessage( gce.getLocalizedMessage() );
                return response;
             }
@@ -178,7 +192,8 @@ public class WsRestController {
     * @return A JSON representation of {@linkplain InitialBearingResponse}
     */
    @GetMapping( "initialBearing/compassType/{compassType}/from/{from}/to/{to}" )
-   public InitialBearingResponse initialBearingRequest( @PathVariable("compassType") final String compassTypeStr,
+   public InitialBearingResponse initialBearingRequest( final HttpServletResponse httpResponse,
+                                                        @PathVariable("compassType") final String compassTypeStr,
                                                         @PathVariable("from") final String fromStr,
                                                         @PathVariable("to") final String toStr ) {
 
@@ -186,9 +201,11 @@ public class WsRestController {
 
       final Class<? extends CompassDirection> compassDirection;
 
+      httpResponse.setStatus( HttpStatus.OK.value() );
+
       try {
          compassDirection = compassDirectionFromPathVar( compassTypeStr );
-      } catch( final PathVariableParseException e ) {
+      } catch( final MalformedDataException e ) {
          response.setErrorMessage( e.getLocalizedMessage() );
          return response;
       }
@@ -198,14 +215,24 @@ public class WsRestController {
 
       try {
          from = pointFromPathVar( fromStr );
-      } catch( final PathVariableParseException e ) {
+      } catch( final MalformedDataException e ) {
+         httpResponse.setStatus( HttpStatus.BAD_REQUEST.value() );
+         response.setErrorMessage( String.format("'From' coordinate: %s", e.getLocalizedMessage()) );
+         return response;
+      } catch( final IllegalArgumentException | GeographicCoordinateException e ) {
+         httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
          response.setErrorMessage( String.format("'From' coordinate: %s", e.getLocalizedMessage()) );
          return response;
       }
 
       try {
          to = pointFromPathVar( toStr );
-      } catch( final PathVariableParseException e ) {
+      } catch( final MalformedDataException e ) {
+         httpResponse.setStatus( HttpStatus.BAD_REQUEST.value() );
+         response.setErrorMessage( String.format("'To' coordinate: %s", e.getLocalizedMessage()) );
+         return response;
+      } catch( final IllegalArgumentException | GeographicCoordinateException e ) {
+         httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
          response.setErrorMessage( String.format("'To' coordinate: %s", e.getLocalizedMessage()) );
          return response;
       }
@@ -228,7 +255,8 @@ public class WsRestController {
    }
 
    @GetMapping( "backAzimuth/compassType/{compassType}/initialBearing/{initialBearing}" )
-   public BackAzimuthResponse backAzimuthRequest( @PathVariable("compassType")    final String compassTypeStr,
+   public BackAzimuthResponse backAzimuthRequest( final HttpServletResponse httpResponse,
+                                                  @PathVariable("compassType")    final String compassTypeStr,
                                                   @PathVariable("initialBearing") final String initialBearingStr ) {
 
       final BackAzimuthResponse response = new BackAzimuthResponse();
@@ -237,7 +265,8 @@ public class WsRestController {
 
       try {
          compassDirection = compassDirectionFromPathVar( compassTypeStr );
-      } catch( final PathVariableParseException e ) {
+      } catch( final MalformedDataException e ) {
+         httpResponse.setStatus( HttpStatus.BAD_REQUEST.value() );
          response.setErrorMessage( e.getLocalizedMessage() );
          return response;
       }
@@ -247,6 +276,7 @@ public class WsRestController {
       try {
          initialBearing = new BigDecimal( initialBearingStr );
       } catch( final NumberFormatException e ) {
+         httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
          response.setErrorMessage( String.format("'initialBearing': Not a number [%s]", initialBearingStr) );
          return response;
       }
@@ -256,6 +286,7 @@ public class WsRestController {
       try {
          bearing = BearingCalculator.backAzimuth( compassDirection, initialBearing );
       } catch( final GeographicCoordinateException gce ) {
+         httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
          response.setErrorMessage( gce.getLocalizedMessage() );
          return response;
       }
@@ -268,23 +299,23 @@ public class WsRestController {
       return response;
    }
 
-   private static Class<? extends CompassDirection> compassDirectionFromPathVar( final String pathVar ) throws PathVariableParseException {
+   private static Class<? extends CompassDirection> compassDirectionFromPathVar( final String pathVar ) throws MalformedDataException {
       final Class<? extends CompassDirection> compassDirection;
 
       if( StringUtils.isEmpty(pathVar) ) {
-         throw new PathVariableParseException( String.format("No compass type was provided.  Valid compass types are %s", COMPASS_TYPE_MAP.keySet()) );
+         throw new MalformedDataException( String.format("No compass type was provided.  Valid compass types are %s", COMPASS_TYPE_MAP.keySet()) );
       } else {
          compassDirection = COMPASS_TYPE_MAP.get( pathVar );
 
          if( compassDirection == null ) {
-            throw new PathVariableParseException( String.format("'%s' is an invalid compassType.  Valid values are %s.", pathVar, COMPASS_TYPE_MAP.keySet()) );
+            throw new MalformedDataException( String.format("'%s' is an invalid compassType.  Valid values are %s.", pathVar, COMPASS_TYPE_MAP.keySet()) );
          }
       }
 
       return compassDirection;
    }
 
-   private static Latitude latitudeFromPathVar( final String pathVar ) throws PathVariableParseException {
+   private static Latitude latitudeFromPathVar( final String pathVar ) throws MalformedDataException, IllegalArgumentException, GeographicCoordinateException {
 
       final String split[] = pathVar.split( ":", 2 );
 
@@ -292,50 +323,50 @@ public class WsRestController {
       Latitude latitude = null;
 
       if( ObjectUtils.isEmpty(split) || split.length == 1 || StringUtils.isEmpty(split[0]) || StringUtils.isEmpty(split[1]) ) {
-         throw new PathVariableParseException( String.format("1 token detected instead of 2", split.length) );
+         throw new MalformedDataException( String.format("1 token detected instead of 2", split.length) );
       }
 
       try {
          latDbl = Double.valueOf( split[0] );
       } catch( final NumberFormatException nfe ) {
-         throw new PathVariableParseException( String.format("Not a number [%s]", split[0]), nfe );
+         throw new IllegalArgumentException( String.format("Not a number [%s]", split[0]), nfe );
       }
 
       try {
          latitude = new Latitude( latDbl );
       } catch( final GeographicCoordinateException gce ) {
-         throw new PathVariableParseException( String.format("[%s]: %s", split[0], gce.getLocalizedMessage()), gce );
+         throw new GeographicCoordinateException( String.format("[%s]: %s", split[0], gce.getLocalizedMessage()), gce );
       }
 
       return latitude;
    }
 
-   private static Longitude longitudeFromPathVar( final String pathVar ) throws PathVariableParseException {
+   private static Longitude longitudeFromPathVar( final String pathVar ) throws MalformedDataException, IllegalArgumentException, GeographicCoordinateException {
       Longitude longitude = null;
       Double lonDbl = null;
 
       final String split[] = pathVar.split( ":", 2 );
 
       if( ObjectUtils.isEmpty(split) || split.length == 1 || StringUtils.isEmpty(split[0]) || StringUtils.isEmpty(split[1]) ) {
-         throw new PathVariableParseException( String.format("1 token detected instead of 2", split.length) );
+         throw new MalformedDataException( String.format("1 token detected instead of 2", split.length) );
       }
 
       try {
          lonDbl = Double.valueOf( split[1] );
       } catch( final NumberFormatException nfe ) {
-         throw new PathVariableParseException( String.format("Not a number [%s]", split[1]), nfe );
+         throw new IllegalArgumentException( String.format("Not a number [%s]", split[1]), nfe );
       }
 
       try {
          longitude = new Longitude( lonDbl );
       } catch( final GeographicCoordinateException gce ) {
-         throw new PathVariableParseException( String.format("[%s]: %s", split[1], gce.getLocalizedMessage()), gce );
+         throw new GeographicCoordinateException( String.format("[%s]: %s", split[1], gce.getLocalizedMessage()), gce );
       }
 
       return longitude;
    }
 
-   private static Point pointFromPathVar( final String pathVar ) throws PathVariableParseException {
+   private static Point pointFromPathVar( final String pathVar ) throws MalformedDataException {
       return new Point( latitudeFromPathVar(pathVar), longitudeFromPathVar(pathVar) );
    }
 }
