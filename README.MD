@@ -58,11 +58,13 @@ With the application running locally, the WSDL is retrievable from http://localh
 
 ## Using the REST Web Service
 
-The REST service responds with the following HTTP status codes:
+The REST service responds with JSON appropriate to the request type, and supports the following HTTP status codes:
 
 * 200:  Request was successfully processed
 * 400:  Request was malformed
-* 422:  Request was correctly formed but semantically incorrect.  Example:  a provided latitude is out of range.
+* 422:  Request was correctly formed but semantically incorrect.  An example of this would be if a provided latitude is out of range.
+
+In the event of an error, the JSON response consists of an error message and a copy of the HTTP status code.  You shouldn't inspect the JSON to determine if there was an error; you should use the actual HTTP status code for that.  The status code is made available in the JSON in case you want to use it for display purposes.
 
 A high-level summary of supported requests is provided below.  See the `WsRestController` javadoc for more detail.
 

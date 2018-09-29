@@ -49,6 +49,7 @@ import org.loverde.geographiccoordinate.calculator.DistanceCalculator.Unit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -69,12 +70,13 @@ public class WsRestControllerTest {
                          AZIMUTH_BASE  = URL_BASE + "backAzimuth/";
 
 
-   // RestResponse
-   private static final JsonPathResultMatchers JSON_ERRORMESSAGE = jsonPath( "$.errorMessage" );
+   // ErrorResponse
+   private static final JsonPathResultMatchers JSON_ERROR_MESSAGE = jsonPath( "$.errorMessage" ),
+                                               JSON_HTTP_STATUS   = jsonPath( "$.httpStatus" );
 
    // DistanceResponse
-   private static final JsonPathResultMatchers JSON_UNIT         = jsonPath( "$.unit" ),
-                                               JSON_DISTANCE     = jsonPath( "$.distance" );
+   private static final JsonPathResultMatchers JSON_UNIT     = jsonPath( "$.unit" ),
+                                               JSON_DISTANCE = jsonPath( "$.distance" );
 
    // InitialBearingResponse, BackAzimuthResponse
    private static final JsonPathResultMatchers JSON_COMPASS_TYPE = jsonPath( "$.compassType" ),
@@ -89,14 +91,16 @@ public class WsRestControllerTest {
          final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + unit.name().toUpperCase() + "/35.048983:118.987977,35.084629:119.025986,35.110199:119.053642") );
 
          ra.andExpect( status().isOk() );
-         ra.andExpect( JSON_ERRORMESSAGE.isEmpty() );
+         ra.andExpect( JSON_ERROR_MESSAGE.doesNotExist() );  // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
+         ra.andExpect( JSON_HTTP_STATUS.doesNotExist() );    // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
          ra.andExpect( JSON_UNIT.value(unit.name().toUpperCase()) );
          ra.andExpect( JSON_DISTANCE.isNumber() );
 
          final ResultActions ra2 = mockMvc.perform( get(DISTANCE_BASE + unit.name().toLowerCase() + "/35.048983:118.987977,35.084629:119.025986,35.110199:119.053642") );//.andDo( print() )
 
          ra2.andExpect( status().isOk() );
-         ra2.andExpect( JSON_ERRORMESSAGE.isEmpty() );
+         ra2.andExpect( JSON_ERROR_MESSAGE.doesNotExist() );  // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
+         ra2.andExpect( JSON_HTTP_STATUS.doesNotExist() );    // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
          ra2.andExpect( JSON_UNIT.value(unit.name().toLowerCase()) );
          ra2.andExpect( JSON_DISTANCE.isNumber() );
       }
@@ -107,7 +111,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/35.048983:118.987977,35.084629:119.025986") );
 
       ra.andExpect( status().isOk() );
-      ra.andExpect( JSON_ERRORMESSAGE.isEmpty() );
+      ra.andExpect( JSON_ERROR_MESSAGE.doesNotExist() );  // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
+      ra.andExpect( JSON_HTTP_STATUS.doesNotExist() );    // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
       ra.andExpect( JSON_UNIT.value("miles") );
       ra.andExpect( JSON_DISTANCE.isNumber() );
    }
@@ -117,7 +122,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/-90:-180,90:180") );
 
       ra.andExpect( status().isOk() );
-      ra.andExpect( JSON_ERRORMESSAGE.isEmpty() );
+      ra.andExpect( JSON_ERROR_MESSAGE.doesNotExist() );  // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
+      ra.andExpect( JSON_HTTP_STATUS.doesNotExist() );    // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
       ra.andExpect( JSON_UNIT.value("miles") );
       ra.andExpect( JSON_DISTANCE.isNumber() );
    }
@@ -127,9 +133,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miless/35.048983:118.987977,35.084629:119.025986,35.110199:119.053642") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("'miless' is an invalid unit of distance.  Valid values are [CENTIMETERS, INCHES, FEET, KILOMETERS, METERS, MILES, NAUTICAL_MILES, US_SURVEY_FEET, YARDS]") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("'miless' is an invalid unit of distance.  Valid values are [CENTIMETERS, INCHES, FEET, KILOMETERS, METERS, MILES, NAUTICAL_MILES, US_SURVEY_FEET, YARDS]") );
    }
 
    @Test
@@ -149,9 +154,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/35.048983:118.987977") );
 
       ra.andExpect( status().isBadRequest() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Distance requires at least 2 sets of coordinates") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.BAD_REQUEST.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Distance requires at least 2 sets of coordinates") );
    }
 
    @Test
@@ -159,9 +163,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/:118.987977,35.084629:119.025986") );
 
       ra.andExpect( status().isBadRequest() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #1: 1 token detected instead of 2") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.BAD_REQUEST.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Coordinate #1: 1 token detected instead of 2") );
    }
 
    @Test
@@ -169,9 +172,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/35.048983:,35.084629:119.025986") );
 
       ra.andExpect( status().isBadRequest() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #1: 1 token detected instead of 2") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.BAD_REQUEST.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Coordinate #1: 1 token detected instead of 2") );
    }
 
    @Test
@@ -179,9 +181,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/35.048983,35.084629:119.025986") );
 
       ra.andExpect( status().isBadRequest() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #1: 1 token detected instead of 2") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.BAD_REQUEST.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Coordinate #1: 1 token detected instead of 2") );
    }
 
    @Test
@@ -189,9 +190,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/35.048983:118.987977,:119.025986") );
 
       ra.andExpect( status().isBadRequest() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #2: 1 token detected instead of 2") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.BAD_REQUEST.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Coordinate #2: 1 token detected instead of 2") );
    }
 
    @Test
@@ -199,9 +199,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/35.048983:118.987977,35.084629:") );
 
       ra.andExpect( status().isBadRequest() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #2: 1 token detected instead of 2") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.BAD_REQUEST.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Coordinate #2: 1 token detected instead of 2") );
    }
 
    @Test
@@ -209,9 +208,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/35.048983:118.987977,35.084629") );
 
       ra.andExpect( status().isBadRequest() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #2: 1 token detected instead of 2") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.BAD_REQUEST.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Coordinate #2: 1 token detected instead of 2") );
    }
 
    @Test
@@ -219,9 +217,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/35.0X48983:118.987977,35.084629:119.025986") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #1: Not a number [35.0X48983]") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Coordinate #1: Not a number [35.0X48983]") );
    }
 
    @Test
@@ -229,9 +226,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/35.048983:11A8.987977,35.084629:119.025986") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #1: Not a number [11A8.987977]") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Coordinate #1: Not a number [11A8.987977]") );
    }
 
    @Test
@@ -239,9 +235,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/35.048983:118.987977,asdf:119.025986") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #2: Not a number [asdf]") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Coordinate #2: Not a number [asdf]") );
    }
 
    @Test
@@ -249,9 +244,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/35.048983:118.987977,35.084629:119..025986") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #2: Not a number [119..025986]") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Coordinate #2: Not a number [119..025986]") );
    }
 
    @Test
@@ -259,18 +253,17 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/-90.000001:118.987977,35.084629:119.025986") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #1: [-90.000001]: Latitude must be in a range of -90 to 90") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Coordinate #1: [-90.000001]: Latitude must be in a range of -90 to 90") );
    }
 
+   @Test
    public void distance_fail_coordinate1LatitudeMaxValue() throws Exception {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/90.000001:118.987977,35.084629:119.025986") );
 
-      ra.andExpect( status().isOk() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #1: [90.000001]: Latitude must be in a range of -90 to 90") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( status().isUnprocessableEntity() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Coordinate #1: [90.000001]: Latitude must be in a range of -90 to 90") );
    }
 
    @Test
@@ -278,9 +271,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/35.048983:-180.000001,35.084629:119.025986") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #1: [-180.000001]: Longitude must be in a range of -180 to 180") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Coordinate #1: [-180.000001]: Longitude must be in a range of -180 to 180") );
    }
 
    @Test
@@ -288,9 +280,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/35.048983:180.000001,35.084629:119.025986") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #1: [180.000001]: Longitude must be in a range of -180 to 180") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Coordinate #1: [180.000001]: Longitude must be in a range of -180 to 180") );
    }
 
    @Test
@@ -298,18 +289,17 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/35.048983:118.987977,-90.000001:119.025986") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #2: [-90.000001]: Latitude must be in a range of -90 to 90") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Coordinate #2: [-90.000001]: Latitude must be in a range of -90 to 90") );
    }
 
+   @Test
    public void distance_fail_coordinate2LatitudeMaxValue() throws Exception {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/35.048983:118.987977,90.000001:119.025986") );
 
-      ra.andExpect( status().isOk() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #2: [90.000001]:  Latitude must be in a range of -90 to 90") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( status().isUnprocessableEntity() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Coordinate #2: [90.000001]: Latitude must be in a range of -90 to 90") );
    }
 
    @Test
@@ -317,9 +307,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/35.048983:118.987977,35.084629:-180.000001") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #2: [-180.000001]: Longitude must be in a range of -180 to 180") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Coordinate #2: [-180.000001]: Longitude must be in a range of -180 to 180") );
    }
 
    @Test
@@ -327,9 +316,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(DISTANCE_BASE + "miles/35.048983:118.987977,35.084629:180.000001") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #2: [180.000001]: Longitude must be in a range of -180 to 180") );
-      ra.andExpect( JSON_UNIT.isEmpty() );
-      ra.andExpect( JSON_DISTANCE.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Coordinate #2: [180.000001]: Longitude must be in a range of -180 to 180") );
    }
 
    @Test
@@ -337,7 +325,8 @@ public class WsRestControllerTest {
       final ResultActions ra1 = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/74.12:89.34/to/47.56:67.78") );
 
       ra1.andExpect( status().isOk() );
-      ra1.andExpect( JSON_ERRORMESSAGE.isEmpty() );
+      ra1.andExpect( JSON_ERROR_MESSAGE.doesNotExist() );  // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
+      ra1.andExpect( JSON_HTTP_STATUS.doesNotExist() );    // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
       ra1.andExpect( JSON_COMPASS_TYPE.value("8") );
       ra1.andExpect( JSON_COMPASS_ABBR.value("SW") );
       ra1.andExpect( JSON_COMPASS_DIR.value("southwest") );
@@ -346,7 +335,8 @@ public class WsRestControllerTest {
       final ResultActions ra2 = mockMvc.perform( get(BEARING_BASE + "compassType/16/from/74.12:89.34/to/47.56:67.78") );
 
       ra2.andExpect( status().isOk() );
-      ra2.andExpect( JSON_ERRORMESSAGE.isEmpty() );
+      ra2.andExpect( JSON_ERROR_MESSAGE.doesNotExist() );  // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
+      ra2.andExpect( JSON_HTTP_STATUS.doesNotExist() );    // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
       ra2.andExpect( JSON_COMPASS_TYPE.value("16") );
       ra2.andExpect( JSON_COMPASS_ABBR.value("SSW") );
       ra2.andExpect( JSON_COMPASS_DIR.value("south southwest") );
@@ -355,7 +345,8 @@ public class WsRestControllerTest {
       final ResultActions ra3 = mockMvc.perform( get(BEARING_BASE + "compassType/32/from/74.12:89.34/to/47.56:67.78") );
 
       ra3.andExpect( status().isOk() );
-      ra3.andExpect( JSON_ERRORMESSAGE.isEmpty() );
+      ra3.andExpect( JSON_ERROR_MESSAGE.doesNotExist() );  // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
+      ra3.andExpect( JSON_HTTP_STATUS.doesNotExist() );    // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
       ra3.andExpect( JSON_COMPASS_TYPE.value("32") );
       ra3.andExpect( JSON_COMPASS_ABBR.value("SWbS") );
       ra3.andExpect( JSON_COMPASS_DIR.value("southwest by south") );
@@ -367,33 +358,39 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/-90:-180/to/90:180") );
 
       ra.andExpect( status().isOk() );
-      ra.andExpect( JSON_ERRORMESSAGE.isEmpty() );
+      ra.andExpect( JSON_ERROR_MESSAGE.doesNotExist() );  // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
+      ra.andExpect( JSON_HTTP_STATUS.doesNotExist() );    // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
       ra.andExpect( JSON_COMPASS_TYPE.value("8") );
       ra.andExpect( JSON_COMPASS_ABBR.value("N") );
       ra.andExpect( JSON_COMPASS_DIR.value("north") );
       ra.andExpect( JSON_BEARING.value("0") );
    }
 
+   @Test
+   public void initialBearing_fail_noCompassType() throws Exception {
+      final ResultActions ra1 = mockMvc.perform( get(BEARING_BASE + "compassType/ /from/74.12:89.34/to/47.56:67.78") );
+
+      ra1.andExpect( status().isUnprocessableEntity() );
+      ra1.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra1.andExpect( JSON_ERROR_MESSAGE.value("No compass type was provided.  Valid compass types are [8, 16, 32].") );
+   }
+
+   @Test
    public void initialBearing_fail_incorrectCompassType() throws Exception {
       final ResultActions ra1 = mockMvc.perform( get(BEARING_BASE + "compassType/2/from/74.12:89.34/to/47.56:67.78") );
 
-      ra1.andExpect( status().isOk() );
-      ra1.andExpect( JSON_ERRORMESSAGE.value("'2' is an invalid compassType.  Valid values are [8, 16, 32].") );
-      ra1.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra1.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra1.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra1.andExpect( JSON_BEARING.isEmpty() );
+      ra1.andExpect( status().isUnprocessableEntity() );
+      ra1.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra1.andExpect( JSON_ERROR_MESSAGE.value("'2' is an invalid compassType.  Valid values are [8, 16, 32].") );
 
       final ResultActions ra2 = mockMvc.perform( get(BEARING_BASE + "compassType/eight/from/74.12:89.34/to/47.56:67.78") );
 
-      ra2.andExpect( status().isOk() );
-      ra2.andExpect( JSON_ERRORMESSAGE.value("'eight' is an invalid compassType.  Valid values are [8, 16, 32].") );
-      ra2.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra2.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra2.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra2.andExpect( JSON_BEARING.isEmpty() );
+      ra2.andExpect( status().isUnprocessableEntity() );
+      ra2.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra2.andExpect( JSON_ERROR_MESSAGE.value("'eight' is an invalid compassType.  Valid values are [8, 16, 32].") );
    }
 
+   @Test
    public void initialBearing_fail_missingCompassType() throws Exception {
       final ResultActions ra1 = mockMvc.perform( get(BEARING_BASE + "compassType/from/74.12:89.34/to/47.56:67.78") );
       ra1.andExpect( status().isNotFound() );
@@ -402,6 +399,7 @@ public class WsRestControllerTest {
       ra2.andExpect( status().isNotFound() );
    }
 
+   @Test
    public void initialBearing_fail_missingFrom() throws Exception {
       final ResultActions ra1 = mockMvc.perform( get(BEARING_BASE + "compassType/8/74.12:89.34/to/47.56:67.78") );
       ra1.andExpect( status().isNotFound() );
@@ -411,6 +409,7 @@ public class WsRestControllerTest {
 
    }
 
+   @Test
    public void initialBearing_fail_missingTo() throws Exception {
       final ResultActions ra1 = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/74.12:89.34/47.56:67.78") );
       ra1.andExpect( status().isNotFound() );
@@ -424,11 +423,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/:89.34/to/47.56:67.78") );
 
       ra.andExpect( status().isBadRequest() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("'From' coordinate: 1 token detected instead of 2") );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.BAD_REQUEST.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("'From' coordinate: 1 token detected instead of 2") );
    }
 
    @Test
@@ -436,11 +432,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/74.12:/to/47.56:67.78") );
 
       ra.andExpect( status().isBadRequest() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("'From' coordinate: 1 token detected instead of 2") );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.BAD_REQUEST.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("'From' coordinate: 1 token detected instead of 2") );
    }
 
    @Test
@@ -448,10 +441,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/74.12/to/47.56:67.78") );
 
       ra.andExpect( status().isBadRequest() );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.BAD_REQUEST.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("'From' coordinate: 1 token detected instead of 2") );
    }
 
    @Test
@@ -459,11 +450,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/74.12:89.34/to/:67.78") );
 
       ra.andExpect( status().isBadRequest() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("'To' coordinate: 1 token detected instead of 2") );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.BAD_REQUEST.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("'To' coordinate: 1 token detected instead of 2") );
    }
 
    @Test
@@ -471,11 +459,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/74.12:89.34/to/47.56:") );
 
       ra.andExpect( status().isBadRequest() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("'To' coordinate: 1 token detected instead of 2") );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.BAD_REQUEST.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("'To' coordinate: 1 token detected instead of 2") );
    }
 
    @Test
@@ -483,11 +468,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/74.12:89.34/to/47.56") );
 
       ra.andExpect( status().isBadRequest() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("'To' coordinate: 1 token detected instead of 2") );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.BAD_REQUEST.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("'To' coordinate: 1 token detected instead of 2") );
    }
 
    @Test
@@ -495,23 +477,17 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/74.1X2:89.34/to/47.56:67.78") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("'From' coordinate: Not a number [74.1X2]") );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("'From' coordinate: Not a number [74.1X2]") );
    }
 
    @Test
    public void initialBearing_fail_coordinate1LongitudeNaN() throws Exception {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/74.12:89D.34/to/47.56:67.78") );
 
-      ra.andExpect( status().isUnprocessableEntity());
-      ra.andExpect( JSON_ERRORMESSAGE.value("'From' coordinate: Not a number [89D.34]") );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( status().isUnprocessableEntity() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("'From' coordinate: Not a number [89D.34]") );
    }
 
    @Test
@@ -519,11 +495,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/74.12:89.34/to/asdf:67.78") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("'To' coordinate: Not a number [asdf]") );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("'To' coordinate: Not a number [asdf]") );
    }
 
    @Test
@@ -531,34 +504,26 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/74.12:89.34/to/47.56:67..78") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("'To' coordinate: Not a number [67..78]") );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("'To' coordinate: Not a number [67..78]") );
    }
 
    @Test
    public void initialBearing_fail_coordinate1LatitudeMinValue() throws Exception {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/-90.000001:89.34/to/47.56:67.78") );
 
-      ra.andExpect( status().isUnprocessableEntity());
-      ra.andExpect( JSON_ERRORMESSAGE.value("'From' coordinate: [-90.000001]: Latitude must be in a range of -90 to 90") );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( status().isUnprocessableEntity() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("'From' coordinate: [-90.000001]: Latitude must be in a range of -90 to 90") );
    }
 
+   @Test
    public void initialBearing_fail_coordinate1LatitudeMaxValue() throws Exception {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/90.000001:89.34/to/47.56:67.78") );
 
-      ra.andExpect( status().isOk() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #1: [90.000001]:  Latitude must be in a range of -90 to 90") );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( status().isUnprocessableEntity() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("'From' coordinate: [90.000001]: Latitude must be in a range of -90 to 90") );
    }
 
    @Test
@@ -566,11 +531,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/74.12:-180.000001/to/47.56:67.78") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("'From' coordinate: [-180.000001]: Longitude must be in a range of -180 to 180") );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("'From' coordinate: [-180.000001]: Longitude must be in a range of -180 to 180") );
    }
 
    @Test
@@ -578,11 +540,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/74.12:180.000001/to/47.56:67.78") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("'From' coordinate: [180.000001]: Longitude must be in a range of -180 to 180") );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("'From' coordinate: [180.000001]: Longitude must be in a range of -180 to 180") );
    }
 
    @Test
@@ -590,22 +549,17 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/74.12:89.34/to/-90.000001:67.78") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("'To' coordinate: [-90.000001]: Latitude must be in a range of -90 to 90") );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("'To' coordinate: [-90.000001]: Latitude must be in a range of -90 to 90") );
    }
 
+   @Test
    public void initialBearing_fail_coordinate2LatitudeMaxValue() throws Exception {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/74.12:89.34/to/90.000001:67.78") );
 
-      ra.andExpect( status().isOk() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Coordinate #2: [90.000001]:  Latitude must be in a range of -90 to 90") );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( status().isUnprocessableEntity() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("'To' coordinate: [90.000001]: Latitude must be in a range of -90 to 90") );
    }
 
    @Test
@@ -613,11 +567,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/74.12:89.34/to/47.56:-180.000001") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("'To' coordinate: [-180.000001]: Longitude must be in a range of -180 to 180") );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("'To' coordinate: [-180.000001]: Longitude must be in a range of -180 to 180") );
    }
 
    @Test
@@ -625,11 +576,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(BEARING_BASE + "compassType/8/from/74.12:89.34/to/47.56:180.000001") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("'To' coordinate: [180.000001]: Longitude must be in a range of -180 to 180") );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("'To' coordinate: [180.000001]: Longitude must be in a range of -180 to 180") );
    }
 
    @Test
@@ -637,7 +585,8 @@ public class WsRestControllerTest {
       final ResultActions ra1 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/8/initialBearing/257.78") );
 
       ra1.andExpect( status().isOk() );
-      ra1.andExpect( JSON_ERRORMESSAGE.isEmpty() );
+      ra1.andExpect( JSON_HTTP_STATUS.doesNotExist() );    // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
+      ra1.andExpect( JSON_ERROR_MESSAGE.doesNotExist() );  // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
       ra1.andExpect( JSON_COMPASS_TYPE.value("8") );
       ra1.andExpect( JSON_COMPASS_ABBR.value("E") );
       ra1.andExpect( JSON_COMPASS_DIR.value("east") );
@@ -646,7 +595,8 @@ public class WsRestControllerTest {
       final ResultActions ra2 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/16/initialBearing/257.78") );
 
       ra2.andExpect( status().isOk() );
-      ra2.andExpect( JSON_ERRORMESSAGE.isEmpty() );
+      ra2.andExpect( JSON_HTTP_STATUS.doesNotExist() );    // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
+      ra2.andExpect( JSON_ERROR_MESSAGE.doesNotExist() );  // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
       ra2.andExpect( JSON_COMPASS_TYPE.value("16") );
       ra2.andExpect( JSON_COMPASS_ABBR.value("ENE") );
       ra2.andExpect( JSON_COMPASS_DIR.value("east northeast") );
@@ -655,7 +605,8 @@ public class WsRestControllerTest {
       final ResultActions ra3 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/32/initialBearing/257.78") );
 
       ra3.andExpect( status().isOk() );
-      ra3.andExpect( JSON_ERRORMESSAGE.isEmpty() );
+      ra3.andExpect( JSON_HTTP_STATUS.doesNotExist() );    // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
+      ra3.andExpect( JSON_ERROR_MESSAGE.doesNotExist() );  // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
       ra3.andExpect( JSON_COMPASS_TYPE.value("32") );
       ra3.andExpect( JSON_COMPASS_ABBR.value("EbN") );
       ra3.andExpect( JSON_COMPASS_DIR.value("east by north") );
@@ -667,7 +618,8 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(AZIMUTH_BASE + "compassType/8/initialBearing/0") );
 
       ra.andExpect( status().isOk() );
-      ra.andExpect( JSON_ERRORMESSAGE.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.doesNotExist() );    // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
+      ra.andExpect( JSON_ERROR_MESSAGE.doesNotExist() );  // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
       ra.andExpect( JSON_COMPASS_TYPE.value("8") );
       ra.andExpect( JSON_COMPASS_ABBR.value("S") );
       ra.andExpect( JSON_COMPASS_DIR.value("south") );
@@ -679,33 +631,30 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(AZIMUTH_BASE + "compassType/8/initialBearing/360") );
 
       ra.andExpect( status().isOk() );
-      ra.andExpect( JSON_ERRORMESSAGE.isEmpty() );
+      ra.andExpect( JSON_ERROR_MESSAGE.doesNotExist() );  // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
+      ra.andExpect( JSON_ERROR_MESSAGE.doesNotExist() );  // It's not valid to have this, even if the value is null.  There's a separate class for communicating errors.
       ra.andExpect( JSON_COMPASS_TYPE.value("8") );
       ra.andExpect( JSON_COMPASS_ABBR.value("S") );
       ra.andExpect( JSON_COMPASS_DIR.value("south") );
       ra.andExpect( JSON_BEARING.value("180") );
    }
 
+   @Test
    public void backAzimuth_fail_incorrectCompassType() throws Exception {
       final ResultActions ra1 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/2/initialBearing/267.78") );
 
       ra1.andExpect( status().isUnprocessableEntity() );
-      ra1.andExpect( JSON_ERRORMESSAGE.value("'2' is an invalid compassType.  Valid values are [8, 16, 32].") );
-      ra1.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra1.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra1.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra1.andExpect( JSON_BEARING.isEmpty() );
+      ra1.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra1.andExpect( JSON_ERROR_MESSAGE.value("'2' is an invalid compassType.  Valid values are [8, 16, 32].") );
 
       final ResultActions ra2 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/eight/initialBearing/267.78") );
 
       ra2.andExpect( status().isUnprocessableEntity() );
-      ra2.andExpect( JSON_ERRORMESSAGE.value("'eight' is an invalid compassType.  Valid values are [8, 16, 32].") );
-      ra2.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra2.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra2.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra2.andExpect( JSON_BEARING.isEmpty() );
+      ra2.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra2.andExpect( JSON_ERROR_MESSAGE.value("'eight' is an invalid compassType.  Valid values are [8, 16, 32].") );
    }
 
+   @Test
    public void backAzimuth_fail_missingCompassType() throws Exception {
       final ResultActions ra1 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/initialBearing/267.78") );
       ra1.andExpect( status().isNotFound() );
@@ -717,6 +666,7 @@ public class WsRestControllerTest {
       ra3.andExpect( status().isNotFound() );
    }
 
+   @Test
    public void backAzimuth_fail_missingInitialBearing() throws Exception {
       final ResultActions ra1 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/8/initialBearing") );
       ra1.andExpect( status().isNotFound() );
@@ -733,20 +683,14 @@ public class WsRestControllerTest {
       final ResultActions ra1 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/8/initialBearing/2a67.78") );
 
       ra1.andExpect( status().isUnprocessableEntity() );
-      ra1.andExpect( JSON_ERRORMESSAGE.value("'initialBearing': Not a number [2a67.78]") );
-      ra1.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra1.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra1.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra1.andExpect( JSON_BEARING.isEmpty() );
+      ra1.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra1.andExpect( JSON_ERROR_MESSAGE.value("'initialBearing': Not a number [2a67.78]") );
 
       final ResultActions ra2 = mockMvc.perform( get(AZIMUTH_BASE + "compassType/8/initialBearing/267..78") );
 
       ra2.andExpect( status().isUnprocessableEntity() );
-      ra2.andExpect( JSON_ERRORMESSAGE.value("'initialBearing': Not a number [267..78]") );
-      ra2.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra2.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra2.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra2.andExpect( JSON_BEARING.isEmpty() );
+      ra2.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra2.andExpect( JSON_ERROR_MESSAGE.value("'initialBearing': Not a number [267..78]") );
    }
 
    @Test
@@ -754,21 +698,16 @@ public class WsRestControllerTest {
       final ResultActions ra = mockMvc.perform( get(AZIMUTH_BASE + "compassType/8/initialBearing/-.000001") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Bearing is out of range [0, 360]") );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Bearing is out of range [0, 360]") );
    }
 
+   @Test
    public void backAzimuth_fail_initialBearingMaxValue() throws Exception {
       final ResultActions ra = mockMvc.perform( get(AZIMUTH_BASE + "compassType/8/initialBearing/360.000001") );
 
       ra.andExpect( status().isUnprocessableEntity() );
-      ra.andExpect( JSON_ERRORMESSAGE.value("Bearing is out of range [0, 360]") );
-      ra.andExpect( JSON_COMPASS_TYPE.isEmpty() );
-      ra.andExpect( JSON_COMPASS_ABBR.isEmpty() );
-      ra.andExpect( JSON_COMPASS_DIR.isEmpty() );
-      ra.andExpect( JSON_BEARING.isEmpty() );
+      ra.andExpect( JSON_HTTP_STATUS.value(HttpStatus.UNPROCESSABLE_ENTITY.value()) );
+      ra.andExpect( JSON_ERROR_MESSAGE.value("Bearing is out of range [0, 360]") );
    }
 }

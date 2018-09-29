@@ -40,7 +40,8 @@ package org.loverde.geographiccoordinate.ws.rest.model;
 
 import java.math.BigDecimal;
 
-public class InitialBearingResponse extends RestResponse {
+
+public class InitialBearingResponse implements RestResponse {
 
    private String compassType;
    private String compassDirectionAbbr;

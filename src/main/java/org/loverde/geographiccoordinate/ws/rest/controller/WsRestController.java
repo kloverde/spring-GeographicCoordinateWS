@@ -60,7 +60,9 @@ import org.loverde.geographiccoordinate.exception.GeographicCoordinateException;
 import org.loverde.geographiccoordinate.ws.rest.exception.MalformedDataException;
 import org.loverde.geographiccoordinate.ws.rest.model.BackAzimuthResponse;
 import org.loverde.geographiccoordinate.ws.rest.model.DistanceResponse;
+import org.loverde.geographiccoordinate.ws.rest.model.ErrorResponse;
 import org.loverde.geographiccoordinate.ws.rest.model.InitialBearingResponse;
+import org.loverde.geographiccoordinate.ws.rest.model.RestResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -107,11 +109,12 @@ public class WsRestController {
     * @see DistanceCalculator#distance(org.loverde.geographiccoordinate.calculator.DistanceCalculator.Unit, org.loverde.geographiccoordinate.Point...)
     */
    @GetMapping( "distance/{unit}/{coordinates}" )
-   public DistanceResponse distanceRequest( final HttpServletResponse httpResponse,
-                                            @PathVariable final String unit,
-                                            @PathVariable final String coordinates[] ) {
+   public RestResponse distanceRequest( final HttpServletResponse httpResponse,
+                                        @PathVariable final String unit,
+                                        @PathVariable final String coordinates[] ) {
 
-      final DistanceResponse response = new DistanceResponse();
+      final DistanceResponse successResponse = new DistanceResponse();
+      final ErrorResponse errorResponse = new ErrorResponse();
 
       DistanceCalculator.Unit distanceUnit = null;
       final Point points[];
@@ -123,8 +126,11 @@ public class WsRestController {
          distanceUnit = DistanceCalculator.Unit.valueOf( unit.toUpperCase() );
       } catch( final IllegalArgumentException e ) {
          httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
-         response.setErrorMessage( String.format("'%s' is an invalid unit of distance.  Valid values are %s", unit, Arrays.asList(DistanceCalculator.Unit.values())) );
-         return response;
+
+         errorResponse.setHttpStatus( httpResponse.getStatus() );
+         errorResponse.setErrorMessage( String.format("'%s' is an invalid unit of distance.  Valid values are %s", unit, Arrays.asList(DistanceCalculator.Unit.values())) );
+
+         return errorResponse;
       }
 
       if( distanceUnit != null ) {
@@ -139,12 +145,18 @@ public class WsRestController {
                longitude = longitudeFromPathVar( coordinates[i] );
             } catch( final MalformedDataException e ) {
                httpResponse.setStatus( HttpStatus.BAD_REQUEST.value() );
-               response.setErrorMessage( String.format("Coordinate #%d: %s", (i + 1), e.getLocalizedMessage()) );
-               return response;
+
+               errorResponse.setHttpStatus( httpResponse.getStatus() );
+               errorResponse.setErrorMessage( String.format("Coordinate #%d: %s", (i + 1), e.getLocalizedMessage()) );
+
+               return errorResponse;
             } catch( final IllegalArgumentException | GeographicCoordinateException e ) {
                httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
-               response.setErrorMessage( String.format("Coordinate #%d: %s", (i + 1), e.getLocalizedMessage()) );
-               return response;
+
+               errorResponse.setHttpStatus( httpResponse.getStatus() );
+               errorResponse.setErrorMessage( String.format("Coordinate #%d: %s", (i + 1), e.getLocalizedMessage()) );
+
+               return errorResponse;
             }
 
             if( latitude != null && longitude != null ) {
@@ -154,23 +166,29 @@ public class WsRestController {
 
          if( points.length < 2 ) {
             httpResponse.setStatus( HttpStatus.BAD_REQUEST.value() );
-            response.setErrorMessage( "Distance requires at least 2 sets of coordinates" );
-            return response;
+
+            errorResponse.setHttpStatus( httpResponse.getStatus() );
+            errorResponse.setErrorMessage( "Distance requires at least 2 sets of coordinates" );
+
+            return errorResponse;
          } else {
             try {
                distance = DistanceCalculator.distance( distanceUnit, points );
             } catch( final GeographicCoordinateException gce ) {
                httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
-               response.setErrorMessage( gce.getLocalizedMessage() );
-               return response;
+
+               errorResponse.setHttpStatus( httpResponse.getStatus() );
+               errorResponse.setErrorMessage( gce.getLocalizedMessage() );
+
+               return errorResponse;
             }
          }
       }
 
-      response.setDistance( distance );
-      response.setUnit( unit );
+      successResponse.setDistance( distance );
+      successResponse.setUnit( unit );
 
-      return response;
+      return successResponse;
    }
 
    /**
@@ -192,12 +210,13 @@ public class WsRestController {
     * @return A JSON representation of {@linkplain InitialBearingResponse}
     */
    @GetMapping( "initialBearing/compassType/{compassType}/from/{from}/to/{to}" )
-   public InitialBearingResponse initialBearingRequest( final HttpServletResponse httpResponse,
-                                                        @PathVariable("compassType") final String compassTypeStr,
-                                                        @PathVariable("from") final String fromStr,
-                                                        @PathVariable("to") final String toStr ) {
+   public RestResponse initialBearingRequest( final HttpServletResponse httpResponse,
+                                              @PathVariable("compassType") final String compassTypeStr,
+                                              @PathVariable("from") final String fromStr,
+                                              @PathVariable("to") final String toStr ) {
 
-      final InitialBearingResponse response = new InitialBearingResponse();
+      final InitialBearingResponse successResponse = new InitialBearingResponse();
+      final ErrorResponse errorResponse = new ErrorResponse();
 
       final Class<? extends CompassDirection> compassDirection;
 
@@ -205,9 +224,13 @@ public class WsRestController {
 
       try {
          compassDirection = compassDirectionFromPathVar( compassTypeStr );
-      } catch( final MalformedDataException e ) {
-         response.setErrorMessage( e.getLocalizedMessage() );
-         return response;
+      } catch( final IllegalArgumentException e ) {
+         httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
+
+         errorResponse.setHttpStatus( httpResponse.getStatus() );
+         errorResponse.setErrorMessage( e.getLocalizedMessage() );
+
+         return errorResponse;
       }
 
       final Point from;
@@ -217,24 +240,36 @@ public class WsRestController {
          from = pointFromPathVar( fromStr );
       } catch( final MalformedDataException e ) {
          httpResponse.setStatus( HttpStatus.BAD_REQUEST.value() );
-         response.setErrorMessage( String.format("'From' coordinate: %s", e.getLocalizedMessage()) );
-         return response;
+
+         errorResponse.setHttpStatus( httpResponse.getStatus() );
+         errorResponse.setErrorMessage( String.format("'From' coordinate: %s", e.getLocalizedMessage()) );
+
+         return errorResponse;
       } catch( final IllegalArgumentException | GeographicCoordinateException e ) {
          httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
-         response.setErrorMessage( String.format("'From' coordinate: %s", e.getLocalizedMessage()) );
-         return response;
+
+         errorResponse.setHttpStatus( httpResponse.getStatus() );
+         errorResponse.setErrorMessage( String.format("'From' coordinate: %s", e.getLocalizedMessage()) );
+
+         return errorResponse;
       }
 
       try {
          to = pointFromPathVar( toStr );
       } catch( final MalformedDataException e ) {
          httpResponse.setStatus( HttpStatus.BAD_REQUEST.value() );
-         response.setErrorMessage( String.format("'To' coordinate: %s", e.getLocalizedMessage()) );
-         return response;
+
+         errorResponse.setHttpStatus( httpResponse.getStatus() );
+         errorResponse.setErrorMessage( String.format("'To' coordinate: %s", e.getLocalizedMessage()) );
+
+         return errorResponse;
       } catch( final IllegalArgumentException | GeographicCoordinateException e ) {
          httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
-         response.setErrorMessage( String.format("'To' coordinate: %s", e.getLocalizedMessage()) );
-         return response;
+
+         errorResponse.setHttpStatus( httpResponse.getStatus() );
+         errorResponse.setErrorMessage( String.format("'To' coordinate: %s", e.getLocalizedMessage()) );
+
+         return errorResponse;
       }
 
       final Bearing<? extends CompassDirection> bearing;
@@ -242,33 +277,41 @@ public class WsRestController {
       try {
          bearing = BearingCalculator.initialBearing( compassDirection, from, to );
       } catch( final GeographicCoordinateException gce ) {
-         response.setErrorMessage( gce.getLocalizedMessage() );
-         return response;
+         httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
+
+         errorResponse.setHttpStatus( httpResponse.getStatus() );
+         errorResponse.setErrorMessage( gce.getLocalizedMessage() );
+
+         return errorResponse;
       }
 
-      response.setBearing( bearing.getBearing() );
-      response.setCompassDirectionAbbr( bearing.getCompassDirection().getAbbreviation() );
-      response.setCompassDirectionText( bearing.getCompassDirection().getPrintName() );
-      response.setCompassType( compassTypeStr );
+      successResponse.setBearing( bearing.getBearing() );
+      successResponse.setCompassDirectionAbbr( bearing.getCompassDirection().getAbbreviation() );
+      successResponse.setCompassDirectionText( bearing.getCompassDirection().getPrintName() );
+      successResponse.setCompassType( compassTypeStr );
 
-      return response;
+      return successResponse;
    }
 
    @GetMapping( "backAzimuth/compassType/{compassType}/initialBearing/{initialBearing}" )
-   public BackAzimuthResponse backAzimuthRequest( final HttpServletResponse httpResponse,
+   public RestResponse backAzimuthRequest( final HttpServletResponse httpResponse,
                                                   @PathVariable("compassType")    final String compassTypeStr,
                                                   @PathVariable("initialBearing") final String initialBearingStr ) {
 
-      final BackAzimuthResponse response = new BackAzimuthResponse();
+      final BackAzimuthResponse successResponse = new BackAzimuthResponse();
+      final ErrorResponse errorResponse = new ErrorResponse();
 
       final Class<? extends CompassDirection> compassDirection;
 
       try {
          compassDirection = compassDirectionFromPathVar( compassTypeStr );
-      } catch( final MalformedDataException e ) {
-         httpResponse.setStatus( HttpStatus.BAD_REQUEST.value() );
-         response.setErrorMessage( e.getLocalizedMessage() );
-         return response;
+      } catch( final IllegalArgumentException e ) {
+         httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
+
+         errorResponse.setHttpStatus( httpResponse.getStatus() );
+         errorResponse.setErrorMessage( e.getLocalizedMessage() );
+
+         return errorResponse;
       }
 
       final  BigDecimal initialBearing;
@@ -277,8 +320,11 @@ public class WsRestController {
          initialBearing = new BigDecimal( initialBearingStr );
       } catch( final NumberFormatException e ) {
          httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
-         response.setErrorMessage( String.format("'initialBearing': Not a number [%s]", initialBearingStr) );
-         return response;
+
+         errorResponse.setHttpStatus( httpResponse.getStatus() );
+         errorResponse.setErrorMessage( String.format("'initialBearing': Not a number [%s]", initialBearingStr) );
+
+         return errorResponse;
       }
 
       final Bearing<? extends CompassDirection> bearing;
@@ -287,28 +333,31 @@ public class WsRestController {
          bearing = BearingCalculator.backAzimuth( compassDirection, initialBearing );
       } catch( final GeographicCoordinateException gce ) {
          httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
-         response.setErrorMessage( gce.getLocalizedMessage() );
-         return response;
+
+         errorResponse.setHttpStatus( httpResponse.getStatus() );
+         errorResponse.setErrorMessage( gce.getLocalizedMessage() );
+
+         return errorResponse;
       }
 
-      response.setBearing( bearing.getBearing().toPlainString() );
-      response.setCompassDirectionAbbr( bearing.getCompassDirection().getAbbreviation() );
-      response.setCompassDirectionText( bearing.getCompassDirection().getPrintName() );
-      response.setCompassType( compassTypeStr );
+      successResponse.setBearing( bearing.getBearing().toPlainString() );
+      successResponse.setCompassDirectionAbbr( bearing.getCompassDirection().getAbbreviation() );
+      successResponse.setCompassDirectionText( bearing.getCompassDirection().getPrintName() );
+      successResponse.setCompassType( compassTypeStr );
 
-      return response;
+      return successResponse;
    }
 
-   private static Class<? extends CompassDirection> compassDirectionFromPathVar( final String pathVar ) throws MalformedDataException {
+   private static Class<? extends CompassDirection> compassDirectionFromPathVar( final String pathVar ) throws IllegalArgumentException {
       final Class<? extends CompassDirection> compassDirection;
 
-      if( StringUtils.isEmpty(pathVar) ) {
-         throw new MalformedDataException( String.format("No compass type was provided.  Valid compass types are %s", COMPASS_TYPE_MAP.keySet()) );
+      if( StringUtils.isEmpty(pathVar) || pathVar.trim().isEmpty() ) {
+         throw new IllegalArgumentException( String.format("No compass type was provided.  Valid compass types are %s.", COMPASS_TYPE_MAP.keySet()) );
       } else {
          compassDirection = COMPASS_TYPE_MAP.get( pathVar );
 
          if( compassDirection == null ) {
-            throw new MalformedDataException( String.format("'%s' is an invalid compassType.  Valid values are %s.", pathVar, COMPASS_TYPE_MAP.keySet()) );
+            throw new IllegalArgumentException( String.format("'%s' is an invalid compassType.  Valid values are %s.", pathVar, COMPASS_TYPE_MAP.keySet()) );
          }
       }
 

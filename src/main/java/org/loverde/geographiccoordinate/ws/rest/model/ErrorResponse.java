@@ -39,5 +39,25 @@
 package org.loverde.geographiccoordinate.ws.rest.model;
 
 
-public interface RestResponse {
+public class ErrorResponse implements RestResponse {
+
+   private int httpStatus;
+   private String errorMessage;
+
+
+   public int getHttpStatus() {
+      return httpStatus;
+   }
+
+   public void setHttpStatus( final int errorCode ) {
+      this.httpStatus = errorCode;
+   }
+
+   public String getErrorMessage() {
+      return errorMessage;
+   }
+
+   public void setErrorMessage(String errorMessage) {
+      this.errorMessage = errorMessage;
+   }
 }

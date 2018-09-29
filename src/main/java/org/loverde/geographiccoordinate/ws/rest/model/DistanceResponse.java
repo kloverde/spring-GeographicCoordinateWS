@@ -39,7 +39,7 @@
 package org.loverde.geographiccoordinate.ws.rest.model;
 
 
-public class DistanceResponse extends RestResponse {
+public class DistanceResponse implements RestResponse {
 
    private String unit;
    private Double distance;
