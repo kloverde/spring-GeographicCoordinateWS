@@ -36,8 +36,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.rest.model;
+package org.loverde.geographiccoordinate.ws.rest.model.distance;
+
+import org.loverde.geographiccoordinate.ws.rest.model.ErrorResponse;
 
 
-public interface RestResponse {
+public class DistanceErrorResponseImpl extends ErrorResponse implements DistanceResponse {
+
 }

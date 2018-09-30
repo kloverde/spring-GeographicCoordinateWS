@@ -36,48 +36,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.rest.model;
-
-import java.math.BigDecimal;
+package org.loverde.geographiccoordinate.ws.rest.model.backazimuth;
 
 
-public class InitialBearingResponse implements RestResponse {
+public interface BackAzimuthResponse {
 
-   private String compassType;
-   private String compassDirectionAbbr;
-   private String compassDirectionText;
-   private BigDecimal bearing;
-
-
-   public void setCompassType( final String compassType ) {
-      this.compassType = compassType;
-   }
-
-   public String getCompassType() {
-      return compassType;
-   }
-
-   public void setCompassDirectionAbbr( final String compassDirectionAbbr ) {
-      this.compassDirectionAbbr = compassDirectionAbbr;
-   }
-
-   public String getCompassDirectionAbbr() {
-      return compassDirectionAbbr;
-   }
-
-   public void setCompassDirectionText( final String compassDirectionText ) {
-      this.compassDirectionText = compassDirectionText;
-   }
-
-   public String getCompassDirectionText() {
-      return compassDirectionText;
-   }
-
-   public void setBearing( final BigDecimal bearing ) {
-      this.bearing = bearing;
-   }
-
-   public BigDecimal getBearing() {
-      return bearing;
-   }
 }

@@ -74,11 +74,11 @@ public class WsRestControllerTest {
    private static final JsonPathResultMatchers JSON_ERROR_MESSAGE = jsonPath( "$.errorMessage" ),
                                                JSON_HTTP_STATUS   = jsonPath( "$.httpStatus" );
 
-   // DistanceResponse
+   // DistanceResponseImpl
    private static final JsonPathResultMatchers JSON_UNIT     = jsonPath( "$.unit" ),
                                                JSON_DISTANCE = jsonPath( "$.distance" );
 
-   // InitialBearingResponse, BackAzimuthResponse
+   // InitialBearingResponseImpl, BackAzimuthResponseImpl
    private static final JsonPathResultMatchers JSON_COMPASS_TYPE = jsonPath( "$.compassType" ),
                                                JSON_COMPASS_ABBR = jsonPath( "$.compassDirectionAbbr" ),
                                                JSON_COMPASS_DIR  = jsonPath( "$.compassDirectionText" ),

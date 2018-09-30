@@ -36,28 +36,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.rest.model;
+package org.loverde.geographiccoordinate.ws.rest.model.initialbearing;
+
+import java.math.BigDecimal;
 
 
-public class ErrorResponse {
+public class InitialBearingResponseImpl implements InitialBearingResponse {
 
-   private int httpStatus;
-   private String errorMessage;
+   private String compassType;
+   private String compassDirectionAbbr;
+   private String compassDirectionText;
+   private BigDecimal bearing;
 
 
-   public int getHttpStatus() {
-      return httpStatus;
+   public void setCompassType( final String compassType ) {
+      this.compassType = compassType;
    }
 
-   public void setHttpStatus( final int errorCode ) {
-      this.httpStatus = errorCode;
+   public String getCompassType() {
+      return compassType;
    }
 
-   public String getErrorMessage() {
-      return errorMessage;
+   public void setCompassDirectionAbbr( final String compassDirectionAbbr ) {
+      this.compassDirectionAbbr = compassDirectionAbbr;
    }
 
-   public void setErrorMessage(String errorMessage) {
-      this.errorMessage = errorMessage;
+   public String getCompassDirectionAbbr() {
+      return compassDirectionAbbr;
+   }
+
+   public void setCompassDirectionText( final String compassDirectionText ) {
+      this.compassDirectionText = compassDirectionText;
+   }
+
+   public String getCompassDirectionText() {
+      return compassDirectionText;
+   }
+
+   public void setBearing( final BigDecimal bearing ) {
+      this.bearing = bearing;
+   }
+
+   public BigDecimal getBearing() {
+      return bearing;
    }
 }

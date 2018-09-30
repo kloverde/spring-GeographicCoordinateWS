@@ -36,28 +36,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.rest.model;
+package org.loverde.geographiccoordinate.ws.rest.model.distance;
 
 
-public class ErrorResponse {
+public interface DistanceResponse {
 
-   private int httpStatus;
-   private String errorMessage;
-
-
-   public int getHttpStatus() {
-      return httpStatus;
-   }
-
-   public void setHttpStatus( final int errorCode ) {
-      this.httpStatus = errorCode;
-   }
-
-   public String getErrorMessage() {
-      return errorMessage;
-   }
-
-   public void setErrorMessage(String errorMessage) {
-      this.errorMessage = errorMessage;
-   }
 }

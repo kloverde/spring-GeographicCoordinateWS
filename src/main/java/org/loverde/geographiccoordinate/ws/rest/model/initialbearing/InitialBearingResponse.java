@@ -36,46 +36,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.rest.model;
+package org.loverde.geographiccoordinate.ws.rest.model.initialbearing;
 
 
-public class BackAzimuthResponse implements RestResponse {
+public interface InitialBearingResponse {
 
-   private String compassType;
-   private String compassDirectionAbbr;
-   private String compassDirectionText;
-   private String bearing;
-
-
-   public void setCompassType( final String compassType ) {
-      this.compassType = compassType;
-   }
-
-   public String getCompassType() {
-      return compassType;
-   }
-
-   public void setCompassDirectionAbbr( final String compassDirectionAbbr ) {
-      this.compassDirectionAbbr = compassDirectionAbbr;
-   }
-
-   public String getCompassDirectionAbbr() {
-      return compassDirectionAbbr;
-   }
-
-   public void setCompassDirectionText( final String compassDirectionText ) {
-      this.compassDirectionText = compassDirectionText;
-   }
-
-   public String getCompassDirectionText() {
-      return compassDirectionText;
-   }
-
-   public void setBearing( final String bearing ) {
-      this.bearing = bearing;
-   }
-
-   public String getBearing() {
-      return bearing;
-   }
 }

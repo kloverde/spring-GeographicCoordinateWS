@@ -58,11 +58,15 @@ import org.loverde.geographiccoordinate.compass.CompassDirection32;
 import org.loverde.geographiccoordinate.compass.CompassDirection8;
 import org.loverde.geographiccoordinate.exception.GeographicCoordinateException;
 import org.loverde.geographiccoordinate.ws.rest.exception.MalformedDataException;
-import org.loverde.geographiccoordinate.ws.rest.model.BackAzimuthResponse;
-import org.loverde.geographiccoordinate.ws.rest.model.DistanceResponse;
-import org.loverde.geographiccoordinate.ws.rest.model.ErrorResponse;
-import org.loverde.geographiccoordinate.ws.rest.model.InitialBearingResponse;
-import org.loverde.geographiccoordinate.ws.rest.model.RestResponse;
+import org.loverde.geographiccoordinate.ws.rest.model.backazimuth.BackAzimuthErrorResponseImpl;
+import org.loverde.geographiccoordinate.ws.rest.model.backazimuth.BackAzimuthResponse;
+import org.loverde.geographiccoordinate.ws.rest.model.backazimuth.BackAzimuthResponseImpl;
+import org.loverde.geographiccoordinate.ws.rest.model.distance.DistanceErrorResponseImpl;
+import org.loverde.geographiccoordinate.ws.rest.model.distance.DistanceResponse;
+import org.loverde.geographiccoordinate.ws.rest.model.distance.DistanceResponseImpl;
+import org.loverde.geographiccoordinate.ws.rest.model.initialbearing.InitialBearingErrorResponseImpl;
+import org.loverde.geographiccoordinate.ws.rest.model.initialbearing.InitialBearingResponse;
+import org.loverde.geographiccoordinate.ws.rest.model.initialbearing.InitialBearingResponseImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -90,11 +94,11 @@ public class WsRestController {
 
    /**
     * <p>
-    * Gets the total distance between an unlimited number of points.  For example, if the distance
-    * from point A to point B is 3, and the distance from point B to point C is 2, the total
-    * distance traveled will be (3 + 2) = 5.  Just pass coordinates in the order in which they're
-    * visited.
+    * Gets the total distance between an unlimited number of points.  For example, if the distance from point A to point B is 3, and the distance
+    * from point B to point C is 2, the total distance traveled will be (3 + 2) = 5.  Just pass coordinates in the order in which they're visited.
     * </p>
+    *
+    * @param httpResponse
     *
     * @param unit Any value from the {@linkplain DistanceCalculator.Unit} enumeration.  This value is case-insensitive.
     *
@@ -104,17 +108,17 @@ public class WsRestController {
     *                    list of many coordinates, and/or coordinates with large fractional parts, you may have to split one large
     *                    request into smaller requests and add the results together yourself.
     *
-    * @return A JSON representation of {@linkplain DistanceResponse}
+    * @return A JSON representation of {@linkplain DistanceResponseImpl} or {@linkplain DistanceErrorResponseImpl}
     *
     * @see DistanceCalculator#distance(org.loverde.geographiccoordinate.calculator.DistanceCalculator.Unit, org.loverde.geographiccoordinate.Point...)
     */
    @GetMapping( "distance/{unit}/{coordinates}" )
-   public RestResponse distanceRequest( final HttpServletResponse httpResponse,
-                                        @PathVariable final String unit,
-                                        @PathVariable final String coordinates[] ) {
+   public DistanceResponse distanceRequest( final HttpServletResponse httpResponse,
+                                            @PathVariable final String unit,
+                                            @PathVariable final String coordinates[] ) {
 
-      final DistanceResponse successResponse = new DistanceResponse();
-      final ErrorResponse errorResponse = new ErrorResponse();
+      final DistanceResponseImpl successResponse = new DistanceResponseImpl();
+      final DistanceErrorResponseImpl errorResponse = new DistanceErrorResponseImpl();
 
       DistanceCalculator.Unit distanceUnit = null;
       final Point points[];
@@ -193,30 +197,27 @@ public class WsRestController {
 
    /**
     * <p>
-    * Calculates the initial bearing that will take you from point A to point B.  Keep in mind that the bearing
-    * will change over the course of the trip and will need to be recalculated.
+    * Calculates the initial bearing that will take you from point A to point B.  Keep in mind that the bearing will change over the course of the trip and will need to be recalculated.
     * </p>
     *
-    * @param compassTypeStr Specifies the compass type (whether an 8, 16 or 32-point compass). Valid values are "8", "16"
-    *                       and "32".  This affects the compass direction returned in the response.  It does not affect
-    *                       the returned bearing.
+    * @param httpResponse
     *
-    * @param fromStr The starting point.  A latitude/longitude pair, where the latitude and longitude are in decimal form
-    *                and separated by a colon.
+    * @param compassTypeStr Specifies the compass type (whether an 8, 16 or 32-point compass) to use in the response. Valid values are "8", "16" and "32".  It does not affect the returned bearing.
     *
-    * @param toStr The ending point.  A latitude/longitude pair, where the latitude and longitude are in decimal form and
-    *              separated by a colon.
+    * @param fromStr The starting point.  A latitude/longitude pair, where the latitude and longitude are in decimal form and separated by a colon.
     *
-    * @return A JSON representation of {@linkplain InitialBearingResponse}
+    * @param toStr The ending point.  A latitude/longitude pair, where the latitude and longitude are in decimal form and separated by a colon.
+    *
+    * @return A JSON representation of {@linkplain InitialBearingResponseImpl} or {@linkplain InitialBearingErrorResponseImpl}
     */
    @GetMapping( "initialBearing/compassType/{compassType}/from/{from}/to/{to}" )
-   public RestResponse initialBearingRequest( final HttpServletResponse httpResponse,
-                                              @PathVariable("compassType") final String compassTypeStr,
-                                              @PathVariable("from") final String fromStr,
-                                              @PathVariable("to") final String toStr ) {
+   public InitialBearingResponse initialBearingRequest( final HttpServletResponse httpResponse,
+                                                        @PathVariable("compassType") final String compassTypeStr,
+                                                        @PathVariable("from") final String fromStr,
+                                                        @PathVariable("to") final String toStr ) {
 
-      final InitialBearingResponse successResponse = new InitialBearingResponse();
-      final ErrorResponse errorResponse = new ErrorResponse();
+      final InitialBearingResponseImpl successResponse = new InitialBearingResponseImpl();
+      final InitialBearingErrorResponseImpl errorResponse = new InitialBearingErrorResponseImpl();
 
       final Class<? extends CompassDirection> compassDirection;
 
@@ -293,13 +294,24 @@ public class WsRestController {
       return successResponse;
    }
 
+   /**
+    * Calculates the back azimuth (the reverse of the direction you came from).
+    *
+    * @param httpResponse
+    *
+    * @param compassTypeStr Specifies the compass type (whether an 8, 16 or 32-point compass) to use in the response. Valid values are "8", "16" and "32".  It does not affect the returned bearing.
+    *
+    * @param initialBearingStr The bearing to reverse
+    *
+    * @return A JSON representation of {@linkplain BackAzimuthResponseImpl} or {@linkplain BackAzimuthErrorResponseImpl}
+    */
    @GetMapping( "backAzimuth/compassType/{compassType}/initialBearing/{initialBearing}" )
-   public RestResponse backAzimuthRequest( final HttpServletResponse httpResponse,
+   public BackAzimuthResponse backAzimuthRequest( final HttpServletResponse httpResponse,
                                                   @PathVariable("compassType")    final String compassTypeStr,
                                                   @PathVariable("initialBearing") final String initialBearingStr ) {
 
-      final BackAzimuthResponse successResponse = new BackAzimuthResponse();
-      final ErrorResponse errorResponse = new ErrorResponse();
+      final BackAzimuthResponseImpl successResponse = new BackAzimuthResponseImpl();
+      final BackAzimuthErrorResponseImpl errorResponse = new BackAzimuthErrorResponseImpl();
 
       final Class<? extends CompassDirection> compassDirection;
 

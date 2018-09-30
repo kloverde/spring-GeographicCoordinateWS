@@ -36,28 +36,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.rest.model;
+package org.loverde.geographiccoordinate.ws.rest.model.initialbearing;
+
+import org.loverde.geographiccoordinate.ws.rest.model.ErrorResponse;
 
 
-public class DistanceResponse implements RestResponse {
+public class InitialBearingErrorResponseImpl extends ErrorResponse implements InitialBearingResponse {
 
-   private String unit;
-   private Double distance;
-
-
-   public void setUnit( final String unit ) {
-      this.unit = unit;
-   }
-
-   public void setDistance( final Double distance ) {
-      this.distance = distance;
-   }
-
-   public String getUnit() {
-      return unit;
-   }
-
-   public Double getDistance() {
-      return distance;
-   }
 }
