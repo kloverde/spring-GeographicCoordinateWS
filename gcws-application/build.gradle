@@ -1,6 +1,5 @@
 apply plugin: "java"
 apply plugin: "eclipse"
-apply plugin: "idea"
 apply plugin: "org.springframework.boot"
 apply plugin: "io.spring.dependency-management"
 
@@ -28,11 +27,6 @@ test {
       junitXml.enabled = true
       html.enabled = true
    }
-}
-
-bootJar {
-   baseName = "GeographicCoordinateWS"
-   version =  "0.0.0"
 }
 
 dependencies {

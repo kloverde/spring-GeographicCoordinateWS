@@ -38,6 +38,6 @@
 
 pushd "%~dp0"
 
-java -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=4000,suspend=n -jar build\libs\GeographicCoordinateWS-0.0.0.jar
+java -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=4000,suspend=n -jar build\libs\gcws-application-1.0.0.jar
 
 popd
