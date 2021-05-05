@@ -38,13 +38,15 @@ cd gcws-client-api-rest
 gradle publishtomavenlocal
 ```
 
-You can specify whether the WSDL is generated dynamically or loaded from disk by modifying the `wsdl.dynamic` property in `application.properties`.  The included WSDL uses localhost as the endpoint.  That won't work for you if you intend to actually deploy this application somewhere, so you'll want to overwrite the provided WSDL with a regenerated one.
+### Build the application
 
-Eventually I might change the build script so that it generates a WAR, but for now, it generates a Spring Boot uber jar.  Build in your IDE or, if you want to build from the command line:
-
-```shell
-gradle bootJar
 ```
+cd gcws-application
+gradle build
+```
+
+You can specify whether the WSDL is generated dynamically or loaded from the API jar via the `wsdl.dynamic` property in `application.properties`.  The JARed WSDL uses localhost as the endpoint.  That might not work for you if you intend to actually deploy this application somewhere, so the dynamic WSDL might be a better choice.
+
 
 Run with:
 

@@ -33,6 +33,10 @@ configurations {
    jaxb
 }
 
+clean {
+   delete sourceDir
+}
+
 task genJaxb {
    ext.sourceDir = project.properties["sourceDir"]
    ext.package = project.properties["package"]
@@ -52,7 +56,7 @@ task genJaxb {
               schema  : ext.schema
          ) {
             //arg( value: "-wsdl" )
-            produces( dir: ext.sourceDir, includes: "**/*.java" )
+            //produces( dir: ext.sourceDir, includes: "**/*.java" )
          }
 
          javac( source: 1.10,
@@ -111,7 +115,7 @@ dependencies {
    )
 }
 
-publishing {    
+publishing {
    publications {
       mavenJava( MavenPublication ) {
          from project.components.java
