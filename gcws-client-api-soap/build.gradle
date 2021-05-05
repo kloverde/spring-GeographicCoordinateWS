@@ -56,18 +56,7 @@ task genJaxb {
               schema  : ext.schema
          ) {
             //arg( value: "-wsdl" )
-            //produces( dir: ext.sourceDir, includes: "**/*.java" )
-         }
-
-         javac( source: 1.10,
-                target: 1.10,
-                debug: true,
-                debugLevel: "lines,vars,source",
-                classpath: configurations.jaxb.asPath
-         ) {
-            src( path: ext.sourceDir )
-            include( name: "**/*.java" )
-            include( name: "*.java" )
+            produces( dir: ext.sourceDir, includes: "**/*.java" )
          }
       }
    }
