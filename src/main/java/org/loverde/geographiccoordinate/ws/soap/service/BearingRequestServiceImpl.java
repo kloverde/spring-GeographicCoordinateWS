@@ -42,11 +42,11 @@ import org.loverde.geographiccoordinate.Bearing;
 import org.loverde.geographiccoordinate.Point;
 import org.loverde.geographiccoordinate.calculator.BearingCalculator;
 import org.loverde.geographiccoordinate.compass.CompassDirection;
-import org.loverde.geographiccoordinate.ws.soap.model.convert.TypeConverter;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.AutowireableObjectFactory;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.CompassType;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingRequest;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingResponse;
+import org.loverde.geographiccoordinate.ws.soap.api.AutowireableObjectFactory;
+import org.loverde.geographiccoordinate.ws.soap.api.CompassType;
+import org.loverde.geographiccoordinate.ws.soap.api.InitialBearingRequest;
+import org.loverde.geographiccoordinate.ws.soap.api.InitialBearingResponse;
+import org.loverde.geographiccoordinate.ws.soap.api.TypeConverter;
 import org.loverde.geographiccoordinate.ws.soap.service.helper.ResponseHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,8 +82,8 @@ public class BearingRequestServiceImpl implements BearingRequestService {
          throw new IllegalArgumentException( String.format("Unrecognized JAXB CompassType: %s", jaxbCompassType)  );
       }
 
-      final org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingRequest.FromPoint jaxbFromPoint = request.getFromPoint();
-      final org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingRequest.ToPoint jaxbToPoint = request.getToPoint();
+      final org.loverde.geographiccoordinate.ws.soap.api.InitialBearingRequest.FromPoint jaxbFromPoint = request.getFromPoint();
+      final org.loverde.geographiccoordinate.ws.soap.api.InitialBearingRequest.ToPoint jaxbToPoint = request.getToPoint();
 
       if( jaxbFromPoint == null ) {
          throw new IllegalArgumentException( "There is no JAXB InitialBearingRequest.FromPoint" );

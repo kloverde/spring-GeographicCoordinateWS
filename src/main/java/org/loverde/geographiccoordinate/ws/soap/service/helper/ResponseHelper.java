@@ -40,15 +40,15 @@ package org.loverde.geographiccoordinate.ws.soap.service.helper;
 
 import org.loverde.geographiccoordinate.Bearing;
 import org.loverde.geographiccoordinate.compass.CompassDirection;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.BearingResponseType;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.BearingResponseType.Compass16Bearing;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.BearingResponseType.Compass32Bearing;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.BearingResponseType.Compass8Bearing;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.Compass16Direction;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.Compass32Direction;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.Compass8Direction;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.CompassType;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.ObjectFactory;
+import org.loverde.geographiccoordinate.ws.soap.api.BearingResponseType;
+import org.loverde.geographiccoordinate.ws.soap.api.BearingResponseType.Compass16Bearing;
+import org.loverde.geographiccoordinate.ws.soap.api.BearingResponseType.Compass32Bearing;
+import org.loverde.geographiccoordinate.ws.soap.api.BearingResponseType.Compass8Bearing;
+import org.loverde.geographiccoordinate.ws.soap.api.Compass16Direction;
+import org.loverde.geographiccoordinate.ws.soap.api.Compass32Direction;
+import org.loverde.geographiccoordinate.ws.soap.api.Compass8Direction;
+import org.loverde.geographiccoordinate.ws.soap.api.CompassType;
+import org.loverde.geographiccoordinate.ws.soap.api.ObjectFactory;
 
 
 public class ResponseHelper {

@@ -1,0 +1,123 @@
+apply plugin: "java"
+apply plugin: "eclipse"
+apply plugin: "maven-publish"
+
+sourceCompatibility = 1.10
+targetCompatibility = 1.10
+
+buildscript {
+   repositories {
+      mavenCentral()
+      mavenLocal()
+   }
+}
+
+repositories {
+   mavenCentral()
+}
+
+def includeManifest = {
+   manifest {
+      attributes "Specification-Title": rootProject.name,
+                 "Specification-Version": version,
+                 "Specification-Vendor": builtBy == null || builtBy.trim().isEmpty() ? System.getProperty( "user.name" ) : builtBy,
+                 "Implementation-Vendor": builtBy == null || builtBy.trim().isEmpty() ? System.getProperty( "user.name" ) : builtBy,
+                 "Built-Date": new Date(),
+                 "Built-JDK": System.getProperty( "java.version" ),
+                 "Target-JDK": targetCompatibility,
+                 "Built-Gradle": gradle.gradleVersion
+   }
+}
+
+configurations {
+   jaxb
+}
+
+task genJaxb {
+   ext.sourceDir = project.properties["sourceDir"]
+   ext.package = project.properties["package"]
+   ext.schema = project.properties["schema"]
+
+   doLast() {
+      project.ant {
+         taskdef name: "xjc",
+         classname: "com.sun.tools.xjc.XJCTask",
+         classpath: configurations.jaxb.asPath
+
+         mkdir( dir: ext.sourceDir )
+
+         xjc( fork : true,
+              destdir : ext.sourceDir,
+              package : ext.package,
+              schema  : ext.schema
+         ) {
+            //arg( value: "-wsdl" )
+            produces( dir: ext.sourceDir, includes: "**/*.java" )
+         }
+
+         javac( source: 1.10,
+                target: 1.10,
+                debug: true,
+                debugLevel: "lines,vars,source",
+                classpath: configurations.jaxb.asPath
+         ) {
+            src( path: ext.sourceDir )
+            include( name: "**/*.java" )
+            include( name: "*.java" )
+         }
+      }
+   }
+}
+
+java {
+   withSourcesJar()
+   withJavadocJar()
+}
+
+jar {
+   configure includeManifest
+}
+
+sourcesJar {
+   configure includeManifest
+}
+
+javadocJar {
+   configure includeManifest
+}
+
+javadoc.options.addStringOption( "Xdoclint:none", "-quiet" )
+
+
+dependencies {
+   implementation (
+      "javax.xml.bind:jaxb-api:2.3.0",
+      "wsdl4j:wsdl4j:1.6.1",
+      "org.apache.ws.xmlschema:xmlschema-core:2.2.3",
+   )
+
+   jaxb (
+      // Using the com.sun.xml libs with Java 9+ results in a warning about illegal reflective access.  In 2.2.x, this happens
+      // with any application that uses JAXB; with 2.3.0, xjc also generates this warning.  Since there's no way to completely
+      // escape it, might as well use 2.3.0.  Supposedly a future release will address this.  See here:
+      // https://github.com/javaee/jaxb-v2/issues/1197
+      // https://stackoverflow.com/questions/50237516/proper-fix-for-java-10-complaining-about-illegal-reflection-access-by-jaxb-impl
+
+      "javax.xml.bind:jaxb-api:2.3.0",
+      "com.sun.xml.bind:jaxb-core:2.3.0",
+      "com.sun.xml.bind:jaxb-xjc:2.3.0",
+      "com.sun.xml.bind:jaxb-impl:2.3.0",
+      "javax.activation:activation:1.1.1"
+   )
+}
+
+publishing {    
+   publications {
+      mavenJava( MavenPublication ) {
+         from project.components.java
+         artifacts = [ jar, javadocJar, sourcesJar ]
+      }
+   }
+}
+
+compileJava.dependsOn clean, genJaxb

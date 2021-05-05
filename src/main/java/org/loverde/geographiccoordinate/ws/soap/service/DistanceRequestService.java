@@ -38,8 +38,8 @@
 
 package org.loverde.geographiccoordinate.ws.soap.service;
 
-import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceRequest;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceResponse;
+import org.loverde.geographiccoordinate.ws.soap.api.DistanceRequest;
+import org.loverde.geographiccoordinate.ws.soap.api.DistanceResponse;
 
 
 public interface DistanceRequestService {

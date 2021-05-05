@@ -36,7 +36,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.soap.model.convert;
+package org.loverde.geographiccoordinate.ws.soap.api;
 
 import static org.junit.Assert.assertEquals;
 
@@ -48,9 +48,6 @@ import org.junit.rules.ExpectedException;
 import org.loverde.geographiccoordinate.compass.CompassDirection16;
 import org.loverde.geographiccoordinate.compass.CompassDirection32;
 import org.loverde.geographiccoordinate.compass.CompassDirection8;
-import org.loverde.geographiccoordinate.ws.soap.model.convert.TypeConverter;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.CompassType;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.ObjectFactory;
 
 
 public class TypeConverterTest {
@@ -60,9 +57,9 @@ public class TypeConverterTest {
 
    private ObjectFactory factory;
 
-   private org.loverde.geographiccoordinate.ws.soap.model.generated.Latitude jaxbLatitude;
-   private org.loverde.geographiccoordinate.ws.soap.model.generated.Longitude jaxbLongitude;
-   private org.loverde.geographiccoordinate.ws.soap.model.generated.Point jaxbPoint;
+   private org.loverde.geographiccoordinate.ws.soap.api.Latitude jaxbLatitude;
+   private org.loverde.geographiccoordinate.ws.soap.api.Longitude jaxbLongitude;
+   private org.loverde.geographiccoordinate.ws.soap.api.Point jaxbPoint;
 
 
    @Before

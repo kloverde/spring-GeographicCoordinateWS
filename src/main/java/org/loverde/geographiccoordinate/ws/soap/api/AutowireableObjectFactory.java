@@ -36,7 +36,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.soap.model.generated;
+package org.loverde.geographiccoordinate.ws.soap.api;
 
 import org.springframework.stereotype.Component;
 

@@ -1,38 +1,42 @@
 GeographicCoordinateWS
 ======================
 
-See LICENSE for this software's licensing terms.  At first glance, it resembles the BSD-3 license, but it contains a significant difference which prohibits certain use.  Read it carefully.
+See LICENSE for this software's licensing terms.
+
+I'll start out by saying this isn't meant to be a serious application.  I created this for one purpose:  to serve as a guide to myself for future SOAP and REST projects.
 
 GeographicCoordinateWS is a Spring Boot application that exposes the functionality of my [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate) library's various calculators as SOAP and REST Web services.
 
-It should be noted that although this application is considered feature-complete, and I don't know what else I'd want to do to it, I haven't officially released it yet.  This means that undocumented changes could be made at any time.
+This application has no official release, and it never will.  Undocumented changes could be made at any time.
 
 
 ## Development Environment
 
 1. Java 10
-2. Gradle 4.7
-3. Eclipse Oxygen.3a (4.7.3a)
+2. Gradle 7.0
 
 Java 10 or later is required unless you want to invest the time to get things working on older Java.  This is due to a dependency on version 4.2 of my [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate) library, which is compiled for Java 10 and has required APIs that aren't present in earlier versions of GeographicCoordinate.  Rebuilding v4.2 on older Java might or might not succeed with JUnit tests enabled due to a floating point bug in *some, but not all* earlier JREs.  Note that I said JREs, not my library.  See GeographicCoordinate 4.0's release notes for more information about that.  You'll also need to tweak `build.gradle` in GeographicCoordinateWS.
 
 Other versions of Gradle (earlier or later) may or may not work.  I've come to learn that Gradle is still going through growing pains, unfortunately.
 
-Your Eclipse version shouldn't matter, but if you want to make use of the included pre-configured project files, you'll need certain plugins.  See the [Eclipse Setup](#eclipse-setup) section for information about that.
-
-
-## Eclipse Setup
-
-In the root directory, you'll find a subdirectory named `.eclipse_project_files`, which contains... you guessed it, Eclipse project files.  They enable you to import a pre-configured project that "just works" so that you don't have to fuss around.
-
-If you're an Eclipse user, you'll know that this is not where Eclipse keeps them - rather, they belong in the project root directory.  I archived the project files in a different location so that they could be saved without interfering with people who like to set up projects their own way.
-
-If you want to use them, read `.eclipse_project_files/README.txt` for a description of the Eclipse plugins you'll need to install.  Copy `.classpath`, `.project` and `.derived` to the project root directory, then import the project.
-
-Eclipse seems to think it knows more about my project than I do.  Once the project is imported, Eclipse might do something annoying:  it might automatically remove the `generated-sources` directory from the build path, thus modifying the .classpath file you copied just a moment before.  It does this because the directory doesn't exist; the directory is created by running the `genJaxb` target.  So, after generating the JAXB classes, you'll need to overwrite .classpath with the version you initially copied.  After that, you're in business.  If you know how to get Eclipse to stop doing that, let me know.
-
 
 ## Building and Running
+
+This is Gradle we're talking about, so say the typical prayer if you aren't using the exact version I used.  This is known to build with Gradle 7.0.
+
+### Build/publish the SOAP client API
+
+```shell
+cd gcws-client-api-soap
+gradle publishtomavenlocal
+```
+
+### Build/publish the REST client API
+
+```shell
+cd gcws-client-api-rest
+gradle publishtomavenlocal
+```
 
 You can specify whether the WSDL is generated dynamically or loaded from disk by modifying the `wsdl.dynamic` property in `application.properties`.  The included WSDL uses localhost as the endpoint.  That won't work for you if you intend to actually deploy this application somewhere, so you'll want to overwrite the provided WSDL with a regenerated one.
 

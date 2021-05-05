@@ -38,8 +38,8 @@
 
 package org.loverde.geographiccoordinate.ws.soap.service;
 
-import org.loverde.geographiccoordinate.ws.soap.model.generated.BackAzimuthRequest;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.BackAzimuthResponse;
+import org.loverde.geographiccoordinate.ws.soap.api.BackAzimuthRequest;
+import org.loverde.geographiccoordinate.ws.soap.api.BackAzimuthResponse;
 
 
 public interface BackAzimuthRequestService {

@@ -38,8 +38,8 @@
 
 package org.loverde.geographiccoordinate.ws.soap.service;
 
-import org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingRequest;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingResponse;
+import org.loverde.geographiccoordinate.ws.soap.api.InitialBearingRequest;
+import org.loverde.geographiccoordinate.ws.soap.api.InitialBearingResponse;
 
 
 public interface BearingRequestService {

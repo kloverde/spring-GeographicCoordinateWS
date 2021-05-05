@@ -42,11 +42,11 @@ import java.util.List;
 
 import org.loverde.geographiccoordinate.Point;
 import org.loverde.geographiccoordinate.calculator.DistanceCalculator;
-import org.loverde.geographiccoordinate.ws.soap.model.convert.TypeConverter;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.AutowireableObjectFactory;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceRequest;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceResponse;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceUnit;
+import org.loverde.geographiccoordinate.ws.soap.api.AutowireableObjectFactory;
+import org.loverde.geographiccoordinate.ws.soap.api.DistanceRequest;
+import org.loverde.geographiccoordinate.ws.soap.api.DistanceResponse;
+import org.loverde.geographiccoordinate.ws.soap.api.DistanceUnit;
+import org.loverde.geographiccoordinate.ws.soap.api.TypeConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -82,7 +82,7 @@ public class DistanceRequestServiceImpl implements DistanceRequestService {
          throw new IllegalArgumentException( "There are no JAXB DistanceRequest points" );
       }
 
-      final List<org.loverde.geographiccoordinate.ws.soap.model.generated.Point> noReallyJaxbPoints = jaxbPoints.getPoint();
+      final List<org.loverde.geographiccoordinate.ws.soap.api.Point> noReallyJaxbPoints = jaxbPoints.getPoint();
 
       if( CollectionUtils.isEmpty(noReallyJaxbPoints) ) {
          throw new IllegalArgumentException( "There are no JAXB DistanceRequest points" );

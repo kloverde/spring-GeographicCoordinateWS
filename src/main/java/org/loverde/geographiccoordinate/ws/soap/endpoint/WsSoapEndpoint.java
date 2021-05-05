@@ -38,13 +38,13 @@
 
 package org.loverde.geographiccoordinate.ws.soap.endpoint;
 
+import org.loverde.geographiccoordinate.ws.soap.api.BackAzimuthRequest;
+import org.loverde.geographiccoordinate.ws.soap.api.BackAzimuthResponse;
+import org.loverde.geographiccoordinate.ws.soap.api.DistanceRequest;
+import org.loverde.geographiccoordinate.ws.soap.api.DistanceResponse;
+import org.loverde.geographiccoordinate.ws.soap.api.InitialBearingRequest;
+import org.loverde.geographiccoordinate.ws.soap.api.InitialBearingResponse;
 import org.loverde.geographiccoordinate.ws.soap.config.WsSoapConfig;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.BackAzimuthRequest;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.BackAzimuthResponse;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceRequest;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.DistanceResponse;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingRequest;
-import org.loverde.geographiccoordinate.ws.soap.model.generated.InitialBearingResponse;
 import org.loverde.geographiccoordinate.ws.soap.service.BackAzimuthRequestService;
 import org.loverde.geographiccoordinate.ws.soap.service.BearingRequestService;
 import org.loverde.geographiccoordinate.ws.soap.service.DistanceRequestService;
