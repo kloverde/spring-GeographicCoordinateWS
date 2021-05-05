@@ -36,7 +36,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.rest.model.backazimuth;
+package org.loverde.geographiccoordinate.ws.rest.api.backazimuth;
 
 
 public class BackAzimuthResponseImpl implements BackAzimuthResponse {

@@ -36,27 +36,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.rest.model.distance;
-
-public class DistanceResponseImpl implements DistanceResponse {
-
-   private String unit;
-   private Double distance;
+package org.loverde.geographiccoordinate.ws.rest.api.initialbearing;
 
 
-   public void setUnit( final String unit ) {
-      this.unit = unit;
-   }
+public interface InitialBearingResponse {
 
-   public void setDistance( final Double distance ) {
-      this.distance = distance;
-   }
-
-   public String getUnit() {
-      return unit;
-   }
-
-   public Double getDistance() {
-      return distance;
-   }
 }

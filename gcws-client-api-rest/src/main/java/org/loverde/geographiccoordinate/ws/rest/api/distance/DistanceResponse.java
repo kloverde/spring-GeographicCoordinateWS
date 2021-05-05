@@ -36,9 +36,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.rest.model.initialbearing;
+package org.loverde.geographiccoordinate.ws.rest.api.distance;
 
 
-public interface InitialBearingResponse {
+public interface DistanceResponse {
 
 }

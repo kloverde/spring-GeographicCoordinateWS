@@ -36,9 +36,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.rest.model.distance;
+package org.loverde.geographiccoordinate.ws.rest.api.backazimuth;
+
+import org.loverde.geographiccoordinate.ws.rest.api.ErrorResponse;
 
 
-public interface DistanceResponse {
+public class BackAzimuthErrorResponseImpl extends ErrorResponse implements BackAzimuthResponse {
 
 }

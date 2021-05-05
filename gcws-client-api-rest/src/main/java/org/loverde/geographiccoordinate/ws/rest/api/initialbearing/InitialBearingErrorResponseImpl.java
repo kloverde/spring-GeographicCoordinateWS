@@ -36,11 +36,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.rest.model.distance;
+package org.loverde.geographiccoordinate.ws.rest.api.initialbearing;
 
-import org.loverde.geographiccoordinate.ws.rest.model.ErrorResponse;
+import org.loverde.geographiccoordinate.ws.rest.api.ErrorResponse;
 
 
-public class DistanceErrorResponseImpl extends ErrorResponse implements DistanceResponse {
+public class InitialBearingErrorResponseImpl extends ErrorResponse implements InitialBearingResponse {
 
 }
