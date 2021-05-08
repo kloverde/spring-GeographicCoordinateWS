@@ -1,33 +1,4 @@
-apply plugin: "java"
-apply plugin: "eclipse"
-apply plugin: "maven-publish"
-
-sourceCompatibility = 1.10
-targetCompatibility = 1.10
-
-buildscript {
-   repositories {
-      mavenCentral()
-      mavenLocal()
-   }
-}
-
-repositories {
-   mavenCentral()
-}
-
-def includeManifest = {
-   manifest {
-      attributes "Specification-Title": rootProject.name,
-                 "Specification-Version": version,
-                 "Specification-Vendor": builtBy == null || builtBy.trim().isEmpty() ? System.getProperty( "user.name" ) : builtBy,
-                 "Implementation-Vendor": builtBy == null || builtBy.trim().isEmpty() ? System.getProperty( "user.name" ) : builtBy,
-                 "Built-Date": new Date(),
-                 "Built-JDK": System.getProperty( "java.version" ),
-                 "Target-JDK": targetCompatibility,
-                 "Built-Gradle": gradle.gradleVersion
-   }
-}
+apply from: buildScriptsDir + "/build_java_lib.gradle"
 
 configurations {
    jaxb
@@ -62,26 +33,6 @@ task genJaxb {
    }
 }
 
-java {
-   withSourcesJar()
-   withJavadocJar()
-}
-
-jar {
-   configure includeManifest
-}
-
-sourcesJar {
-   configure includeManifest
-}
-
-javadocJar {
-   configure includeManifest
-}
-
-javadoc.options.addStringOption( "Xdoclint:none", "-quiet" )
-
-
 dependencies {
    implementation (
       "javax.xml.bind:jaxb-api:2.3.0",
@@ -102,15 +53,6 @@ dependencies {
       "com.sun.xml.bind:jaxb-impl:2.3.0",
       "javax.activation:activation:1.1.1"
    )
-}
-
-publishing {
-   publications {
-      mavenJava( MavenPublication ) {
-         from project.components.java
-         artifacts = [ jar, javadocJar, sourcesJar ]
-      }
-   }
 }
 
 compileJava.dependsOn clean, genJaxb
