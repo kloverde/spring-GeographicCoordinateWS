@@ -17,12 +17,16 @@ This application has no official release, and it never will.  Undocumented chang
 
 Java 10 or later is required unless you want to invest the time to get things working on older Java.  This is due to a dependency on version 4.2 of my [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate) library, which is compiled for Java 10 and has required APIs that aren't present in earlier versions of GeographicCoordinate.  Rebuilding v4.2 on older Java might or might not succeed with JUnit tests enabled due to a floating point bug in *some, but not all* earlier JREs.  Note that I said JREs, not my library.  See GeographicCoordinate 4.0's release notes for more information about that.  You'll also need to tweak `build.gradle` in GeographicCoordinateWS.
 
-Other versions of Gradle (earlier or later) may or may not work.  I've come to learn that Gradle is still going through growing pains, unfortunately.
-
 
 ## Building and Running
 
-This is Gradle we're talking about, so say the typical prayer if you aren't using the exact version I used.  This is known to build with Gradle 7.0.
+### Build/publish GeographicCoordinate
+
+Get it [here](https://github.com/kloverde/java-GeographicCoordinate).  Follow the build instructions listed in that project's README.MD, then publish it:
+
+```shell
+gradle publishtomavenlocal
+```
 
 ### Build/publish the SOAP client API
 
