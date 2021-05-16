@@ -58,7 +58,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.ClassUtils;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.soap.client.SoapFaultClientException;
 
@@ -81,10 +80,11 @@ public class BackAzimuthRequestApplicationIntegrationTest {
 
    private BackAzimuthRequest backAzimuthRequest;
 
-
    @Before
    public void setUp() throws Exception {
-      marshaller.setPackagesToScan( ClassUtils.getPackageName(BackAzimuthRequest.class) );
+//      marshaller.setPackagesToScan( "org.loverde.geographiccoordinate.ws.soap.api"/*ClassUtils.getPackageName(BackAzimuthRequest.class)*/ );
+//      marshaller.setContextPath( "org.loverde.geographiccoordinate.ws.soap.api"/*ClassUtils.getPackageName(BackAzimuthRequest.class)*/ );
+      marshaller.setClassesToBeBound( BackAzimuthRequest.class );
       marshaller.afterPropertiesSet();
 
       backAzimuthRequest = getBackAzimuthRequest();

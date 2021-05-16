@@ -3,8 +3,8 @@ apply plugin: "eclipse"
 apply plugin: "org.springframework.boot"
 apply plugin: "io.spring.dependency-management"
 
-sourceCompatibility = 1.10
-targetCompatibility = 1.10
+sourceCompatibility = 1.15
+targetCompatibility = 1.15
 
 buildscript {
    repositories {
@@ -46,12 +46,16 @@ dependencies {
    )
 
    runtimeOnly(
-      "com.sun.xml.bind:jaxb-core:2.3.0",
-      "com.sun.xml.bind:jaxb-impl:2.3.0",
       "javax.activation:activation:1.1.1",
       "javax.xml.soap:javax.xml.soap-api:1.4.0",
-      "com.sun.xml.messaging.saaj:saaj-impl:1.4.0",
+      //"com.sun.xml.messaging.saaj:saaj-impl:2.0.1",
       "org.apache.ws.xmlschema:xmlschema-core:2.2.3",
+    
+      "org.glassfish.metro:webservices-rt:2.4.4",
+      "org.glassfish.metro:webservices-api:2.4.4",
+    
+      "com.sun.xml.bind:jaxb-core:3.0.1",
+      "com.sun.xml.bind:jaxb-impl:3.0.1"
    )
 }
 
