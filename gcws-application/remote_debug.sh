@@ -39,6 +39,6 @@
 
 pushd `dirname "$(readlink -f "$0")"`
 
-java -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=4000,suspend=n -jar build/libs/gcws-application-1.0.0.jar
+java -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=4000,suspend=n -jar build/libs/gcws-application-2.0.0.jar
 
 popd

@@ -1,1 +1,13 @@
 apply from: buildScriptsDir + "/build_java_lib.gradle"
+
+
+dependencies {
+   implementation "jakarta.validation:jakarta.validation-api:3.0.0"
+   implementation "com.fasterxml.jackson.core:jackson-annotations:2.12.3"
+}
+
+test {
+   if( false ) {
+      exclude "**/*Test.class"   
+   }
+}

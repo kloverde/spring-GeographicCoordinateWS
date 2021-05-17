@@ -37,48 +37,37 @@
  */
 
 package org.loverde.geographiccoordinate.ws.rest.controller;
-
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
-import org.loverde.geographiccoordinate.Bearing;
 import org.loverde.geographiccoordinate.Latitude;
 import org.loverde.geographiccoordinate.Longitude;
-import org.loverde.geographiccoordinate.Point;
-import org.loverde.geographiccoordinate.calculator.BearingCalculator;
 import org.loverde.geographiccoordinate.calculator.DistanceCalculator;
 import org.loverde.geographiccoordinate.compass.CompassDirection;
 import org.loverde.geographiccoordinate.compass.CompassDirection16;
 import org.loverde.geographiccoordinate.compass.CompassDirection32;
 import org.loverde.geographiccoordinate.compass.CompassDirection8;
-import org.loverde.geographiccoordinate.exception.GeographicCoordinateException;
-import org.loverde.geographiccoordinate.ws.rest.api.backazimuth.BackAzimuthErrorResponseImpl;
-import org.loverde.geographiccoordinate.ws.rest.api.backazimuth.BackAzimuthResponse;
-import org.loverde.geographiccoordinate.ws.rest.api.backazimuth.BackAzimuthResponseImpl;
+import org.loverde.geographiccoordinate.ws.rest.api.Point;
 import org.loverde.geographiccoordinate.ws.rest.api.distance.DistanceErrorResponseImpl;
-import org.loverde.geographiccoordinate.ws.rest.api.distance.DistanceResponse;
 import org.loverde.geographiccoordinate.ws.rest.api.distance.DistanceResponseImpl;
-import org.loverde.geographiccoordinate.ws.rest.api.initialbearing.InitialBearingErrorResponseImpl;
-import org.loverde.geographiccoordinate.ws.rest.api.initialbearing.InitialBearingResponse;
-import org.loverde.geographiccoordinate.ws.rest.api.initialbearing.InitialBearingResponseImpl;
-import org.loverde.geographiccoordinate.ws.rest.exception.MalformedDataException;
+import org.loverde.geographiccoordinate.ws.rest.api.request.DistanceRequest;
+import org.loverde.geographiccoordinate.ws.rest.api.response.DistanceResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
 @RequestMapping( "/GeographicCoordinateWS/rest" )
-public class WsRestController {
+public class GcwsRestController {
 
    private static Map<String, Class<? extends CompassDirection>> COMPASS_TYPE_MAP;
 
@@ -112,90 +101,35 @@ public class WsRestController {
     *
     * @see DistanceCalculator#distance(org.loverde.geographiccoordinate.calculator.DistanceCalculator.Unit, org.loverde.geographiccoordinate.Point...)
     */
-   @GetMapping( "distance/{unit}/{coordinates}" )
-   public DistanceResponse distanceRequest( final HttpServletResponse httpResponse,
-                                            @PathVariable final String unit,
-                                            @PathVariable final String coordinates[] ) {
+   @PostMapping(
+      path = "distance",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE
+   )
+   public ResponseEntity<DistanceResponse> distanceRequest( @Valid @RequestBody final DistanceRequest request ) {
+      final DistanceResponse response = new DistanceResponse();
+      final DistanceCalculator.Unit distanceUnit = DistanceCalculator.Unit.valueOf( request.getUnit().name() );
 
-      final DistanceResponseImpl successResponse = new DistanceResponseImpl();
-      final DistanceErrorResponseImpl errorResponse = new DistanceErrorResponseImpl();
+      final org.loverde.geographiccoordinate.Point points[] = new org.loverde.geographiccoordinate.Point[ request.getPoints().size() ];
 
-      DistanceCalculator.Unit distanceUnit = null;
-      final Point points[];
-      double distance = -1;
+      for( int i = 0; i < request.getPoints().size(); i++ ) {
+         final Point p = request.getPoints().get( i );
 
-      httpResponse.setStatus( HttpStatus.OK.value() );
-
-      try {
-         distanceUnit = DistanceCalculator.Unit.valueOf( unit.toUpperCase() );
-      } catch( final IllegalArgumentException e ) {
-         httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
-
-         errorResponse.setHttpStatus( httpResponse.getStatus() );
-         errorResponse.setErrorMessage( String.format("'%s' is an invalid unit of distance.  Valid values are %s", unit, Arrays.asList(DistanceCalculator.Unit.values())) );
-
-         return errorResponse;
+         points[i] = new org.loverde.geographiccoordinate.Point(
+            new Latitude( p.getLatitude().getValue().doubleValue() ),
+            new Longitude( p.getLongitude().getValue().doubleValue() )
+         );
       }
 
-      if( distanceUnit != null ) {
-         points = new Point[ coordinates.length ];
+      final double distance = DistanceCalculator.distance( distanceUnit, points );
 
-         for( int i = 0; i < coordinates.length; i++ ) {
-            Latitude latitude = null;
-            Longitude longitude = null;
+      response.setDistance( new BigDecimal(distance) );
+      response.setUnit( request.getUnit() );
 
-            try {
-               latitude = latitudeFromPathVar( coordinates[i] );
-               longitude = longitudeFromPathVar( coordinates[i] );
-            } catch( final MalformedDataException e ) {
-               httpResponse.setStatus( HttpStatus.BAD_REQUEST.value() );
-
-               errorResponse.setHttpStatus( httpResponse.getStatus() );
-               errorResponse.setErrorMessage( String.format("Coordinate #%d: %s", (i + 1), e.getLocalizedMessage()) );
-
-               return errorResponse;
-            } catch( final IllegalArgumentException | GeographicCoordinateException e ) {
-               httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
-
-               errorResponse.setHttpStatus( httpResponse.getStatus() );
-               errorResponse.setErrorMessage( String.format("Coordinate #%d: %s", (i + 1), e.getLocalizedMessage()) );
-
-               return errorResponse;
-            }
-
-            if( latitude != null && longitude != null ) {
-               points[i] = new Point( latitude, longitude );
-            }
-         }
-
-         if( points.length < 2 ) {
-            httpResponse.setStatus( HttpStatus.BAD_REQUEST.value() );
-
-            errorResponse.setHttpStatus( httpResponse.getStatus() );
-            errorResponse.setErrorMessage( "Distance requires at least 2 sets of coordinates" );
-
-            return errorResponse;
-         } else {
-            try {
-               distance = DistanceCalculator.distance( distanceUnit, points );
-            } catch( final GeographicCoordinateException gce ) {
-               httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
-
-               errorResponse.setHttpStatus( httpResponse.getStatus() );
-               errorResponse.setErrorMessage( gce.getLocalizedMessage() );
-
-               return errorResponse;
-            }
-         }
-      }
-
-      successResponse.setDistance( distance );
-      successResponse.setUnit( unit );
-
-      return successResponse;
+      return new ResponseEntity<>( response, HttpStatus.OK );
    }
 
-   /**
+   /*
     * <p>
     * Calculates the initial bearing that will take you from point A to point B.  Keep in mind that the bearing will change over the course of the trip and will need to be recalculated.
     * </p>
@@ -209,7 +143,7 @@ public class WsRestController {
     * @param toStr The ending point.  A latitude/longitude pair, where the latitude and longitude are in decimal form and separated by a colon.
     *
     * @return A JSON representation of {@linkplain InitialBearingResponseImpl} or {@linkplain InitialBearingErrorResponseImpl}
-    */
+    *
    @GetMapping( "initialBearing/compassType/{compassType}/from/{from}/to/{to}" )
    public InitialBearingResponse initialBearingRequest( final HttpServletResponse httpResponse,
                                                         @PathVariable("compassType") final String compassTypeStr,
@@ -304,7 +238,7 @@ public class WsRestController {
     * @param initialBearingStr The bearing to reverse
     *
     * @return A JSON representation of {@linkplain BackAzimuthResponseImpl} or {@linkplain BackAzimuthErrorResponseImpl}
-    */
+    *
    @GetMapping( "backAzimuth/compassType/{compassType}/initialBearing/{initialBearing}" )
    public BackAzimuthResponse backAzimuthRequest( final HttpServletResponse httpResponse,
                                                   @PathVariable("compassType")    final String compassTypeStr,
@@ -430,4 +364,5 @@ public class WsRestController {
    private static Point pointFromPathVar( final String pathVar ) throws MalformedDataException {
       return new Point( latitudeFromPathVar(pathVar), longitudeFromPathVar(pathVar) );
    }
+   */
 }
