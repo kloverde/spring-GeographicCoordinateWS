@@ -85,7 +85,7 @@ public class GcwsRestController {
     * from point B to point C is 2, the total distance traveled will be (3 + 2) = 5.  Just provide coordinates in the order they're visited.
     * </p>
     *
-    * @param request API requeset class
+    * @param request API request class
     *
     * @return The total trip distance and unit of distance
     *
@@ -96,7 +96,7 @@ public class GcwsRestController {
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE
    )
-   public ResponseEntity<DistanceResponse> distanceRequest( @Valid @RequestBody final DistanceRequest request ) {
+   public ResponseEntity<DistanceResponse> distance( @Valid @RequestBody final DistanceRequest request ) {
       final DistanceResponse response = new DistanceResponse();
       final DistanceCalculator.Unit distanceUnit = DistanceCalculator.Unit.valueOf( request.getUnit().name() );
 
