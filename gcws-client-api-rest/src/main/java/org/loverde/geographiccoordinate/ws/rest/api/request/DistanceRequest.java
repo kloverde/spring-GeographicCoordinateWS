@@ -43,15 +43,16 @@ import java.util.List;
 import org.loverde.geographiccoordinate.ws.rest.api.DistanceUnit;
 import org.loverde.geographiccoordinate.ws.rest.api.Point;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 
 public class DistanceRequest {
 
-   @NotEmpty
-   @Size( min = 2 )
+   @NotNull
+   @Size( min = 2, max = 100 )
+   @Valid
    private List<Point> points;
 
    @NotNull
@@ -62,6 +63,11 @@ public class DistanceRequest {
       return points;
    }
 
+   /**
+    * Points in order of travel
+    *
+    * @param points Minimum 2, maximum 100
+    */
    public void setPoints( final List<Point> points ) {
       this.points = points;
    }

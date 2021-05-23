@@ -42,23 +42,19 @@ import java.math.BigDecimal;
 
 import org.hibernate.validator.constraints.Range;
 
-import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 
 
 /**
  * Lines of longitude run parallel to the Prime Meridian (perpendicular to the Equator).
- * Longitude denotes whether a location is east or west of the Prime Meridian.  The
- * Prime Meridian is located at longitude 0.
+ * Longitude denotes whether a location is east or west of the Prime Meridian.  Positive
+ * values are east; negative values are west; the Prime Meridian is at 0.
  */
 public class Longitude {
 
    @NotNull
    @Range( min = -180, max = 180 )
    private BigDecimal value;
-
-   @NotNull
-   private LongitudeDirection direction;
 
 
    public BigDecimal getValue() {
@@ -67,19 +63,5 @@ public class Longitude {
 
    public void setValue( final BigDecimal value ) {
       this.value = value;
-   }
-
-   public LongitudeDirection getDirection() {
-      return direction;
-   }
-
-   public void setDirection( final LongitudeDirection direction ) {
-      this.direction = direction;
-   }
-
-   @AssertTrue
-   private boolean validDirection() {
-      return ( BigDecimal.ZERO.equals(value) && direction == LongitudeDirection.NEITHER ) ||
-             ( !BigDecimal.ZERO.equals(value) && direction != LongitudeDirection.NEITHER );
    }
 }

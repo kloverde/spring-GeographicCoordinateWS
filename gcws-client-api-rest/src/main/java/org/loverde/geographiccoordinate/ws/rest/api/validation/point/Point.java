@@ -36,38 +36,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.rest.api.validation.latitude;
+package org.loverde.geographiccoordinate.ws.rest.api.validation.point;
 
-import java.util.Set;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-
-
-public class LatitudeValidator implements ConstraintValidator<Latitude, org.loverde.geographiccoordinate.ws.rest.api.Latitude> {
-
-   private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
 
-   @Override
-   public boolean isValid( final org.loverde.geographiccoordinate.ws.rest.api.Latitude latitude, final ConstraintValidatorContext context ) {
-      final Set<ConstraintViolation<org.loverde.geographiccoordinate.ws.rest.api.Latitude>> errors = validator.validate( latitude );
+@Documented
+@Constraint( validatedBy = PointValidator.class )
+@Target( { ElementType.METHOD, ElementType.FIELD } )
+@Retention( RetentionPolicy.RUNTIME )
+public @interface Point {
 
-      if( errors != null && !errors.isEmpty() ) {
-         context.disableDefaultConstraintViolation();
+    String message() default "invalid";
 
-         for( final ConstraintViolation<org.loverde.geographiccoordinate.ws.rest.api.Latitude> error : errors ) {
-            context.buildConstraintViolationWithTemplate(
-               String.format( "%s %s", error.getPropertyPath(), error.getMessage() )
-            ).addConstraintViolation();
-         }
+    Class<?>[] groups() default {};
 
-         return false;
-      }
+    Class<? extends Payload>[] payload() default {};
 
-      return true;
-   }
 }

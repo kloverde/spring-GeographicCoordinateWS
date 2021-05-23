@@ -31,11 +31,9 @@ public class PointTest {
       validator = Validation.buildDefaultValidatorFactory().getValidator();
 
       latitude = new Latitude();
-      latitude.setDirection( LatitudeDirection.NORTH );
       latitude.setValue( new BigDecimal("40.113") );
 
       longitude = new Longitude();
-      longitude.setDirection( LongitudeDirection.EAST );
       longitude.setValue( new BigDecimal("103.112") );
 
       point = new Point();
@@ -57,19 +55,6 @@ public class PointTest {
    // Begin latitude tests
 
    @Test
-   public void latitude_nullDirection() {
-      latitude.setDirection( null );
-
-      final Set<ConstraintViolation<Point>> errors = validator.validate( point );
-      final ConstraintViolation<Point> error1 = errors.iterator().next();
-
-      assertEquals( 1, errors.size() );
-
-      assertEquals( "latitude", error1.getPropertyPath().toString() );
-      assertEquals( "direction " + ERR_NULL, error1.getMessage() );
-   }
-
-   @Test
    public void latitude_nullValue() {
       latitude.setValue( null );
 
@@ -78,8 +63,8 @@ public class PointTest {
 
       assertEquals( 1, errors.size() );
 
-      assertEquals( "latitude", error1.getPropertyPath().toString() );
-      assertEquals( "value " + ERR_NULL, error1.getMessage() );
+      assertEquals( "latitude.value", error1.getPropertyPath().toString() );
+      assertEquals( ERR_NULL, error1.getMessage() );
    }
 
    @Test
@@ -91,8 +76,8 @@ public class PointTest {
 
       assertEquals( 1, errors.size() );
 
-      assertEquals( "latitude", error1.getPropertyPath().toString() );
-      assertEquals( "value must be between -90 and 90", error1.getMessage() );
+      assertEquals( "latitude.value", error1.getPropertyPath().toString() );
+      assertEquals( "must be between -90 and 90", error1.getMessage() );
    }
 
    @Test
@@ -122,25 +107,12 @@ public class PointTest {
 
       assertEquals( 1, errors.size() );
 
-      assertEquals( "latitude", error1.getPropertyPath().toString() );
-      assertEquals( "value must be between -90 and 90", error1.getMessage() );
+      assertEquals( "latitude.value", error1.getPropertyPath().toString() );
+      assertEquals( "must be between -90 and 90", error1.getMessage() );
    }
 
    // End latitude tests
    // Begin longitude tests
-
-   @Test
-   public void longitude_nullDirection() {
-      longitude.setDirection( null );
-
-      final Set<ConstraintViolation<Point>> errors = validator.validate( point );
-      final ConstraintViolation<Point> error1 = errors.iterator().next();
-
-      assertEquals( 1, errors.size() );
-
-      assertEquals( "longitude", error1.getPropertyPath().toString() );
-      assertEquals( "direction " + ERR_NULL, error1.getMessage() );
-   }
 
    @Test
    public void longitude_nullValue() {
@@ -151,8 +123,8 @@ public class PointTest {
 
       assertEquals( 1, errors.size() );
 
-      assertEquals( "longitude", error1.getPropertyPath().toString() );
-      assertEquals( "value " + ERR_NULL, error1.getMessage() );
+      assertEquals( "longitude.value", error1.getPropertyPath().toString() );
+      assertEquals( ERR_NULL, error1.getMessage() );
    }
 
    @Test
@@ -164,8 +136,8 @@ public class PointTest {
 
       assertEquals( 1, errors.size() );
 
-      assertEquals( "longitude", error1.getPropertyPath().toString() );
-      assertEquals( "value must be between -180 and 180", error1.getMessage() );
+      assertEquals( "longitude.value", error1.getPropertyPath().toString() );
+      assertEquals( "must be between -180 and 180", error1.getMessage() );
    }
 
    @Test
@@ -195,7 +167,7 @@ public class PointTest {
 
       assertEquals( 1, errors.size() );
 
-      assertEquals( "longitude", error1.getPropertyPath().toString() );
-      assertEquals( "value must be between -180 and 180", error1.getMessage() );
+      assertEquals( "longitude.value", error1.getPropertyPath().toString() );
+      assertEquals( "must be between -180 and 180", error1.getMessage() );
    }
 }

@@ -42,23 +42,19 @@ import java.math.BigDecimal;
 
 import org.hibernate.validator.constraints.Range;
 
-import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 
 
 /**
  * Lines of latitude run parallel to the Equator (perpendicular to the Prime Meridian).
- * Latitude denotes whether a location is north or south of the Equator.  The Equator
- * is located at latitude 0.
+ * Latitude denotes whether a location is north or south of the Equator.  Positive
+ * values are north; negative values are south; the Equator is at 0.
  */
 public class Latitude {
 
    @NotNull
    @Range( min = -90, max = 90 )
    private BigDecimal value;
-
-   @NotNull
-   private LatitudeDirection direction;
 
 
    public BigDecimal getValue() {
@@ -67,19 +63,5 @@ public class Latitude {
 
    public void setValue( final BigDecimal value ) {
       this.value = value;
-   }
-
-   public LatitudeDirection getDirection() {
-      return direction;
-   }
-
-   public void setDirection( final LatitudeDirection direction ) {
-      this.direction = direction;
-   }
-
-   @AssertTrue
-   private boolean validDirection() {
-      return ( BigDecimal.ZERO.equals(value) && direction == LatitudeDirection.NEITHER ) ||
-             ( !BigDecimal.ZERO.equals(value) && direction != LatitudeDirection.NEITHER );
    }
 }

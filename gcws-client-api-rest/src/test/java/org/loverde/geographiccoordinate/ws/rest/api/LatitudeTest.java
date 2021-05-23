@@ -26,32 +26,17 @@ public class LatitudeTest {
       validator = Validation.buildDefaultValidatorFactory().getValidator();
 
       latitude = new Latitude();
-      latitude.setDirection( LatitudeDirection.NORTH );
       latitude.setValue( new BigDecimal("40.113") );
    }
 
    @Test
    public void settersAndGettersWork() {
-      assertEquals( LatitudeDirection.NORTH, latitude.getDirection() );
       assertEquals( new BigDecimal("40.113"), latitude.getValue() );
    }
 
    @Test
    public void noErrors() {
       assertEquals( 0, validator.validate(latitude).size() );
-   }
-
-   @Test
-   public void nullDirection() {
-      latitude.setDirection( null );
-
-      final Set<ConstraintViolation<Latitude>> errors = validator.validate( latitude );
-      final ConstraintViolation<Latitude> error1 = errors.iterator().next();
-
-      assertEquals( 1, errors.size() );
-
-      assertEquals( "direction", error1.getPropertyPath().toString() );
-      assertEquals( ERR_NULL, error1.getMessage() );
    }
 
    @Test

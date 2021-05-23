@@ -38,20 +38,18 @@
 
 package org.loverde.geographiccoordinate.ws.rest.api;
 
-import org.loverde.geographiccoordinate.ws.rest.api.validation.latitude.Latitude;
-import org.loverde.geographiccoordinate.ws.rest.api.validation.longitude.Longitude;
-
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 
 public class Point {
 
-   @Latitude
    @NotNull
+   @Valid
    private org.loverde.geographiccoordinate.ws.rest.api.Latitude latitude;
 
-   @Longitude
    @NotNull
+   @Valid
    private org.loverde.geographiccoordinate.ws.rest.api.Longitude longitude;
 
 

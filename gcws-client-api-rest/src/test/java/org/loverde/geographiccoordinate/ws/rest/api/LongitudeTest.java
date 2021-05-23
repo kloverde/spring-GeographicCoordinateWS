@@ -26,32 +26,17 @@ public class LongitudeTest {
       validator = Validation.buildDefaultValidatorFactory().getValidator();
 
       longitude = new Longitude();
-      longitude.setDirection( LongitudeDirection.EAST );
       longitude.setValue( new BigDecimal("103.112") );
    }
 
    @Test
    public void settersAndGettersWork() {
-      assertEquals( LongitudeDirection.EAST, longitude.getDirection() );
       assertEquals( new BigDecimal("103.112"), longitude.getValue() );
    }
 
    @Test
    public void noErrors() {
       assertEquals( 0, validator.validate(longitude).size() );
-   }
-
-   @Test
-   public void nullDirection() {
-      longitude.setDirection( null );
-
-      final Set<ConstraintViolation<Longitude>> errors = validator.validate( longitude );
-      final ConstraintViolation<Longitude> error1 = errors.iterator().next();
-
-      assertEquals( 1, errors.size() );
-
-      assertEquals( "direction", error1.getPropertyPath().toString() );
-      assertEquals( ERR_NULL, error1.getMessage() );
    }
 
    @Test

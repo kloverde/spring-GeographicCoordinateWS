@@ -36,7 +36,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.rest.api.validation.longitude;
+package org.loverde.geographiccoordinate.ws.rest.api.validation.point;
 
 import java.util.Set;
 
@@ -47,19 +47,23 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 
 
-public class LongitudeValidator implements ConstraintValidator<Longitude, org.loverde.geographiccoordinate.ws.rest.api.Longitude> {
+public class PointValidator implements ConstraintValidator<Point, org.loverde.geographiccoordinate.ws.rest.api.Point> {
 
    private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
 
    @Override
-   public boolean isValid( final org.loverde.geographiccoordinate.ws.rest.api.Longitude longitude, final ConstraintValidatorContext context ) {
-      final Set<ConstraintViolation<org.loverde.geographiccoordinate.ws.rest.api.Longitude>> errors = validator.validate( longitude );
+   public boolean isValid( final org.loverde.geographiccoordinate.ws.rest.api.Point point, final ConstraintValidatorContext context ) {
+      return validate( context, point.getLatitude() ) && validate( context, point.getLongitude() );
+   }
+
+   private boolean validate( final ConstraintValidatorContext context, final Object object ) {
+      final Set<ConstraintViolation<Object>> errors = validator.validate( object );
 
       if( errors != null && !errors.isEmpty() ) {
          context.disableDefaultConstraintViolation();
 
-         for( final ConstraintViolation<org.loverde.geographiccoordinate.ws.rest.api.Longitude> error : errors ) {
+         for( final ConstraintViolation<Object> error : errors ) {
             context.buildConstraintViolationWithTemplate(
                String.format( "%s %s", error.getPropertyPath(), error.getMessage() )
             ).addConstraintViolation();
