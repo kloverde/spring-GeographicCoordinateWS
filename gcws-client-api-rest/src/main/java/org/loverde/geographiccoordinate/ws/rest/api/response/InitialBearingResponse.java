@@ -41,7 +41,6 @@ package org.loverde.geographiccoordinate.ws.rest.api.response;
 import java.math.BigDecimal;
 
 import org.loverde.geographiccoordinate.ws.rest.api.CompassType;
-import org.loverde.geographiccoordinate.ws.rest.api.request.AbstractResponse;
 
 
 public class InitialBearingResponse extends AbstractResponse {

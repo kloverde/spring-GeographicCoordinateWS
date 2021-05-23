@@ -1,4 +1,4 @@
-package org.loverde.geographiccoordinate.ws.rest.api.request;
+package org.loverde.geographiccoordinate.ws.rest.api.response;
 
 
 public abstract class AbstractResponse {
