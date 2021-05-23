@@ -38,31 +38,36 @@
 
 package org.loverde.geographiccoordinate.ws.rest.api;
 
+import org.loverde.geographiccoordinate.ws.rest.api.validation.latitude.Latitude;
+import org.loverde.geographiccoordinate.ws.rest.api.validation.longitude.Longitude;
+
 import jakarta.validation.constraints.NotNull;
 
 
 public class Point {
 
+   @Latitude
    @NotNull
-   private Latitude latitude;
+   private org.loverde.geographiccoordinate.ws.rest.api.Latitude latitude;
 
+   @Longitude
    @NotNull
-   private Longitude longitude;
+   private org.loverde.geographiccoordinate.ws.rest.api.Longitude longitude;
 
 
-   public Latitude getLatitude() {
+   public org.loverde.geographiccoordinate.ws.rest.api.Latitude getLatitude() {
       return latitude;
    }
 
-   public void setLatitude( final Latitude latitude ) {
+   public void setLatitude( final org.loverde.geographiccoordinate.ws.rest.api.Latitude latitude ) {
       this.latitude = latitude;
    }
 
-   public Longitude getLongitude() {
+   public org.loverde.geographiccoordinate.ws.rest.api.Longitude getLongitude() {
       return longitude;
    }
 
-   public void setLongitude( final Longitude longitude ) {
+   public void setLongitude( final org.loverde.geographiccoordinate.ws.rest.api.Longitude longitude ) {
       this.longitude = longitude;
    }
 }

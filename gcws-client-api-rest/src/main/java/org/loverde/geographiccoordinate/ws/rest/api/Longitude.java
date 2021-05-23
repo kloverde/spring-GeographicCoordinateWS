@@ -40,9 +40,9 @@ package org.loverde.geographiccoordinate.ws.rest.api;
 
 import java.math.BigDecimal;
 
+import org.hibernate.validator.constraints.Range;
+
 import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 
 
@@ -54,8 +54,7 @@ import jakarta.validation.constraints.NotNull;
 public class Longitude {
 
    @NotNull
-   @DecimalMin( "-180.0" )
-   @DecimalMax( "180.0" )
+   @Range( min = -180, max = 180 )
    private BigDecimal value;
 
    @NotNull

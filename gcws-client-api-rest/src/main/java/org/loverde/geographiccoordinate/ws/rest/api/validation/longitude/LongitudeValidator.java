@@ -36,50 +36,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.rest.api;
+package org.loverde.geographiccoordinate.ws.rest.api.validation.longitude;
 
-import java.math.BigDecimal;
+import java.util.Set;
 
-import org.hibernate.validator.constraints.Range;
-
-import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.NotNull;
-
-
-/**
- * Lines of latitude run parallel to the Equator (perpendicular to the Prime Meridian).
- * Latitude denotes whether a location is north or south of the Equator.  The Equator
- * is located at latitude 0.
- */
-public class Latitude {
-
-   @NotNull
-   @Range( min = -90, max = 90 )
-   private BigDecimal value;
-
-   @NotNull
-   private LatitudeDirection direction;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 
 
-   public BigDecimal getValue() {
-      return value;
-   }
+public class LongitudeValidator implements ConstraintValidator<Longitude, org.loverde.geographiccoordinate.ws.rest.api.Longitude> {
 
-   public void setValue( final BigDecimal value ) {
-      this.value = value;
-   }
+   private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-   public LatitudeDirection getDirection() {
-      return direction;
-   }
 
-   public void setDirection( final LatitudeDirection direction ) {
-      this.direction = direction;
-   }
+   @Override
+   public boolean isValid( final org.loverde.geographiccoordinate.ws.rest.api.Longitude longitude, final ConstraintValidatorContext context ) {
+      final Set<ConstraintViolation<org.loverde.geographiccoordinate.ws.rest.api.Longitude>> errors = validator.validate( longitude );
 
-   @AssertTrue
-   private boolean validDirection() {
-      return ( BigDecimal.ZERO.equals(value) && direction == LatitudeDirection.NEITHER ) ||
-             ( !BigDecimal.ZERO.equals(value) && direction != LatitudeDirection.NEITHER );
+      if( errors != null && !errors.isEmpty() ) {
+         context.disableDefaultConstraintViolation();
+
+         for( final ConstraintViolation<org.loverde.geographiccoordinate.ws.rest.api.Longitude> error : errors ) {
+            context.buildConstraintViolationWithTemplate(
+               String.format( "%s %s", error.getPropertyPath(), error.getMessage() )
+            ).addConstraintViolation();
+         }
+
+         return false;
+      }
+
+      return true;
    }
 }

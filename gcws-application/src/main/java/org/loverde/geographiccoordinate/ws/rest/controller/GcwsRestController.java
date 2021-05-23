@@ -52,8 +52,6 @@ import org.loverde.geographiccoordinate.compass.CompassDirection16;
 import org.loverde.geographiccoordinate.compass.CompassDirection32;
 import org.loverde.geographiccoordinate.compass.CompassDirection8;
 import org.loverde.geographiccoordinate.ws.rest.api.Point;
-import org.loverde.geographiccoordinate.ws.rest.api.distance.DistanceErrorResponseImpl;
-import org.loverde.geographiccoordinate.ws.rest.api.distance.DistanceResponseImpl;
 import org.loverde.geographiccoordinate.ws.rest.api.request.DistanceRequest;
 import org.loverde.geographiccoordinate.ws.rest.api.response.DistanceResponse;
 import org.springframework.http.HttpStatus;
@@ -84,20 +82,12 @@ public class GcwsRestController {
    /**
     * <p>
     * Gets the total distance between an unlimited number of points.  For example, if the distance from point A to point B is 3, and the distance
-    * from point B to point C is 2, the total distance traveled will be (3 + 2) = 5.  Just pass coordinates in the order in which they're visited.
+    * from point B to point C is 2, the total distance traveled will be (3 + 2) = 5.  Just provide coordinates in the order they're visited.
     * </p>
     *
-    * @param httpResponse
+    * @param request API requeset class
     *
-    * @param unit Any value from the {@linkplain DistanceCalculator.Unit} enumeration.  This value is case-insensitive.
-    *
-    * @param coordinates A comma-separated list of latitude/longitude pairs, where the latitude and longitude are in decimal form and are
-    *                    separated by a colon.  Any number of coordinates are supported, up to the browser's ability to handle the URL
-    *                    length.  This limit varies from browser to browser.  For requests that might challenge this limit, such as a
-    *                    list of many coordinates, and/or coordinates with large fractional parts, you may have to split one large
-    *                    request into smaller requests and add the results together yourself.
-    *
-    * @return A JSON representation of {@linkplain DistanceResponseImpl} or {@linkplain DistanceErrorResponseImpl}
+    * @return The total trip distance and unit of distance
     *
     * @see DistanceCalculator#distance(org.loverde.geographiccoordinate.calculator.DistanceCalculator.Unit, org.loverde.geographiccoordinate.Point...)
     */

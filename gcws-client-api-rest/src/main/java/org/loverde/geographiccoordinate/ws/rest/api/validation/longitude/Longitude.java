@@ -36,50 +36,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.rest.api;
+package org.loverde.geographiccoordinate.ws.rest.api.validation.longitude;
 
-import java.math.BigDecimal;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.hibernate.validator.constraints.Range;
-
-import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.NotNull;
-
-
-/**
- * Lines of latitude run parallel to the Equator (perpendicular to the Prime Meridian).
- * Latitude denotes whether a location is north or south of the Equator.  The Equator
- * is located at latitude 0.
- */
-public class Latitude {
-
-   @NotNull
-   @Range( min = -90, max = 90 )
-   private BigDecimal value;
-
-   @NotNull
-   private LatitudeDirection direction;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
 
-   public BigDecimal getValue() {
-      return value;
-   }
+@Documented
+@Constraint( validatedBy = LongitudeValidator.class )
+@Target( { ElementType.METHOD, ElementType.FIELD } )
+@Retention( RetentionPolicy.RUNTIME )
+public @interface Longitude {
 
-   public void setValue( final BigDecimal value ) {
-      this.value = value;
-   }
+    String message() default "invalid";
 
-   public LatitudeDirection getDirection() {
-      return direction;
-   }
+    Class<?>[] groups() default {};
 
-   public void setDirection( final LatitudeDirection direction ) {
-      this.direction = direction;
-   }
+    Class<? extends Payload>[] payload() default {};
 
-   @AssertTrue
-   private boolean validDirection() {
-      return ( BigDecimal.ZERO.equals(value) && direction == LatitudeDirection.NEITHER ) ||
-             ( !BigDecimal.ZERO.equals(value) && direction != LatitudeDirection.NEITHER );
-   }
 }
