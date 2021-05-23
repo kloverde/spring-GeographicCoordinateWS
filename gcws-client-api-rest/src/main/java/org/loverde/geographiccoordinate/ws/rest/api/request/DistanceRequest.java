@@ -48,7 +48,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 
-public class DistanceRequest {
+public class DistanceRequest extends AbstractRequest {
 
    @NotNull
    @Size( min = 2, max = 100 )

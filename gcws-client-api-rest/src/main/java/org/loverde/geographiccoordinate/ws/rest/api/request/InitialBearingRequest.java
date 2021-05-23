@@ -44,7 +44,7 @@ import org.loverde.geographiccoordinate.ws.rest.api.Point;
 import jakarta.validation.constraints.NotNull;
 
 
-public class InitialBearingRequest {
+public class InitialBearingRequest extends AbstractRequest {
 
    @NotNull
    private CompassType compassType;

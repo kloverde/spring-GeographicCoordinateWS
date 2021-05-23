@@ -58,6 +58,7 @@ public class DistanceRequestTest {
       points.add( point2 );
 
       request = new DistanceRequest();
+      request.setCorrelationId( "asdf" );
       request.setPoints( points );
       request.setUnit( DistanceUnit.MILES );
 
@@ -66,12 +67,19 @@ public class DistanceRequestTest {
 
    @Test
    public void settersAndGettersWork() {
+      assertEquals( "asdf", request.getCorrelationId() );
       assertEquals( points, request.getPoints() );
       assertEquals( DistanceUnit.MILES, request.getUnit() );
    }
 
    @Test
    public void noErrors() {
+      assertEquals( 0, validator.validate(request).size() );
+   }
+
+   @Test
+   public void nullCorrelationId() {
+      request.setCorrelationId( null );
       assertEquals( 0, validator.validate(request).size() );
    }
 

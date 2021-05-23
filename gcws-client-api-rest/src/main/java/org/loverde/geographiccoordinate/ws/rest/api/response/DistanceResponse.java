@@ -41,9 +41,10 @@ package org.loverde.geographiccoordinate.ws.rest.api.response;
 import java.math.BigDecimal;
 
 import org.loverde.geographiccoordinate.ws.rest.api.DistanceUnit;
+import org.loverde.geographiccoordinate.ws.rest.api.request.AbstractResponse;
 
 
-public class DistanceResponse {
+public class DistanceResponse extends AbstractResponse {
 
    private BigDecimal distance;
 
