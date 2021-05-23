@@ -113,6 +113,7 @@ public class GcwsRestController {
 
       final double distance = DistanceCalculator.distance( distanceUnit, points );
 
+      response.setCorrelationId( request.getCorrelationId() );
       response.setDistance( new BigDecimal(distance) );
       response.setUnit( request.getUnit() );
 
