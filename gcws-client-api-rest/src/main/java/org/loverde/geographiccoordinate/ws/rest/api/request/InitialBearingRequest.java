@@ -38,10 +38,10 @@
 
 package org.loverde.geographiccoordinate.ws.rest.api.request;
 
+import javax.validation.constraints.NotNull;
+
 import org.loverde.geographiccoordinate.ws.rest.api.CompassType;
 import org.loverde.geographiccoordinate.ws.rest.api.Point;
-
-import jakarta.validation.constraints.NotNull;
 
 
 public class InitialBearingRequest extends AbstractRequest {

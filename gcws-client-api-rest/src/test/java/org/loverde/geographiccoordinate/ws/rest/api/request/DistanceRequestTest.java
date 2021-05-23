@@ -7,16 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.loverde.geographiccoordinate.ws.rest.api.DistanceUnit;
 import org.loverde.geographiccoordinate.ws.rest.api.Latitude;
 import org.loverde.geographiccoordinate.ws.rest.api.Longitude;
 import org.loverde.geographiccoordinate.ws.rest.api.Point;
-
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
 
 
 public class DistanceRequestTest {

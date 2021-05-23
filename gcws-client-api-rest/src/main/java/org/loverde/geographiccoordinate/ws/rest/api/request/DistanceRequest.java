@@ -40,20 +40,19 @@ package org.loverde.geographiccoordinate.ws.rest.api.request;
 
 import java.util.List;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.loverde.geographiccoordinate.ws.rest.api.DistanceUnit;
 import org.loverde.geographiccoordinate.ws.rest.api.Point;
-
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 
 public class DistanceRequest extends AbstractRequest {
 
    @NotNull
    @Size( min = 2, max = 100 )
-   @Valid
-   private List<Point> points;
+   private List<@Valid Point> points;
 
    @NotNull
    private DistanceUnit unit;

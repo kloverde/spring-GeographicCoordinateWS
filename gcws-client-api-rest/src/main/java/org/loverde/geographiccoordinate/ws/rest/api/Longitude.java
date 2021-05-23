@@ -40,9 +40,10 @@ package org.loverde.geographiccoordinate.ws.rest.api;
 
 import java.math.BigDecimal;
 
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.Range;
 
-import jakarta.validation.constraints.NotNull;
 
 
 /**
