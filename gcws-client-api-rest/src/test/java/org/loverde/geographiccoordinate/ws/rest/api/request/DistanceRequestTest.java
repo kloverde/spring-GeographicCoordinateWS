@@ -131,7 +131,7 @@ public class DistanceRequestTest {
       assertEquals( "size must be between 2 and 100", error1.getMessage() );
    }
 
-   // POINT1
+   // POINT1 LATITUDE
 
    @Test
    public void nullLatitudePoint1() {
@@ -158,6 +158,20 @@ public class DistanceRequestTest {
    }
 
    @Test
+   public void invalidLatitudePoint1() {
+      point1.getLatitude().setValue( new BigDecimal("90.0001") );
+
+      final Set<ConstraintViolation<DistanceRequest>> errors = validator.validate( request );
+      final ConstraintViolation<DistanceRequest> error1 = errors.iterator().next();
+
+      assertEquals( 1, errors.size() );
+      assertEquals( "points[0].latitude.value", error1.getPropertyPath().toString() );
+      assertEquals( "must be between -90 and 90", error1.getMessage() );
+   }
+
+   // POINT1 LONGITUDE
+
+   @Test
    public void nullLongitudePoint1() {
       point1.setLongitude( null );
 
@@ -181,7 +195,19 @@ public class DistanceRequestTest {
       assertEquals( "must not be null", error1.getMessage() );
    }
 
-   // POINT2
+   @Test
+   public void invalidLongitudePoint1() {
+      point1.getLongitude().setValue( new BigDecimal("180.0001") );
+
+      final Set<ConstraintViolation<DistanceRequest>> errors = validator.validate( request );
+      final ConstraintViolation<DistanceRequest> error1 = errors.iterator().next();
+
+      assertEquals( 1, errors.size() );
+      assertEquals( "points[0].longitude.value", error1.getPropertyPath().toString() );
+      assertEquals( "must be between -180 and 180", error1.getMessage() );
+   }
+
+   // POINT2 LATITUDE
 
    @Test
    public void nullLatitudePoint2() {
@@ -208,6 +234,20 @@ public class DistanceRequestTest {
    }
 
    @Test
+   public void invalidlLongitudePoint2() {
+      point2.getLatitude().setValue( new BigDecimal("90.0001") );
+
+      final Set<ConstraintViolation<DistanceRequest>> errors = validator.validate( request );
+      final ConstraintViolation<DistanceRequest> error1 = errors.iterator().next();
+
+      assertEquals( 1, errors.size() );
+      assertEquals( "points[1].latitude.value", error1.getPropertyPath().toString() );
+      assertEquals( "must be between -90 and 90", error1.getMessage() );
+   }
+
+   // POINT2 LONGITUDE
+
+   @Test
    public void nullLongitudePoint2() {
       point2.setLongitude( null );
 
@@ -229,5 +269,17 @@ public class DistanceRequestTest {
       assertEquals( 1, errors.size() );
       assertEquals( "points[1].longitude.value", error1.getPropertyPath().toString() );
       assertEquals( "must not be null", error1.getMessage() );
+   }
+
+   @Test
+   public void invalidLongitudePoint2() {
+      point2.getLongitude().setValue( new BigDecimal("180.0001") );
+
+      final Set<ConstraintViolation<DistanceRequest>> errors = validator.validate( request );
+      final ConstraintViolation<DistanceRequest> error1 = errors.iterator().next();
+
+      assertEquals( 1, errors.size() );
+      assertEquals( "points[1].longitude.value", error1.getPropertyPath().toString() );
+      assertEquals( "must be between -180 and 180", error1.getMessage() );
    }
 }
