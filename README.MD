@@ -68,6 +68,14 @@ With the application running locally, the WSDL is retrievable from http://localh
 
 ## Using the REST Web Service
 
+### Swagger UI
+
+http://localhost:8080/swagger-ui/
+
+* For reasons known only to the Swagger people, the trailing forward slash actually matters.
+
+### Blah blah, this is getting removed
+
 The REST service responds with JSON appropriate to the request type, and supports the following HTTP status codes:
 
 * 200:  Request was successfully processed

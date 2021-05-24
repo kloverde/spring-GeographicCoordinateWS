@@ -36,11 +36,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.loverde.geographiccoordinate.ws.rest.api.initialbearing;
+package org.loverde.geographiccoordinate.ws;
 
-import org.loverde.geographiccoordinate.ws.rest.api.ErrorResponse;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
-public class InitialBearingErrorResponseImpl extends ErrorResponse implements InitialBearingResponse {
+@SpringBootApplication
+public class GcwsApplication {
 
+   public static void main( final String args[] ) {
+      SpringApplication.run( GcwsApplication.class, args );
+   }
 }
