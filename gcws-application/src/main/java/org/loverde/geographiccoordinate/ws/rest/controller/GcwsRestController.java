@@ -75,11 +75,11 @@ public class GcwsRestController {
 
    /**
     * <p>
-    * Gets the total distance between an unlimited number of points.  For example, if the distance from point A to point B is 3, and the distance
+    * Gets the total distance between an up to 100 points.  For example, if the distance from point A to point B is 3, and the distance
     * from point B to point C is 2, the total distance traveled will be (3 + 2) = 5.  Just provide coordinates in the order they're visited.
     * </p>
     *
-    * @param request API request class
+    * @param request API request class.  Requests containing more than 100 points are rejected.
     *
     * @return The total trip distance and unit of distance
     *
