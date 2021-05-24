@@ -59,7 +59,7 @@ import org.springframework.test.web.servlet.result.JsonPathResultMatchers;
 @RunWith( SpringRunner.class )
 @SpringBootTest
 @AutoConfigureMockMvc
-public class WsRestControllerTest {
+public class GcwsRestControllerTest {
 
    @Autowired
    private MockMvc mockMvc;
