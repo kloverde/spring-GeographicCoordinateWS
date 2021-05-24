@@ -19,7 +19,7 @@ I set everything up to target Java 15.  What?  Java 15 is too new, you say?
 
 This application and all its first-party dependencies will most likely build just fine on older versions of Java.  Just change the build configuration in the projects.
 
-If you go back far enough, I know of one issue you'll encounter.  When building [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate), the JUnit tests will fail because [Java 8 has a floating point bug](https://bugs.openjdk.java.net/browse/JDK-8039915).  It was fixed in Java 9, but I haven't tried building any of this on Java 9.  Good luck.
+If you go back far enough, I know of one issue you'll encounter.  When building [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate) on Java 8, the JUnit tests will fail because [Java 8 has a floating point bug](https://bugs.openjdk.java.net/browse/JDK-8039915).  It was fixed in Java 9, but I haven't tried building any of this on Java 9.  Good luck.
 
 
 ## Building and Running
