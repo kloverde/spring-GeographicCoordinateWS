@@ -48,6 +48,7 @@ public class InitialBearingResponse extends AbstractResponse {
    private BigDecimal bearing;
 
    private String compassDirection;
+   private String compassDirectionAbbr;
 
    private CompassType compassType;
 
@@ -66,6 +67,14 @@ public class InitialBearingResponse extends AbstractResponse {
 
    public void setCompassDirection( final String compassDirection ) {
       this.compassDirection = compassDirection;
+   }
+
+   public String getCompassDirectionAbbr() {
+      return compassDirectionAbbr;
+   }
+
+   public void setCompassDirectionAbbr( final String compassDirectionAbbr ) {
+      this.compassDirectionAbbr = compassDirectionAbbr;
    }
 
    public CompassType getCompassType() {
