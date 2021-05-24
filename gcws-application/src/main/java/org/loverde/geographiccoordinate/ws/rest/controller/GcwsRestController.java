@@ -54,8 +54,10 @@ import org.loverde.geographiccoordinate.exception.GeographicCoordinateException;
 import org.loverde.geographiccoordinate.ws.rest.api.CompassType;
 import org.loverde.geographiccoordinate.ws.rest.api.Point;
 import org.loverde.geographiccoordinate.ws.rest.api.backazimuth.BackAzimuthResponseImpl;
+import org.loverde.geographiccoordinate.ws.rest.api.request.BackAzimuthRequest;
 import org.loverde.geographiccoordinate.ws.rest.api.request.DistanceRequest;
 import org.loverde.geographiccoordinate.ws.rest.api.request.InitialBearingRequest;
+import org.loverde.geographiccoordinate.ws.rest.api.response.BackAzimuthResponse;
 import org.loverde.geographiccoordinate.ws.rest.api.response.DistanceResponse;
 import org.loverde.geographiccoordinate.ws.rest.api.response.InitialBearingResponse;
 import org.springframework.http.HttpStatus;
@@ -148,78 +150,24 @@ public class GcwsRestController {
     * @param initialBearingStr The bearing to reverse
     *
     * @return A JSON representation of {@linkplain BackAzimuthResponseImpl} or {@linkplain BackAzimuthErrorResponseImpl}
-    *
-   @GetMapping( "backAzimuth/compassType/{compassType}/initialBearing/{initialBearing}" )
-   public BackAzimuthResponse backAzimuthRequest( final HttpServletResponse httpResponse,
-                                                  @PathVariable("compassType")    final String compassTypeStr,
-                                                  @PathVariable("initialBearing") final String initialBearingStr ) {
+    */
+   @PostMapping( "backAzimuth" )
+   public ResponseEntity<BackAzimuthResponse> backAzimuthRequest( @Valid @RequestBody final BackAzimuthRequest request ) {
 
-      final BackAzimuthResponseImpl successResponse = new BackAzimuthResponseImpl();
-      final BackAzimuthErrorResponseImpl errorResponse = new BackAzimuthErrorResponseImpl();
+      final BackAzimuthResponse response = new BackAzimuthResponse();
 
-      final Class<? extends CompassDirection> compassDirection;
+      final Class<? extends CompassDirection> compassType = convertCompassType( request.getCompassType() );
 
-      try {
-         compassDirection = compassDirectionFromPathVar( compassTypeStr );
-      } catch( final IllegalArgumentException e ) {
-         httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
+      final Bearing<? extends CompassDirection> bearing = BearingCalculator.backAzimuth( compassType, request.getBearing() );
 
-         errorResponse.setHttpStatus( httpResponse.getStatus() );
-         errorResponse.setErrorMessage( e.getLocalizedMessage() );
+      response.setBearing( bearing.getBearing() );
+      response.setCompassDirectionAbbr( bearing.getCompassDirection().getAbbreviation() );
+      response.setCompassDirection( bearing.getCompassDirection().getPrintName() );
+      response.setCompassType( request.getCompassType() );
+      response.setCorrelationId( request.getCorrelationId() );
 
-         return errorResponse;
-      }
-
-      final  BigDecimal initialBearing;
-
-      try {
-         initialBearing = new BigDecimal( initialBearingStr );
-      } catch( final NumberFormatException e ) {
-         httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
-
-         errorResponse.setHttpStatus( httpResponse.getStatus() );
-         errorResponse.setErrorMessage( String.format("'initialBearing': Not a number [%s]", initialBearingStr) );
-
-         return errorResponse;
-      }
-
-      final Bearing<? extends CompassDirection> bearing;
-
-      try {
-         bearing = BearingCalculator.backAzimuth( compassDirection, initialBearing );
-      } catch( final GeographicCoordinateException gce ) {
-         httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
-
-         errorResponse.setHttpStatus( httpResponse.getStatus() );
-         errorResponse.setErrorMessage( gce.getLocalizedMessage() );
-
-         return errorResponse;
-      }
-
-      successResponse.setBearing( bearing.getBearing().toPlainString() );
-      successResponse.setCompassDirectionAbbr( bearing.getCompassDirection().getAbbreviation() );
-      successResponse.setCompassDirectionText( bearing.getCompassDirection().getPrintName() );
-      successResponse.setCompassType( compassTypeStr );
-
-      return successResponse;
+      return new ResponseEntity<>( response, HttpStatus.OK );
    }
-
-   private static Class<? extends CompassDirection> compassDirectionFromPathVar( final String pathVar ) throws IllegalArgumentException {
-      final Class<? extends CompassDirection> compassDirection;
-
-      if( StringUtils.isEmpty(pathVar) || pathVar.trim().isEmpty() ) {
-         throw new IllegalArgumentException( String.format("No compass type was provided.  Valid compass types are %s.", COMPASS_TYPE_MAP.keySet()) );
-      } else {
-         compassDirection = COMPASS_TYPE_MAP.get( pathVar );
-
-         if( compassDirection == null ) {
-            throw new IllegalArgumentException( String.format("'%s' is an invalid compassType.  Valid values are %s.", pathVar, COMPASS_TYPE_MAP.keySet()) );
-         }
-      }
-
-      return compassDirection;
-   }
-   */
 
    private Class<? extends CompassDirection> convertCompassType( final CompassType requestCompassType ) {
       Class<? extends CompassDirection> compassType = null;
