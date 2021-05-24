@@ -3,7 +3,7 @@ GeographicCoordinateWS
 
 See LICENSE for this software's licensing terms.
 
-I'll start out by saying this isn't meant to be a serious application.  I created this for one purpose:  to serve as a guide to myself for future SOAP and REST projects.
+I'll start out by saying this isn't meant to be a serious application.  I created this for one purpose:  to serve as a reminder to myself of how to do things in future REST and SOAP projects.
 
 GeographicCoordinateWS is a Spring Boot application that exposes the functionality of my [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate) library's various calculators as SOAP and REST Web services.
 
