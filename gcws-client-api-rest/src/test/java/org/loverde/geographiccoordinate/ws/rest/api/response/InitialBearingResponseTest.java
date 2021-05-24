@@ -10,17 +10,23 @@ import org.loverde.geographiccoordinate.ws.rest.api.CompassType;
 
 public class InitialBearingResponseTest {
 
-   private InitialBearingResponse response;
+   private BigDecimal bearing;
+   private String compassDirection;
+   private String compassDirectionAbbr;
+   private CompassType compassType;
+   private String correlationId;
 
-   private static BigDecimal bearing = new BigDecimal( "25.678" );
-   private static String compassDirection = "NORTH NORTHEAST";
-   private static String compassDirectionAbbr = "NNE";
-   private static CompassType compassType = CompassType.COMPASS_TYPE_16_POINT;
-   private static String correlationId = "944abb3c06c031cba4c09bcfee24ebaa";
+   private InitialBearingResponse response;
 
 
    @BeforeEach
    public void setUp() {
+      bearing = new BigDecimal( "25.678" );
+      compassDirection = "NORTH NORTHEAST";
+      compassDirectionAbbr = "NNE";
+      compassType = CompassType.COMPASS_TYPE_16_POINT;
+      correlationId = "944abb3c06c031cba4c09bcfee24ebaa";
+
       response = buildResponse();
    }
 

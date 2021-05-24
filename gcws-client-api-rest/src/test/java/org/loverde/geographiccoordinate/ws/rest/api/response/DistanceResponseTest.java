@@ -11,15 +11,19 @@ import org.loverde.geographiccoordinate.ws.rest.api.DistanceUnit;
 
 public class DistanceResponseTest {
 
-   private static String correlationId = "944abb3c06c031cba4c09bcfee24ebaa";
-   private static BigDecimal distance = new BigDecimal( "697.24" );
-   private static DistanceUnit unit = DistanceUnit.MILES;
+   private String correlationId;
+   private BigDecimal distance;
+   private DistanceUnit unit;
 
    private DistanceResponse response;
 
 
    @BeforeEach
    public void setUp() {
+      correlationId = "944abb3c06c031cba4c09bcfee24ebaa";
+      distance = new BigDecimal( "697.24" );
+      unit = DistanceUnit.MILES;
+
       response = buildResponse();
    }
 

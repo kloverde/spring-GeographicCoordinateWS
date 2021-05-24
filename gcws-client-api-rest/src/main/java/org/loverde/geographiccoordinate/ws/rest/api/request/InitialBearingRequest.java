@@ -54,4 +54,29 @@ public class InitialBearingRequest extends AbstractRequest {
 
    @NotNull
    private Point to;
+
+
+   public CompassType getCompassType() {
+      return compassType;
+   }
+
+   public void setCompassType( final CompassType compassType ) {
+      this.compassType = compassType;
+   }
+
+   public Point getFrom() {
+      return from;
+   }
+
+   public void setFrom( final Point from ) {
+      this.from = from;
+   }
+
+   public Point getTo() {
+      return to;
+   }
+
+   public void setTo( final Point to ) {
+      this.to = to;
+   }
 }

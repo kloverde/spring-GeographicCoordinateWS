@@ -38,22 +38,26 @@
 
 package org.loverde.geographiccoordinate.ws.rest.controller;
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.loverde.geographiccoordinate.Bearing;
 import org.loverde.geographiccoordinate.Latitude;
 import org.loverde.geographiccoordinate.Longitude;
+import org.loverde.geographiccoordinate.calculator.BearingCalculator;
 import org.loverde.geographiccoordinate.calculator.DistanceCalculator;
 import org.loverde.geographiccoordinate.compass.CompassDirection;
 import org.loverde.geographiccoordinate.compass.CompassDirection16;
 import org.loverde.geographiccoordinate.compass.CompassDirection32;
 import org.loverde.geographiccoordinate.compass.CompassDirection8;
+import org.loverde.geographiccoordinate.exception.GeographicCoordinateException;
+import org.loverde.geographiccoordinate.ws.rest.api.CompassType;
 import org.loverde.geographiccoordinate.ws.rest.api.Point;
+import org.loverde.geographiccoordinate.ws.rest.api.backazimuth.BackAzimuthResponseImpl;
 import org.loverde.geographiccoordinate.ws.rest.api.request.DistanceRequest;
+import org.loverde.geographiccoordinate.ws.rest.api.request.InitialBearingRequest;
 import org.loverde.geographiccoordinate.ws.rest.api.response.DistanceResponse;
+import org.loverde.geographiccoordinate.ws.rest.api.response.InitialBearingResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -66,18 +70,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping( "/GeographicCoordinateWS/rest" )
 public class GcwsRestController {
-
-   private static Map<String, Class<? extends CompassDirection>> COMPASS_TYPE_MAP;
-
-   static {
-      final Map<String, Class<? extends CompassDirection>> tempMap = new LinkedHashMap<>();
-
-      tempMap.put( "8",  CompassDirection8.class );
-      tempMap.put( "16", CompassDirection16.class );
-      tempMap.put( "32", CompassDirection32.class );
-
-      COMPASS_TYPE_MAP = Collections.unmodifiableMap( tempMap );
-   }
 
    /**
     * <p>
@@ -103,12 +95,7 @@ public class GcwsRestController {
       final org.loverde.geographiccoordinate.Point points[] = new org.loverde.geographiccoordinate.Point[ request.getPoints().size() ];
 
       for( int i = 0; i < request.getPoints().size(); i++ ) {
-         final Point p = request.getPoints().get( i );
-
-         points[i] = new org.loverde.geographiccoordinate.Point(
-            new Latitude( p.getLatitude().getValue().doubleValue() ),
-            new Longitude( p.getLongitude().getValue().doubleValue() )
-         );
+         points[i] = convertPoint( request.getPoints().get(i) );
       }
 
       final double distance = DistanceCalculator.distance( distanceUnit, points );
@@ -120,103 +107,35 @@ public class GcwsRestController {
       return new ResponseEntity<>( response, HttpStatus.OK );
    }
 
-   /*
+   /**
     * <p>
     * Calculates the initial bearing that will take you from point A to point B.  Keep in mind that the bearing will change over the course of the trip and will need to be recalculated.
     * </p>
     *
-    * @param httpResponse
+    * @param request API request class
     *
-    * @param compassTypeStr Specifies the compass type (whether an 8, 16 or 32-point compass) to use in the response. Valid values are "8", "16" and "32".  It does not affect the returned bearing.
-    *
-    * @param fromStr The starting point.  A latitude/longitude pair, where the latitude and longitude are in decimal form and separated by a colon.
-    *
-    * @param toStr The ending point.  A latitude/longitude pair, where the latitude and longitude are in decimal form and separated by a colon.
-    *
-    * @return A JSON representation of {@linkplain InitialBearingResponseImpl} or {@linkplain InitialBearingErrorResponseImpl}
-    *
-   @GetMapping( "initialBearing/compassType/{compassType}/from/{from}/to/{to}" )
-   public InitialBearingResponse initialBearingRequest( final HttpServletResponse httpResponse,
-                                                        @PathVariable("compassType") final String compassTypeStr,
-                                                        @PathVariable("from") final String fromStr,
-                                                        @PathVariable("to") final String toStr ) {
+    * @return The bearing, along with its closest cardinal direction, as determined by the provided CompassType
+    */
+   @PostMapping(
+      path = "initialBearing",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE
+   )
+   public ResponseEntity<InitialBearingResponse> initialBearing( @Valid @RequestBody final InitialBearingRequest request ) {
+      final InitialBearingResponse response = new InitialBearingResponse();
 
-      final InitialBearingResponseImpl successResponse = new InitialBearingResponseImpl();
-      final InitialBearingErrorResponseImpl errorResponse = new InitialBearingErrorResponseImpl();
+      final Class<? extends CompassDirection> compassType = convertCompassType( request.getCompassType() );
+      final org.loverde.geographiccoordinate.Point from = convertPoint( request.getFrom() );
+      final org.loverde.geographiccoordinate.Point to = convertPoint( request.getTo() );
 
-      final Class<? extends CompassDirection> compassDirection;
+      final Bearing<? extends CompassDirection> bearing = BearingCalculator.initialBearing( compassType, from, to );
 
-      httpResponse.setStatus( HttpStatus.OK.value() );
+      response.setBearing( bearing.getBearing() );
+      response.setCompassDirection( bearing.getCompassDirection().getPrintName() );
+      response.setCompassDirectionAbbr( bearing.getCompassDirection().getAbbreviation() );
+      response.setCompassType( request.getCompassType() );
 
-      try {
-         compassDirection = compassDirectionFromPathVar( compassTypeStr );
-      } catch( final IllegalArgumentException e ) {
-         httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
-
-         errorResponse.setHttpStatus( httpResponse.getStatus() );
-         errorResponse.setErrorMessage( e.getLocalizedMessage() );
-
-         return errorResponse;
-      }
-
-      final Point from;
-      final Point to;
-
-      try {
-         from = pointFromPathVar( fromStr );
-      } catch( final MalformedDataException e ) {
-         httpResponse.setStatus( HttpStatus.BAD_REQUEST.value() );
-
-         errorResponse.setHttpStatus( httpResponse.getStatus() );
-         errorResponse.setErrorMessage( String.format("'From' coordinate: %s", e.getLocalizedMessage()) );
-
-         return errorResponse;
-      } catch( final IllegalArgumentException | GeographicCoordinateException e ) {
-         httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
-
-         errorResponse.setHttpStatus( httpResponse.getStatus() );
-         errorResponse.setErrorMessage( String.format("'From' coordinate: %s", e.getLocalizedMessage()) );
-
-         return errorResponse;
-      }
-
-      try {
-         to = pointFromPathVar( toStr );
-      } catch( final MalformedDataException e ) {
-         httpResponse.setStatus( HttpStatus.BAD_REQUEST.value() );
-
-         errorResponse.setHttpStatus( httpResponse.getStatus() );
-         errorResponse.setErrorMessage( String.format("'To' coordinate: %s", e.getLocalizedMessage()) );
-
-         return errorResponse;
-      } catch( final IllegalArgumentException | GeographicCoordinateException e ) {
-         httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
-
-         errorResponse.setHttpStatus( httpResponse.getStatus() );
-         errorResponse.setErrorMessage( String.format("'To' coordinate: %s", e.getLocalizedMessage()) );
-
-         return errorResponse;
-      }
-
-      final Bearing<? extends CompassDirection> bearing;
-
-      try {
-         bearing = BearingCalculator.initialBearing( compassDirection, from, to );
-      } catch( final GeographicCoordinateException gce ) {
-         httpResponse.setStatus( HttpStatus.UNPROCESSABLE_ENTITY.value() );
-
-         errorResponse.setHttpStatus( httpResponse.getStatus() );
-         errorResponse.setErrorMessage( gce.getLocalizedMessage() );
-
-         return errorResponse;
-      }
-
-      successResponse.setBearing( bearing.getBearing() );
-      successResponse.setCompassDirectionAbbr( bearing.getCompassDirection().getAbbreviation() );
-      successResponse.setCompassDirectionText( bearing.getCompassDirection().getPrintName() );
-      successResponse.setCompassType( compassTypeStr );
-
-      return successResponse;
+      return new ResponseEntity<>( response, HttpStatus.OK );
    }
 
    /**
@@ -300,60 +219,28 @@ public class GcwsRestController {
 
       return compassDirection;
    }
-
-   private static Latitude latitudeFromPathVar( final String pathVar ) throws MalformedDataException, IllegalArgumentException, GeographicCoordinateException {
-
-      final String split[] = pathVar.split( ":", 2 );
-
-      Double latDbl = null;
-      Latitude latitude = null;
-
-      if( ObjectUtils.isEmpty(split) || split.length == 1 || StringUtils.isEmpty(split[0]) || StringUtils.isEmpty(split[1]) ) {
-         throw new MalformedDataException( String.format("1 token detected instead of 2", split.length) );
-      }
-
-      try {
-         latDbl = Double.valueOf( split[0] );
-      } catch( final NumberFormatException nfe ) {
-         throw new IllegalArgumentException( String.format("Not a number [%s]", split[0]), nfe );
-      }
-
-      try {
-         latitude = new Latitude( latDbl );
-      } catch( final GeographicCoordinateException gce ) {
-         throw new GeographicCoordinateException( String.format("[%s]: %s", split[0], gce.getLocalizedMessage()), gce );
-      }
-
-      return latitude;
-   }
-
-   private static Longitude longitudeFromPathVar( final String pathVar ) throws MalformedDataException, IllegalArgumentException, GeographicCoordinateException {
-      Longitude longitude = null;
-      Double lonDbl = null;
-
-      final String split[] = pathVar.split( ":", 2 );
-
-      if( ObjectUtils.isEmpty(split) || split.length == 1 || StringUtils.isEmpty(split[0]) || StringUtils.isEmpty(split[1]) ) {
-         throw new MalformedDataException( String.format("1 token detected instead of 2", split.length) );
-      }
-
-      try {
-         lonDbl = Double.valueOf( split[1] );
-      } catch( final NumberFormatException nfe ) {
-         throw new IllegalArgumentException( String.format("Not a number [%s]", split[1]), nfe );
-      }
-
-      try {
-         longitude = new Longitude( lonDbl );
-      } catch( final GeographicCoordinateException gce ) {
-         throw new GeographicCoordinateException( String.format("[%s]: %s", split[1], gce.getLocalizedMessage()), gce );
-      }
-
-      return longitude;
-   }
-
-   private static Point pointFromPathVar( final String pathVar ) throws MalformedDataException {
-      return new Point( latitudeFromPathVar(pathVar), longitudeFromPathVar(pathVar) );
-   }
    */
+
+   private Class<? extends CompassDirection> convertCompassType( final CompassType requestCompassType ) {
+      Class<? extends CompassDirection> compassType = null;
+
+      if( requestCompassType == CompassType.COMPASS_TYPE_8_POINT ) {
+         compassType = CompassDirection8.class;
+      } else if( requestCompassType == CompassType.COMPASS_TYPE_16_POINT ) {
+         compassType = CompassDirection16.class;
+      } else if( requestCompassType == CompassType.COMPASS_TYPE_32_POINT ) {
+         compassType = CompassDirection32.class;
+      } else {
+         throw new GeographicCoordinateException( "Unknown compass type " + requestCompassType );
+      }
+
+      return compassType;
+   }
+
+   private static org.loverde.geographiccoordinate.Point convertPoint( final Point requestPoint ) {
+      return new org.loverde.geographiccoordinate.Point(
+         new Latitude( requestPoint.getLatitude().getValue().doubleValue() ),
+         new Longitude( requestPoint.getLongitude().getValue().doubleValue() )
+      );
+   }
 }

@@ -38,17 +38,9 @@
 
 package org.loverde.geographiccoordinate.ws.rest.api;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 
 public enum CompassType {
-
-   @JsonProperty( "8" )
    COMPASS_TYPE_8_POINT,
-
-   @JsonProperty( "16" )
    COMPASS_TYPE_16_POINT,
-
-   @JsonProperty( "32" )
    COMPASS_TYPE_32_POINT;
 }
