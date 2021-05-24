@@ -41,7 +41,7 @@ package org.loverde.geographiccoordinate.ws.rest.api.initialbearing;
 import java.math.BigDecimal;
 
 
-public class InitialBearingResponseImpl implements InitialBearingResponse {
+public class InitialBearingResponseImpl {
 
    private String compassType;
    private String compassDirectionAbbr;
