@@ -6,13 +6,13 @@ import java.util.Map;
 
 public class ValidationErrorResponse {
 
-   public Map<String, String> errors;
+   public Map<String, String> validationErrors;
 
-   public void setErrors( final Map<String, String> e ) {
-      this.errors = e != null ? Collections.unmodifiableMap( e ) : null;
+   public void setValidationErrors( final Map<String, String> e ) {
+      this.validationErrors = e != null ? Collections.unmodifiableMap( e ) : null;
    }
 
-   public Map<String, String> getErrors() {
-      return errors != null ? Collections.unmodifiableMap( errors ) : null;
+   public Map<String, String> getValidationErrors() {
+      return validationErrors != null ? Collections.unmodifiableMap( validationErrors ) : null;
    }
 }
