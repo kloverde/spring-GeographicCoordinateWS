@@ -12,10 +12,14 @@ This application has no official release, and it never will.  Undocumented chang
 
 ## Development Environment
 
-1. Java 10
+1. Java 15
 2. Gradle 7.0
 
-Java 10 or later is required unless you want to invest the time to get things working on older Java.  This is due to a dependency on version 4.2 of my [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate) library, which is compiled for Java 10 and has required APIs that aren't present in earlier versions of GeographicCoordinate.  Rebuilding v4.2 on older Java might or might not succeed with JUnit tests enabled due to a floating point bug in *some, but not all* earlier JREs.  Note that I said JREs, not my library.  See GeographicCoordinate 4.0's release notes for more information about that.  You'll also need to tweak `build.gradle` in GeographicCoordinateWS.
+I set eveything up to target Java 15.  What?  Java 15 is too new, you say?
+
+This application and all its first-party dependencies will most likely build just fine on older versions of Java.  Just change the build configuration in the proejcts.
+
+If you go back far enough, I know of one issue you'll encounter.  When building [GeographicCoordinate](https://github.com/kloverde/java-GeographicCoordinate), the JUnit tests will fail because [Java 8 has a floating point bug](https://bugs.openjdk.java.net/browse/JDK-8039915).  It was fixed in Java 9, but I haven't tried building any of this on Java 9.  Good luck.
 
 
 ## Building and Running
@@ -55,10 +59,10 @@ You can specify whether the WSDL is generated dynamically or loaded from the API
 Run with:
 
 ```shell
-java -jar GeographicCoordinateWS-0.0.0.jar
+java -jar GeographicCoordinateWS-2.0.0.jar
 ```
 
-A batch script which launches the application with remote debugging enabled can be found in the root directory.
+A script which launches the application with remote debugging enabled can be found in the root directory.
 
 
 ## Using the SOAP Web Service
@@ -70,42 +74,20 @@ With the application running locally, the WSDL is retrievable from http://localh
 
 ### Swagger UI
 
+Use SwaggerUI to see available endpoints and request/response formatting.
+
 http://localhost:8080/swagger-ui/
 
 * For reasons known only to the Swagger people, the trailing forward slash actually matters.
 
-### Blah blah, this is getting removed
+
+### Response Codes
 
 The REST service responds with JSON appropriate to the request type, and supports the following HTTP status codes:
 
 * 200:  Request was successfully processed
-* 400:  Request was malformed
-* 422:  Request was correctly formed but semantically incorrect.  An example of this would be if a provided latitude is out of range.
-
-In the event of an error, the JSON response consists of an error message and a copy of the HTTP status code.  You shouldn't inspect the JSON to determine if there was an error; you should use the actual HTTP status code for that.  The status code is made available in the JSON in case you want to use it for display purposes.
-
-A high-level summary of supported requests is provided below.  See the `WsRestController` javadoc for more detail.
-
-
-#### Distance
-
-`GET` /GeographicCoordinateWS/rest/distance/[unit]/[coordinates]
-
-http://localhost:8080/GeographicCoordinateWS/rest/distance/miles/35.048983:118.987977,35.084629:119.025986,35.110199:119.053642
-
-
-#### Initial Bearing
-
-`GET` /GeographicCoordinateWS/rest/initialBearing/compassType/[compass type]/from/[coordinate]/to/[coordinate]
-
-http://localhost:8080/GeographicCoordinateWS/rest/initialBearing/compassType/32/from/74.12:89.34/to/79.56:83.78
-
-
-#### Back Azimuth
-
-`GET` GeographicCoordinateWS/rest/backAzimuth/compassType/[compass type]/initialBearing/[bearing]
-
-http://localhost:8080/GeographicCoordinateWS/rest/backAzimuth/compassType/16/initialBearing/119.1123
+* 400:  Invalid requeset
+* 500:  The back end threw an exception which it could not recover from
 
 
 ## Donations
