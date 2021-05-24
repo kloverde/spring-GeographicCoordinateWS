@@ -39,7 +39,7 @@
 package org.loverde.geographiccoordinate.ws.rest.api.backazimuth;
 
 
-public class BackAzimuthResponseImpl implements BackAzimuthResponse {
+public class BackAzimuthResponseImpl {
 
    private String compassType;
    private String compassDirectionAbbr;
