@@ -88,8 +88,3 @@ The REST service responds with JSON appropriate to the request type, and support
 * 200:  Request was successfully processed
 * 400:  Invalid request
 * 500:  The back end threw an exception which it could not recover from
-
-
-## Donations
-
-https://paypal.me/KurtisLoVerde/10
