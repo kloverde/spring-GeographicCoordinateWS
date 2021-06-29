@@ -12,7 +12,6 @@ import javax.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.loverde.geographiccoordinate.ws.rest.api.CompassType;
-import org.loverde.geographiccoordinate.ws.rest.api.request.BackAzimuthRequest;
 
 
 public class BackAzimuthRequestTest {

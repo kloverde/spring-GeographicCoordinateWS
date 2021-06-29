@@ -53,7 +53,6 @@ import org.loverde.geographiccoordinate.compass.CompassDirection8;
 import org.loverde.geographiccoordinate.exception.GeographicCoordinateException;
 import org.loverde.geographiccoordinate.ws.rest.api.CompassType;
 import org.loverde.geographiccoordinate.ws.rest.api.Point;
-import org.loverde.geographiccoordinate.ws.rest.api.backazimuth.BackAzimuthResponseImpl;
 import org.loverde.geographiccoordinate.ws.rest.api.request.BackAzimuthRequest;
 import org.loverde.geographiccoordinate.ws.rest.api.request.DistanceRequest;
 import org.loverde.geographiccoordinate.ws.rest.api.request.InitialBearingRequest;
